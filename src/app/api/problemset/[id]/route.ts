@@ -1,8 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/lib/auth";
+import { getProblemSetById } from "@/features/problemset/db/ProblemSet";
 
 const prisma = new PrismaClient();
+1
+export async function GET(
+    request: NextRequest,
+    { params }: { params: { id: string } }
+) {
+    const problemSetId = parseInt(params.id);
+
+    const problemSet = await getProblemSetById(problemSetId);
+    if (!problemSet) {
+        return NextResponse.json({ error: "問題セットが見つかりません" }, { status: 404 });
+    }
+
+    return NextResponse.json(problemSet);
+}
 
 export async function PATCH(
     request: NextRequest,

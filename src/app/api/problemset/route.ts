@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { createProblemSet } from "@/features/problemset/db/ProblemSet";
+import { getPublicProblemSets } from "@/features/problemset/db/ProblemSet";
 
-const prisma = new PrismaClient();
+export async function GET(request: NextRequest) {
+    const problemSets = await getPublicProblemSets();
+    return NextResponse.json(problemSets);
+}
 
 export async function POST(request: NextRequest) {
     const { name, description, isPublic } = await request.json();

@@ -44,7 +44,7 @@ export function ProblemSetDetail({ problemset }: { problemset: NonNullable<query
 
                             <span className="flex items-center">
                                 <Calendar className="h-4 w-4 mr-1" />
-                                {formatDate(problemset.createdAt.toDateString())}
+                                {formatDate(problemset.createdAt)}
                             </span>
 
                             <Badge variant={problemset.isPublic ? "default" : "outline"}>
