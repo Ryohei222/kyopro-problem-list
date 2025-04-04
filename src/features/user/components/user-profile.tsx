@@ -5,7 +5,7 @@ import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { UserProblemLists } from "@/components/user-problem-lists"
+import { UserProblemLists } from "@/features/user/components/user-problem-lists"
 import { Calendar, Twitter, Github, ExternalLink } from "lucide-react"
 
 type ProblemListSummary = {

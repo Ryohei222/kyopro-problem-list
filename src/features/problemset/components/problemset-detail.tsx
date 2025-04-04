@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { ProblemTable } from "./problem-table"
 import { Share2, Edit, UserCircle, Calendar } from "lucide-react"
-import { queryProblemSetDetail } from "@/controller/types"
+import { queryProblemSetDetail } from "@/db/types"
 import { ProblemSetStarButton } from "@/components/star-button"
 import React from 'react';
 import { useSession } from "next-auth/react"

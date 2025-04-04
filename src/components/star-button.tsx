@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Star } from "lucide-react"
-import { queryProblemSetDetail } from "@/controller/types"
+import { queryProblemSetDetail } from "@/db/types"
 
 export function ProblemSetStarButton({ problemSet }: { problemSet: NonNullable<queryProblemSetDetail> }) {
     const [isStarred, setIsStarred] = useState(false);

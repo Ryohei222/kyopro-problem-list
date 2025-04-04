@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Star, Search, ChevronDown, ChevronUp } from "lucide-react"
-import { getPublicProblemSets } from "@/controller/problemList"
+import { getPublicProblemSets } from "@/features/problemset-list/db/getPublicProblemSets"
 
 import { Resolve, ReturnType } from "@/lib/utils"
 

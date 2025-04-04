@@ -1,9 +1,9 @@
 import { ProblemSetDetail } from "../components/problemset-detail";
 import { notFound } from "next/navigation"
-import { getProblemSetById } from "@/controller/ProblemSet"
+import { getProblemSetById } from "@/features/problemset/db/ProblemSet"
 import { BackButton } from "../components/back-button";
 
-export default async function ProblemSetPage({ id }: { id: string }) {
+export default async function ProblemSetShowPage({ id }: { id: string }) {
     const problemSet = await getProblemSetById(Number(id));
     console.log(problemSet);
 

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Session } from "next-auth";
 import { auth } from "@/lib/auth";
 
-import { getUserStars } from "@/controller/Star";
+import { getUserStars } from "@/db/Star";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
     const session: Session | null = await auth();

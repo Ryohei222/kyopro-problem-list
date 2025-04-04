@@ -1,6 +1,6 @@
 import { Toolbar } from "@/components/toolbar"
-import { ProblemListTable } from "@/components/problem-list-table"
-import { getPublicProblemSets } from "@/controller/problemList"
+import { ProblemListTable } from "@/features/problemset-list/components/problem-list-table"
+import { getPublicProblemSets } from "@/features/problemset-list/db/getPublicProblemSets"
 
 export default async function Home() {
   const problemSets = await getPublicProblemSets();

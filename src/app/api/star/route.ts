@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createStar, deleteStar } from "@/controller/Star";
+import { createStar, deleteStar } from "@/db/Star";
 
 import { Session } from "next-auth";
 import { auth } from "@/lib/auth";

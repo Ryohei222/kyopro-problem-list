@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/lib/auth";
-import { createProblemSet } from "@/controller/ProblemSet";
+import { createProblemSet } from "@/features/problemset/db/ProblemSet";
 
 const prisma = new PrismaClient();
 
