@@ -1,0 +1,23 @@
+[
+    {
+        "id": "1202Contest_a",
+        "contest_id": "DEGwer2023",
+        "problem_index": "A",
+        "name": "DEGwer's Doctoral Dissertation",
+        "title": "A. DEGwer's Doctoral Dissertation"
+    },
+    {
+        "id": "1202Contest_b",
+        "contest_id": "DEGwer2023",
+        "problem_index": "B",
+        "name": "vs. DEGwer",
+        "title": "B. vs. DEGwer"
+    },
+    {
+        "id": "1202Contest_c",
+        "contest_id": "DEGwer2023",
+        "problem_index": "C",
+        "name": "binarydigit",
+        "title": "C. binarydigit"
+    }
+]

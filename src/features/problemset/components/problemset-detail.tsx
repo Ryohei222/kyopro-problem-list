@@ -15,6 +15,7 @@ export function ProblemSetDetail({ problemset }: { problemset: NonNullable<query
 
     const session = useSession();
     const logined = session.status === "authenticated";
+    const isAuthor = session.data?.user?.id === problemset.author.id;
     const problems = problemset.problemSetProblems;
 
     const formatDate = (dateString: string) => {
@@ -61,16 +62,24 @@ export function ProblemSetDetail({ problemset }: { problemset: NonNullable<query
                             <span>共有</span>
                         </Button>
 
-                        {logined &&
-                            <Button variant="outline" size="sm">
-                                <Edit className="h-4 w-4 mr-1" />
-                                <span>編集</span>
-                            </Button>}
+                        {isAuthor && (
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href={`/problemset/edit/${problemset.id}`}>
+                                    <Edit className="h-4 w-4 mr-1" />
+                                    <span>編集</span>
+                                </Link>
+                            </Button>
+                        )}
                     </div>
                 </div>
             </CardHeader>
 
             <CardContent>
+                <div className="mb-6">
+                    <h3 className="text-lg font-medium mb-2">概要</h3>
+                    <p className="text-gray-700 whitespace-pre-line">{problemset.description}</p>
+                </div>
+
                 <ProblemTable problems={problems} />
             </CardContent>
         </Card>
