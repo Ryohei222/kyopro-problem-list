@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { getProblemSetById } from "@/features/problemset/db/ProblemSet";
 
 const prisma = new PrismaClient();
-1
+
 export async function GET(
     request: NextRequest,
     { params }: { params: { id: string } }
@@ -19,7 +19,7 @@ export async function GET(
     return NextResponse.json(problemSet);
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
     const problemSetId = parseInt(params.id);
     const session = await auth();
 

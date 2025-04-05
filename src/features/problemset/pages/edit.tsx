@@ -17,7 +17,7 @@ export default async function EditProblemSetPage({ params }: { params: { id: str
             <BackButton />
             <div className="max-w-2xl mx-auto">
                 <h1 className="text-3xl font-bold mb-6">問題リストを編集</h1>
-                <EditProblemListForm />
+                <EditProblemListForm problemSet={problemSet} />
             </div>
         </div>
     )

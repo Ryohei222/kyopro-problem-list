@@ -1,6 +1,6 @@
 import { TableCell, TableRow } from "@/components/ui/table"
 import { ProblemSetProblem } from "../types/ProblemSetProblem"
-import { buildProblemUrl } from "@/utils/buildProblemUrl";
+import { buildProblemUrl } from "@/features/problem/utils/buildProblemUrl";
 
 export default function ProblemTableRow({ problemSetProblem }: { problemSetProblem: ProblemSetProblem }) {
     const problem = problemSetProblem.problem;
