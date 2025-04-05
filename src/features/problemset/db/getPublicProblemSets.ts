@@ -1,9 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/prisma";
 
-const prisma = new PrismaClient();
-
-export const getPublicProblemSets = async () => {
-    // Fetch all problem sets with isPublic = true
+export async function getPublicProblemSets() {
     const problemSets = await prisma.problemSet.findMany({
         select: {
             id: true,
@@ -12,20 +9,22 @@ export const getPublicProblemSets = async () => {
                 select: {
                     id: true,
                     name: true,
-                    image: true,
+                    image: true
                 }
             },
             description: true,
-            createdAt: true,
-            updatedAt: true,
             _count: {
                 select: {
                     stars: true,
+                    problemSetProblems: true,
                 }
-            }
+            },
+            isPublic: true,
+            createdAt: true,
+            updatedAt: true,
         },
         where: {
-            isPublic: true
+            isPublic: true,
         }
     });
     return problemSets;

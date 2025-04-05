@@ -14,6 +14,13 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// generator zod {
+//   provider          = "zod-prisma-types"
+//   useMultipleFiles  = true // スキーマを複数ファイルに分けて生成
+//   writeBarrelFiles  = false // インデックスファイルを生成しない
+//   useTypeAssertions = true // 型アサーションを使用する
+// }
+
 model Account {
   userId            String
   type              String

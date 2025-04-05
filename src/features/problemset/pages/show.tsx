@@ -1,22 +1,16 @@
-"use client";
-
 import { ProblemSetDetail } from "../components/problemset-detail";
-import { notFound } from "next/navigation"
 import { BackButton } from "../components/back-button";
-import { useProblemSet } from "../hooks/useProblemSet";
+import { getProblemSetById } from "../db/ProblemSet";
 
-export default function ProblemSetShowPage({ id }: { id: string }) {
-    const { problemSet, isLoading, error } = useProblemSet(Number(id));
-    if (isLoading) {
-        return <div>Loading...</div>
+export default async function ProblemSetShowPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    if (!id) {
+        throw new Error("Problem set ID is required");
     }
-    if (error) {
-        return <div>Error: {error.message}</div>
-    }
+    const problemSet = await getProblemSetById(Number(id));
     if (!problemSet) {
-        notFound();
+        throw new Error("Problem set not found");
     }
-
     return (
         <div className="space-y-6">
             <BackButton />

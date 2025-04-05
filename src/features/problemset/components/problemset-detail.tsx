@@ -1,5 +1,3 @@
-"use client"
-
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,13 +7,14 @@ import { Share2, Edit, UserCircle, Calendar } from "lucide-react"
 import { queryProblemSetDetail } from "@/db/types"
 import { ProblemSetStarButton } from "@/components/star-button"
 import React from 'react';
-import { useSession } from "next-auth/react"
+import { auth } from "@/lib/auth"
 
-export function ProblemSetDetail({ problemset }: { problemset: NonNullable<queryProblemSetDetail> }) {
+export async function ProblemSetDetail({ problemset }: { problemset: NonNullable<queryProblemSetDetail> }) {
 
-    const session = useSession();
-    const logined = session.status === "authenticated";
-    const isAuthor = session.data?.user?.id === problemset.author.id;
+    const session = await auth();
+
+    const logined = session ? true : false;
+    const isAuthor = session ? session.user.id === problemset.author.id : false;
     const problems = problemset.problemSetProblems;
 
     const formatDate = (dateString: string) => {
@@ -44,7 +43,7 @@ export function ProblemSetDetail({ problemset }: { problemset: NonNullable<query
 
                             <span className="flex items-center">
                                 <Calendar className="h-4 w-4 mr-1" />
-                                {formatDate(problemset.createdAt)}
+                                {formatDate(problemset.createdAt.toDateString())}
                             </span>
 
                             <Badge variant={problemset.isPublic ? "default" : "outline"}>

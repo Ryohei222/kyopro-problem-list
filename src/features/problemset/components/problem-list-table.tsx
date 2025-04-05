@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Star, Search, ChevronDown, ChevronUp } from "lucide-react"
-import { getPublicProblemSets } from "@/features/problemset-list/db/getPublicProblemSets"
+import { getPublicProblemSets } from "../db/getPublicProblemSets"
 
 import { Resolve, ReturnType } from "@/lib/utils"
 
@@ -38,9 +38,17 @@ export function ProblemListTable({ problemLists }: { problemLists: Resolve<Retur
         return sortDirection === "asc"
           ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
           : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      } else if (sortField === "stars") {
+        const aValue = a._count.stars
+        const bValue = b._count.stars
+        return sortDirection === "asc" ? aValue - bValue : bValue - aValue
+      } else if (sortField === "author") {
+        const aValue = a.author.name.toLowerCase()
+        const bValue = b.author.name.toLowerCase()
+        return sortDirection === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue)
       } else {
-        const aValue = a[sortField].toLowerCase()
-        const bValue = b[sortField].toLowerCase()
+        const aValue = a.name.toLowerCase()
+        const bValue = b.name.toLowerCase()
         return sortDirection === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue)
       }
     })
@@ -104,14 +112,18 @@ export function ProblemListTable({ problemLists }: { problemLists: Resolve<Retur
                     {list.name}
                   </a>
                 </TableCell>
-                <TableCell>{list.author.name}</TableCell>
+                <TableCell>
+                  <a href={`/user/${list.author.id}`} className="text-blue-600 hover:underline">
+                    {list.author.name}
+                  </a>
+                </TableCell>
                 <TableCell>
                   <div className="flex items-center">
                     <Star className="h-4 w-4 text-yellow-400 mr-1 fill-yellow-400" />
                     {list._count.stars}
                   </div>
                 </TableCell>
-                <TableCell>{list.createdAt}</TableCell>
+                <TableCell>{list.createdAt.toDateString()}</TableCell>
                 <TableCell className="hidden md:table-cell max-w-xs truncate">{list.description}</TableCell>
               </TableRow>
             ))}

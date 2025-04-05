@@ -1,17 +1,8 @@
 "use client";
 
-import useSWR from 'swr';
-import { Problem } from '../types/Problem';
+import { useContext } from "react";
+import { ProblemsContext } from "../components/problems-provider";
 
-async function fetcher(key: string) {
-    return fetch(key).then((res) => res.json() as Promise<Problem[] | null>);
-}
-
-export const useProblems = () => {
-    const { data, error, isLoading } = useSWR(`/api/problems`, fetcher);
-    return {
-        problems: data,
-        isLoading,
-        error,
-    }
+export default function useProblems() {
+    return useContext(ProblemsContext);
 }

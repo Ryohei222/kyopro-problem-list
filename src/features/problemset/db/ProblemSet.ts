@@ -14,36 +14,6 @@ export const createProblemSet = async (name: string, authorId: string, descripti
     return newProblemSet;
 }
 
-export async function getPublicProblemSets() {
-    const problemSets = await prisma.problemSet.findMany({
-        select: {
-            id: true,
-            name: true,
-            author: {
-                select: {
-                    id: true,
-                    name: true,
-                    image: true
-                }
-            },
-            description: true,
-            _count: {
-                select: {
-                    stars: true,
-                    problemSetProblems: true,
-                }
-            },
-            isPublic: true,
-            createdAt: true,
-            updatedAt: true,
-        },
-        where: {
-            isPublic: true,
-        }
-    });
-    return problemSets;
-}
-
 export const getProblemSetById = async (id: number) => {
     const problemSet = await prisma.problemSet.findUnique({
         select: {

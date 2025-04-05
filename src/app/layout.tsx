@@ -1,12 +1,10 @@
-"use client";
-
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { Toolbar } from "@/components/toolbar";
 import { PageLayout } from "@/components/page-layout";
-
-import { SWRConfig } from "swr";
+import { getProblems } from "@/features/problem/db/getProblems";
+import { ProblemsProvider } from "@/features/problem/components/problems-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,31 +16,23 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-function localStorageProvider(): Map<string, any> {
-  const map = new Map<string, any>(JSON.parse(localStorage.getItem('app-cache') || '[]'))
-
-  window.addEventListener('beforeunload', () => {
-    const appCache = JSON.stringify(Array.from(map.entries()))
-    localStorage.setItem('app-cache', appCache)
-  })
-
-  return map
-}
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const problems = await getProblems();
+
   return (
     <html lang="ja">
-      <SWRConfig value={{ provider: localStorageProvider, refreshInterval: 0, revalidateOnFocus: false }}>
-        <SessionProvider>
+      <SessionProvider>
+        <ProblemsProvider problems={problems}>
           <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
             <PageLayout toolbar={<Toolbar />} content={children} />
           </body>
-        </SessionProvider>
-      </SWRConfig>
+        </ProblemsProvider>
+      </SessionProvider>
     </html>
   );
 }
