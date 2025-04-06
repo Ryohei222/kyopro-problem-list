@@ -1,3 +1,3 @@
-import UserPage from "@/features/user/pages/user"
+import UserPage from "@/pages/user";
 
 export default UserPage;

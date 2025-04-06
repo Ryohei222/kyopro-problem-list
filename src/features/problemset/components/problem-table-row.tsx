@@ -8,10 +8,10 @@ export default function ProblemTableRow({ problemSetProblem }: { problemSetProbl
         <TableRow key={problemSetProblem.order} className="hover:bg-gray-50">
             <TableCell className="font-mono">{problemSetProblem.order}</TableCell>
             <TableCell>
-                <a href={buildProblemUrl(problem)} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2">
+                <a href={buildProblemUrl({ problemProvider: problem.provider, problemId: problem.problemId, contestId: problem.contestId })} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2">
                     <div>
                         <div className="font-medium">{problem.title}</div>
-                        <div className="text-xs text-gray-500">{problem.contestId}</div>
+                        <div className="text-xs text-gray-500">{problem.provider.toLowerCase() + (problem.provider === "ATCODER" || problem.provider === "CODEFORCES" ? " - " + problem.contestId : "")}</div>
                     </div>
                 </a>
             </TableCell>

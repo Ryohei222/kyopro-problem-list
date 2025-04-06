@@ -60,7 +60,7 @@ export function ProblemListTable({ problemLists }: { problemLists: Resolve<Retur
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
+      {/* <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
         <div className="relative w-full sm:w-64">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
           <Input
@@ -70,8 +70,7 @@ export function ProblemListTable({ problemLists }: { problemLists: Resolve<Retur
             className="pl-8"
           />
         </div>
-        <Button variant="default">新規リスト作成</Button>
-      </div>
+      </div> */}
 
       <div className="rounded-md border bg-white">
         <Table>

@@ -12,6 +12,16 @@ export async function GET(req: NextRequest, { params }: { params: { provider: st
     // }
     const { provider } = await params;
 
+    if (provider === "all") {
+        await prisma.problemSetProblem.deleteMany({});
+        await prisma.problem.deleteMany({});
+        const atcoder = await updateProblems(ProblemProvider.ATCODER);
+        const codeforces = await updateProblems(ProblemProvider.CODEFORCES);
+        const yukicoder = await updateProblems(ProblemProvider.YUKICODER);
+        const aoj = await updateProblems(ProblemProvider.AOJ);
+        return NextResponse.json({ success: true, atcoder: atcoder.length, codeforces: codeforces.length, yukicoder: yukicoder.length, aoj: aoj.length });
+    }
+
     if (!(provider.toUpperCase() in ProblemProvider)) {
         return NextResponse.json({ error: "Invalid provider" }, { status: 400 });
     }

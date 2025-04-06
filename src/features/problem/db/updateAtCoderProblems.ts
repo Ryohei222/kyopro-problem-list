@@ -28,7 +28,7 @@ export default async function updateAtCoderProblems(): Promise<CreatedProblem[]>
         data: problems.map((problem) => ({
             provider: ProblemProvider.ATCODER,
             contestId: problem.contest_id,
-            problemId: problem.problem_index,
+            problemId: problem.id,
             title: problem.name,
         })),
         skipDuplicates: true,
