@@ -1,3 +1,3 @@
-import UserPage from "@/pages/user";
+import UserPage from "@/compositepages/user";
 
 export default UserPage;
