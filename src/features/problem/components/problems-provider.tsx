@@ -7,18 +7,14 @@ import { Prisma } from "@prisma/client";
 type Problems = Prisma.PromiseReturnType<typeof prisma.problem.findMany>;
 
 export const ProblemsContext = createContext({
-  problems: [] as Problems,
+    problems: [] as Problems,
 });
 
 type Props = {
-  problems: Problems;
-  children: ReactNode;
+    problems: Problems;
+    children: ReactNode;
 };
 
 export function ProblemsProvider({ children, problems }: Props) {
-  return (
-    <ProblemsContext.Provider value={{ problems }}>
-      {children}
-    </ProblemsContext.Provider>
-  );
+    return <ProblemsContext.Provider value={{ problems }}>{children}</ProblemsContext.Provider>;
 }

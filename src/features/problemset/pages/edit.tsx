@@ -5,23 +5,23 @@ import { notFound } from "next/navigation";
 import { ReactElement } from "react";
 
 export default async function EditProblemSetPage({
-  params,
+    params,
 }: {
-  params: { id: string };
+    params: { id: string };
 }): Promise<ReactElement> {
-  const { id } = params;
-  const problemSet = await getProblemSetById(Number(id));
+    const { id } = params;
+    const problemSet = await getProblemSetById(Number(id));
 
-  if (!problemSet) {
-    notFound();
-  }
+    if (!problemSet) {
+        notFound();
+    }
 
-  return (
-    <div className="space-y-6">
-      <BackButton />
-      <div className="max-w-3xl mx-auto">
-        <EditProblemListForm problemSet={problemSet} />
-      </div>
-    </div>
-  );
+    return (
+        <div className="space-y-6">
+            <BackButton />
+            <div className="max-w-3xl mx-auto">
+                <EditProblemListForm problemSet={problemSet} />
+            </div>
+        </div>
+    );
 }

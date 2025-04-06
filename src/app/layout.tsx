@@ -7,33 +7,31 @@ import { getProblems } from "@/features/problem/db/getProblems";
 import { ProblemsProvider } from "@/features/problem/components/problems-provider";
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+    variable: "--font-geist-sans",
+    subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+    variable: "--font-geist-mono",
+    subsets: ["latin"],
 });
 
 export default async function RootLayout({
-  children,
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  const problems = await getProblems();
+    const problems = await getProblems();
 
-  return (
-    <html lang="ja">
-      <SessionProvider>
-        <ProblemsProvider problems={problems}>
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          >
-            <PageLayout toolbar={<Toolbar />} content={children} />
-          </body>
-        </ProblemsProvider>
-      </SessionProvider>
-    </html>
-  );
+    return (
+        <html lang="ja">
+            <SessionProvider>
+                <ProblemsProvider problems={problems}>
+                    <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+                        <PageLayout toolbar={<Toolbar />} content={children} />
+                    </body>
+                </ProblemsProvider>
+            </SessionProvider>
+        </html>
+    );
 }
