@@ -1,7 +1,7 @@
 "use client";
 
 import useSWR from "swr";
-import { getPublicProblemSets } from "../db/ProblemSet";
+import { getPublicProblemSets } from "../db/getPublicProblemSets";
 import { Prisma } from "@prisma/client";
 
 type PublicProblemSets = Prisma.PromiseReturnType<typeof getPublicProblemSets>;
