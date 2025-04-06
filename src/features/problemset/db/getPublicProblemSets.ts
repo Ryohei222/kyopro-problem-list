@@ -25,6 +25,13 @@ export async function getPublicProblemSets() {
         },
         where: {
             isPublic: true,
+            problemSetProblems: {
+                some: {
+                    problem: {
+
+                    }
+                }
+            }
         }
     });
     return problemSets;
