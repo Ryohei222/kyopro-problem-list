@@ -29,12 +29,12 @@ export default async function updateYukicoderProblems(): Promise<CreatedProblem[
     }
     const problems = res.data;
     const createdProblems = await prisma.problem.createManyAndReturn({
-        data: problems.map((problem) => ({
+        data: problems.map((problem) => (problem.No === null ? null : {
             provider: ProblemProvider.YUKICODER,
             contestId: "0", // Yukicoder does not have contestId
-            problemId: problem.ProblemId.toString(),
+            problemId: problem.No?.toString(),
             title: problem.Title,
-        })),
+        })).filter((problem) => problem !== null),
         skipDuplicates: true,
     });
     return createdProblems;
