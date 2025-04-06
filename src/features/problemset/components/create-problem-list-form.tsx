@@ -50,7 +50,6 @@ export function CreateProblemListForm() {
 
     // フォームの設定
     const form = useForm<FormValues>({
-        resolver: zodResolver(formSchema),
         defaultValues,
         mode: "onChange",
     });

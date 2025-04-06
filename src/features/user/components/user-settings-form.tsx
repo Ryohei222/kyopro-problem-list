@@ -26,7 +26,6 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { AvatarUpload } from "@/components/avatar-upload";
 import { Save, Loader2 } from "lucide-react";
 
 type UserProps = {
@@ -128,7 +127,7 @@ export function UserSettingsForm({ user }: { user: UserProps }) {
                     <CardContent className="space-y-6">
                         <div className="flex flex-col md:flex-row gap-6">
                             <div className="md:w-1/3">
-                                <FormField
+                                {/* <FormField
                                     control={form.control}
                                     name="avatarUrl"
                                     render={({ field }) => (
@@ -149,7 +148,7 @@ export function UserSettingsForm({ user }: { user: UserProps }) {
                                             <FormMessage />
                                         </FormItem>
                                     )}
-                                />
+                                /> */}
                             </div>
 
                             <div className="md:w-2/3 space-y-4">
