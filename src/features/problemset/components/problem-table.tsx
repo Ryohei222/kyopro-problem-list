@@ -44,17 +44,17 @@ export function ProblemTable({ problems }: { problems: ProblemSetProblem[] }) {
                                     <SortIcon field="order" />
                                 </div>
                             </TableHead>
-                            <TableHead >
+                            <TableHead className="w-[200px]">
                                 <div className="flex items-center">
                                     問題名
                                 </div>
                             </TableHead>
-                            <TableHead>
+                            <TableHead className="w-[40%]">
                                 <div className="flex items-center">
                                     メモ
                                 </div>
                             </TableHead>
-                            <TableHead>
+                            <TableHead className="w-[40%]">
                                 <div className="flex items-center">
                                     ヒント
                                 </div>
@@ -64,7 +64,7 @@ export function ProblemTable({ problems }: { problems: ProblemSetProblem[] }) {
                     </TableHeader>
                     <TableBody>
                         {sortedRecords.map(problem => (
-                            <ProblemTableRow problemSetProblem={problem} />
+                            <ProblemTableRow key={problem.problem.id} problemSetProblem={problem} />
                         ))}
                     </TableBody>
                 </Table>
