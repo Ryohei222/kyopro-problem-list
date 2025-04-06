@@ -4,8 +4,8 @@ import { getUserById } from "@/features/user/db/getUser";
 import { getUserProblemSets } from "@/features/problemset/db/getUserProblemSets";
 import { ProblemListTable } from "@/features/problemset/components/problem-list-table";
 
-export default async function UserPage({ params }: { params: { id: string } }) {
-    const userId = params.id;
+export default async function UserPage({ params }: { params: Promise<{ id: string }> }) {
+    const userId = (await params).id;
     const user = await getUserById(userId);
     const usersProblemSets = await getUserProblemSets(userId, true);
     console.log(usersProblemSets);
