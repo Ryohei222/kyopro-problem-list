@@ -1,48 +1,48 @@
 {
-    "status": "OK",
-    "result": {
-        "problems": [
-            {
-                "contestId": 2092,
-                "index": "D",
-                "name": "Mishkin Energizer",
-                "type": "PROGRAMMING",
-                "points": 1750.0,
-                "rating": 1800,
-                "tags": [
-                    "brute force",
-                    "constructive algorithms",
-                    "greedy",
-                    "implementation",
-                    "strings"
-                ]
-            },
-            {
-                "contestId": 2092,
-                "index": "B",
-                "name": "Lady Bug",
-                "type": "PROGRAMMING",
-                "points": 750.0,
-                "rating": 1000,
-                "tags": [
-                    "brute force",
-                    "constructive algorithms",
-                    "implementation",
-                    "math"
-                ]
-            }
-        ],
-        "problemStatistics": [
-            {
-                "contestId": 2,
-                "index": "A",
-                "solvedCount": 27811
-            },
-            {
-                "contestId": 1,
-                "index": "B",
-                "solvedCount": 23721
-            }
+  "status": "OK",
+  "result": {
+    "problems": [
+      {
+        "contestId": 2092,
+        "index": "D",
+        "name": "Mishkin Energizer",
+        "type": "PROGRAMMING",
+        "points": 1750.0,
+        "rating": 1800,
+        "tags": [
+          "brute force",
+          "constructive algorithms",
+          "greedy",
+          "implementation",
+          "strings"
         ]
-    }
+      },
+      {
+        "contestId": 2092,
+        "index": "B",
+        "name": "Lady Bug",
+        "type": "PROGRAMMING",
+        "points": 750.0,
+        "rating": 1000,
+        "tags": [
+          "brute force",
+          "constructive algorithms",
+          "implementation",
+          "math"
+        ]
+      }
+    ],
+    "problemStatistics": [
+      {
+        "contestId": 2,
+        "index": "A",
+        "solvedCount": 27811
+      },
+      {
+        "contestId": 1,
+        "index": "B",
+        "solvedCount": 23721
+      }
+    ]
+  }
 }

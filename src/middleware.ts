@@ -1,15 +1,20 @@
-import NextAuth from 'next-auth';
-import authConfig from '@/lib/auth.config';
-import { authRoutes, publicRoutes, apiAuthPrefix, DEFAULT_LOGIN_REDIRECT } from '@/route';
+import NextAuth from "next-auth";
+import authConfig from "@/lib/auth.config";
+import {
+  authRoutes,
+  publicRoutes,
+  apiAuthPrefix,
+  DEFAULT_LOGIN_REDIRECT,
+} from "@/route";
 
-const { auth } = NextAuth(authConfig);;
+const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
 
-  console.log('pathname', nextUrl.pathname);
-  console.log('isLoggedIn', isLoggedIn);
+  console.log("pathname", nextUrl.pathname);
+  console.log("isLoggedIn", isLoggedIn);
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
@@ -32,5 +37,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ['/create'],
+  matcher: ["/create"],
 };

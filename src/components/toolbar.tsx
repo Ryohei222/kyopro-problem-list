@@ -1,8 +1,8 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Home, Plus } from "lucide-react"
-import UserButton from "./login-button"
-import { auth } from "@/lib/auth"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Home, Plus } from "lucide-react";
+import UserButton from "./login-button";
+import { auth } from "@/lib/auth";
 
 export async function Toolbar() {
   const session = await auth();
@@ -12,7 +12,9 @@ export async function Toolbar() {
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Link href="/" className="flex items-center space-x-2">
-            <span className="font-bold text-xl text-green-600">AtCoder Problemset</span>
+            <span className="font-bold text-xl text-green-600">
+              AtCoder Problemset
+            </span>
           </Link>
           <nav className="hidden md:flex items-center space-x-4">
             <Button variant="ghost" size="sm" asChild>
@@ -21,15 +23,17 @@ export async function Toolbar() {
                 <span>問題リスト</span>
               </Link>
             </Button>
-            {isLoggedIn &&
+            {isLoggedIn && (
               <Button variant="ghost" size="sm" asChild>
-                <Link href="/problemset/create" className="flex items-center space-x-1">
+                <Link
+                  href="/problemset/create"
+                  className="flex items-center space-x-1"
+                >
                   <Plus className="h-4 w-4" />
                   <span>新規作成</span>
                 </Link>
               </Button>
-            }
-
+            )}
           </nav>
         </div>
         <div className="flex items-center space-x-2">
@@ -37,5 +41,5 @@ export async function Toolbar() {
         </div>
       </div>
     </header>
-  )
+  );
 }

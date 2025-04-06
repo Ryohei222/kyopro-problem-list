@@ -1,10 +1,15 @@
-import NextAuth from "next-auth"
-import { PrismaAdapter } from "@auth/prisma-adapter"
+import NextAuth from "next-auth";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/prisma";
-import { getUserById } from "@/features/user/db/getUser"
+import { getUserById } from "@/features/user/db/getUser";
 import authConfig from "./auth.config";
 
-export const { handlers: { GET, POST }, signIn, signOut, auth } = NextAuth({
+export const {
+  handlers: { GET, POST },
+  signIn,
+  signOut,
+  auth,
+} = NextAuth({
   adapter: PrismaAdapter(prisma),
   callbacks: {
     authorized({ request, auth }) {
@@ -31,5 +36,5 @@ export const { handlers: { GET, POST }, signIn, signOut, auth } = NextAuth({
     },
   },
   session: { strategy: "jwt" },
-  ...authConfig
-})
+  ...authConfig,
+});

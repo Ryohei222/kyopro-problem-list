@@ -1,43 +1,52 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Button } from "@/components/ui/button"
-import { UserProblemLists } from "@/features/user/components/user-problem-lists"
-import { Calendar, Twitter, Github, ExternalLink } from "lucide-react"
-import { Prisma } from "@prisma/client"
-import { getUserById } from "@/features/user/db/getUser"
-import { formatDate } from "@/utils/formatDate"
+import { useState } from "react";
+import Image from "next/image";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { UserProblemLists } from "@/features/user/components/user-problem-lists";
+import { Calendar, Twitter, Github, ExternalLink } from "lucide-react";
+import { Prisma } from "@prisma/client";
+import { getUserById } from "@/features/user/db/getUser";
+import { formatDate } from "@/utils/formatDate";
 
-
-export function UserProfile({ user }: { user: NonNullable<Prisma.PromiseReturnType<typeof getUserById>> }) {
-    return (
-        <div className="space-y-6">
-            <Card>
-                <CardHeader className="pb-2">
-                    <div className="flex flex-col md:flex-row md:items-center gap-6">
-                        <div className="flex-shrink-0">
-                            {/* <Image
+export function UserProfile({
+  user,
+}: {
+  user: NonNullable<Prisma.PromiseReturnType<typeof getUserById>>;
+}) {
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader className="pb-2">
+          <div className="flex flex-col md:flex-row md:items-center gap-6">
+            <div className="flex-shrink-0">
+              {/* <Image
                                 src={user.image || "/placeholder.svg"}
                                 alt={`${user.name}のプロフィール画像`}
                                 width={120}
                                 height={120}
                                 className="rounded-full border-4 border-white shadow-md"
                             /> */}
-                        </div>
-                        <div className="flex-grow">
-                            <CardTitle className="text-2xl font-bold">{user.name}</CardTitle>
+            </div>
+            <div className="flex-grow">
+              <CardTitle className="text-2xl font-bold">{user.name}</CardTitle>
 
-                            <div className="mt-3 text-sm text-gray-600">
-                                <div className="flex items-center">
-                                    <Calendar className="h-4 w-4 mr-2" />
-                                    {formatDate(user.createdAt)}に登録
-                                </div>
-                            </div>
+              <div className="mt-3 text-sm text-gray-600">
+                <div className="flex items-center">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  {formatDate(user.createdAt)}に登録
+                </div>
+              </div>
 
-                            {/* <div className="mt-3 flex flex-wrap gap-2">
+              {/* <div className="mt-3 flex flex-wrap gap-2">
                                 {user. && (
                                     <a
                                         href={`https://atcoder.jp/users/${user.atcoderId}`}
@@ -74,17 +83,17 @@ export function UserProfile({ user }: { user: NonNullable<Prisma.PromiseReturnTy
                                     </a>
                                 )}
                             </div> */}
-                        </div>
-                    </div>
-                </CardHeader>
+            </div>
+          </div>
+        </CardHeader>
 
-                <CardContent>
-                    {/* <div className="mt-4">
+        <CardContent>
+          {/* <div className="mt-4">
                         <h3 className="text-sm font-medium text-gray-500">自己紹介</h3>
                         <p className="mt-1 text-gray-700 whitespace-pre-line">{user.bio}</p>
                     </div> */}
 
-                    {/* <div className="mt-6 flex flex-wrap gap-4">
+          {/* <div className="mt-6 flex flex-wrap gap-4">
                         <div className="bg-white border rounded-lg px-4 py-2 min-w-[120px]">
                             <div className="text-2xl font-bold">{user.createdLists.length}</div>
                             <div className="text-xs text-gray-500">作成したリスト</div>
@@ -98,10 +107,10 @@ export function UserProfile({ user }: { user: NonNullable<Prisma.PromiseReturnTy
                             <div className="text-xs text-gray-500">獲得スター</div>
                         </div>
                     </div> */}
-                </CardContent>
-            </Card>
+        </CardContent>
+      </Card>
 
-            {/* <Tabs defaultValue="created" onValueChange={setActiveTab} className="w-full">
+      {/* <Tabs defaultValue="created" onValueChange={setActiveTab} className="w-full">
                 <TabsList className="mb-4">
                     <TabsTrigger value="created">作成したリスト ({user.createdLists.length})</TabsTrigger>
                     <TabsTrigger value="starred">スターしたリスト ({user.starredLists.length})</TabsTrigger>
@@ -122,8 +131,7 @@ export function UserProfile({ user }: { user: NonNullable<Prisma.PromiseReturnTy
                         showAuthor={true}
                     />
                 </TabsContent> */}
-            {/* </Tabs> */}
-        </div >
-    )
+      {/* </Tabs> */}
+    </div>
+  );
 }
-

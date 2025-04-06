@@ -1,31 +1,42 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Star, Search, ChevronDown, ChevronUp } from "lucide-react"
-import { getPublicProblemSets } from "../db/getPublicProblemSets"
+import { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Star, Search, ChevronDown, ChevronUp } from "lucide-react";
+import { getPublicProblemSets } from "../db/getPublicProblemSets";
 
-import { Resolve, ReturnType } from "@/lib/utils"
-import { formatDate } from "@/utils/formatDate"
+import { Resolve, ReturnType } from "@/lib/utils";
+import { formatDate } from "@/utils/formatDate";
 
-type SortField = "name" | "author" | "stars" | "createdAt"
-type SortDirection = "asc" | "desc"
+type SortField = "name" | "author" | "stars" | "createdAt";
+type SortDirection = "asc" | "desc";
 
-export function ProblemListTable({ problemLists }: { problemLists: Resolve<ReturnType<typeof getPublicProblemSets>> }) {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [sortField, setSortField] = useState<SortField>("stars")
-  const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
+export function ProblemListTable({
+  problemLists,
+}: {
+  problemLists: Resolve<ReturnType<typeof getPublicProblemSets>>;
+}) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortField, setSortField] = useState<SortField>("stars");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc")
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
-      setSortField(field)
-      setSortDirection("desc")
+      setSortField(field);
+      setSortDirection("desc");
     }
-  }
+  };
 
   const filteredLists = problemLists
     .filter(
@@ -38,26 +49,34 @@ export function ProblemListTable({ problemLists }: { problemLists: Resolve<Retur
       if (sortField === "createdAt") {
         return sortDirection === "asc"
           ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-          : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       } else if (sortField === "stars") {
-        const aValue = a._count.stars
-        const bValue = b._count.stars
-        return sortDirection === "asc" ? aValue - bValue : bValue - aValue
+        const aValue = a._count.stars;
+        const bValue = b._count.stars;
+        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
       } else if (sortField === "author") {
-        const aValue = a.author.name.toLowerCase()
-        const bValue = b.author.name.toLowerCase()
-        return sortDirection === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue)
+        const aValue = a.author.name.toLowerCase();
+        const bValue = b.author.name.toLowerCase();
+        return sortDirection === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
       } else {
-        const aValue = a.name.toLowerCase()
-        const bValue = b.name.toLowerCase()
-        return sortDirection === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue)
+        const aValue = a.name.toLowerCase();
+        const bValue = b.name.toLowerCase();
+        return sortDirection === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
       }
-    })
+    });
 
   const SortIcon = ({ field }: { field: SortField }) => {
-    if (sortField !== field) return null
-    return sortDirection === "asc" ? <ChevronUp className="h-4 w-4 ml-1" /> : <ChevronDown className="h-4 w-4 ml-1" />
-  }
+    if (sortField !== field) return null;
+    return sortDirection === "asc" ? (
+      <ChevronUp className="h-4 w-4 ml-1" />
+    ) : (
+      <ChevronDown className="h-4 w-4 ml-1" />
+    );
+  };
 
   return (
     <div className="space-y-4">
@@ -77,25 +96,37 @@ export function ProblemListTable({ problemLists }: { problemLists: Resolve<Retur
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[250px] cursor-pointer" onClick={() => handleSort("name")}>
+              <TableHead
+                className="w-[250px] cursor-pointer"
+                onClick={() => handleSort("name")}
+              >
                 <div className="flex items-center">
                   リスト名
                   <SortIcon field="name" />
                 </div>
               </TableHead>
-              <TableHead className="cursor-pointer" onClick={() => handleSort("author")}>
+              <TableHead
+                className="cursor-pointer"
+                onClick={() => handleSort("author")}
+              >
                 <div className="flex items-center">
                   作成者
                   <SortIcon field="author" />
                 </div>
               </TableHead>
-              <TableHead className="cursor-pointer" onClick={() => handleSort("stars")}>
+              <TableHead
+                className="cursor-pointer"
+                onClick={() => handleSort("stars")}
+              >
                 <div className="flex items-center">
                   スター数
                   <SortIcon field="stars" />
                 </div>
               </TableHead>
-              <TableHead className="cursor-pointer" onClick={() => handleSort("createdAt")}>
+              <TableHead
+                className="cursor-pointer"
+                onClick={() => handleSort("createdAt")}
+              >
                 <div className="flex items-center">
                   作成日
                   <SortIcon field="createdAt" />
@@ -108,12 +139,18 @@ export function ProblemListTable({ problemLists }: { problemLists: Resolve<Retur
             {filteredLists.map((list) => (
               <TableRow key={list.id} className="hover:bg-gray-50">
                 <TableCell className="font-medium">
-                  <a href={`/problemset/show/${list.id}`} className="text-blue-600 hover:underline">
+                  <a
+                    href={`/problemset/show/${list.id}`}
+                    className="text-blue-600 hover:underline"
+                  >
                     {list.name}
                   </a>
                 </TableCell>
                 <TableCell>
-                  <a href={`/user/${list.author.id}`} className="text-blue-600 hover:underline">
+                  <a
+                    href={`/user/${list.author.id}`}
+                    className="text-blue-600 hover:underline"
+                  >
                     {list.author.name}
                   </a>
                 </TableCell>
@@ -124,7 +161,9 @@ export function ProblemListTable({ problemLists }: { problemLists: Resolve<Retur
                   </div>
                 </TableCell>
                 <TableCell>{formatDate(list.createdAt)}</TableCell>
-                <TableCell className="hidden md:table-cell max-w-xs truncate">{list.description}</TableCell>
+                <TableCell className="hidden md:table-cell max-w-xs truncate">
+                  {list.description}
+                </TableCell>
               </TableRow>
             ))}
             {filteredLists.length === 0 && (
@@ -138,6 +177,5 @@ export function ProblemListTable({ problemLists }: { problemLists: Resolve<Retur
         </Table>
       </div>
     </div>
-  )
+  );
 }
-

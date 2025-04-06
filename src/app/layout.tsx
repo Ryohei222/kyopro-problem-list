@@ -21,14 +21,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   const problems = await getProblems();
 
   return (
     <html lang="ja">
       <SessionProvider>
         <ProblemsProvider problems={problems}>
-          <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          >
             <PageLayout toolbar={<Toolbar />} content={children} />
           </body>
         </ProblemsProvider>

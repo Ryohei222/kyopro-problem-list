@@ -1,1 +1,1 @@
-export type ProblemProvider = 'atcoder' | 'codeforces' | 'yukicoder' | 'aoj';
+export type ProblemProvider = "atcoder" | "codeforces" | "yukicoder" | "aoj";
