@@ -83,7 +83,7 @@ export function CreateProblemListForm() {
     <Card className="bg-white">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent className="space-y-6 pt-6">
+          <CardContent className="space-y-6 p-4">
             <Link href="/" className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-4">
               <ArrowLeft className="mr-1 h-4 w-4" />
               問題リスト一覧に戻る
