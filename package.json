@@ -31,6 +31,8 @@
     "next": "15.2.4",
     "next-auth": "^5.0.0-beta.25",
     "react": "^19.0.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.55.0",
     "sonner": "^2.0.3",

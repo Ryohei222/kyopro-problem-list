@@ -2,18 +2,21 @@
 import { useRouter } from "next/navigation";
 import { getProblemSetById } from "@/features/problemset/db/ProblemSet";
 import { Prisma, ProblemProvider } from "@prisma/client";
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect, useRef } from "react";
 import useProblems from "@/features/problem/hooks/useProblems";
 import extractProblemFromUrl from "../utils/extractProblemFromUrl";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Save, Plus, Trash2 } from "lucide-react";
+import { Save, Plus, Trash2, ExternalLink, GripVertical } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PUTRequestBody } from "../types/api";
+import { buildProblemUrl } from "@/features/problem/utils/buildProblemUrl";
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 type ProblemSetProblemData = {
     id?: number;
@@ -22,6 +25,91 @@ type ProblemSetProblemData = {
     hint: string;
     order: number;
 };
+
+// ドラッグ可能な行のアイテムタイプ
+const ItemTypes = {
+    ROW: 'row'
+};
+
+// ドラッグ可能な行コンポーネント
+function DraggableRow({
+    index,
+    moveRow,
+    children,
+    id
+}: {
+    index: number;
+    moveRow: (dragIndex: number, hoverIndex: number) => void;
+    children: React.ReactNode;
+    id: any;
+}) {
+    const ref = useRef<HTMLTableRowElement>(null);
+
+    const [{ handlerId }, drop] = useDrop({
+        accept: ItemTypes.ROW,
+        collect(monitor) {
+            return {
+                handlerId: monitor.getHandlerId(),
+            }
+        },
+        hover(item: any, monitor) {
+            if (!ref.current) {
+                return;
+            }
+            const dragIndex = item.index;
+            const hoverIndex = index;
+
+            // 自分自身の上にドロップしても何もしない
+            if (dragIndex === hoverIndex) {
+                return;
+            }
+
+            // マウスの位置を取得
+            const hoverBoundingRect = ref.current?.getBoundingClientRect();
+            const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+            const clientOffset = monitor.getClientOffset();
+            const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
+
+            // ドラッグしている要素が上から来た場合は、マウスが中央よりも上にあるときだけ移動する
+            if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+                return;
+            }
+
+            // ドラッグしている要素が下から来た場合は、マウスが中央よりも下にあるときだけ移動する
+            if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+                return;
+            }
+
+            // 実際に順序を入れ替える
+            moveRow(dragIndex, hoverIndex);
+            item.index = hoverIndex;
+        },
+    });
+
+    const [{ isDragging }, drag] = useDrag({
+        type: ItemTypes.ROW,
+        item: () => {
+            return { id, index };
+        },
+        collect: (monitor) => ({
+            isDragging: monitor.isDragging(),
+        }),
+    });
+
+    const opacity = isDragging ? 0.5 : 1;
+    drag(drop(ref));
+
+    return (
+        <TableRow
+            ref={ref}
+            style={{ opacity }}
+            data-handler-id={handlerId}
+            className="hover:bg-gray-50 cursor-move"
+        >
+            {children}
+        </TableRow>
+    );
+}
 
 export default function EditProblemListForm({ problemSet }: { problemSet: NonNullable<Prisma.PromiseReturnType<typeof getProblemSetById>> }) {
     const router = useRouter();
@@ -39,6 +127,7 @@ export default function EditProblemListForm({ problemSet }: { problemSet: NonNul
         }))
     );
     const [error, setError] = useState<string | null>(null);
+    const { problems: allProblems } = useProblems();
 
     // 問題追加
     const handleAddProblem = (problem: ProblemSetProblemData) => {
@@ -55,6 +144,12 @@ export default function EditProblemListForm({ problemSet }: { problemSet: NonNul
         const newProblems = [...problems];
         newProblems[index].order = newOrder;
         setProblems(newProblems);
+    };
+
+    // 問題IDから問題の詳細情報を取得
+    const getProblemDetails = (problemId: string) => {
+        const problem = allProblems.find(p => p.id.toString() === problemId);
+        return problem || null;
     };
 
     // フォーム送信
@@ -104,14 +199,33 @@ export default function EditProblemListForm({ problemSet }: { problemSet: NonNul
         }
     };
 
+    // 行の順序を入れ替える関数
+    const moveRow = (dragIndex: number, hoverIndex: number) => {
+        const dragRow = problems[dragIndex];
+        const newProblems = [...problems];
+
+        // 配列から要素を削除
+        newProblems.splice(dragIndex, 1);
+
+        // 新しい位置に要素を挿入
+        newProblems.splice(hoverIndex, 0, dragRow);
+
+        // 順序を1から連番で再設定
+        const updatedProblems = newProblems.map((p, idx) => ({
+            ...p,
+            order: idx + 1
+        }));
+
+        setProblems(updatedProblems);
+    };
+
     return (
         <Card className="bg-white">
-            <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium">問題リスト</h3>
-                <AddProblemForm onAddProblem={handleAddProblem} existingProblems={problems} />
-            </div>
-            <form onSubmit={handleSubmit}>
-                <CardContent className="space-y-6 pt-6">
+            <CardHeader>
+                <CardTitle className="text-2xl font-bold">問題リストの編集</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6 pt-4 mb-4">
+                <form id="edit-problem-form" onSubmit={handleSubmit}>
                     {error && (
                         <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-md">{error}</div>
                     )}
@@ -127,7 +241,7 @@ export default function EditProblemListForm({ problemSet }: { problemSet: NonNul
                         />
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2 mt-6">
                         <Label htmlFor="description">概要</Label>
                         <Textarea
                             id="description"
@@ -139,7 +253,7 @@ export default function EditProblemListForm({ problemSet }: { problemSet: NonNul
                         />
                     </div>
 
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 mt-6 mb-8">
                         <Checkbox
                             id="isPublic"
                             checked={isPublic}
@@ -148,86 +262,132 @@ export default function EditProblemListForm({ problemSet }: { problemSet: NonNul
                         <Label htmlFor="isPublic">公開する</Label>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-6 mt-8">
+                        <div className="flex justify-between items-center">
+                            <AddProblemForm onAddProblem={handleAddProblem} existingProblems={problems} />
+                        </div>
 
                         {problems.length > 0 ? (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="w-[80px]">順序</TableHead>
-                                        <TableHead>問題ID</TableHead>
-                                        <TableHead>メモ</TableHead>
-                                        <TableHead>ヒント</TableHead>
-                                        <TableHead className="w-[100px]"></TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {problems
-                                        .sort((a, b) => a.order - b.order)
-                                        .map((problem, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell>
-                                                    <Input
-                                                        type="number"
-                                                        min="1"
-                                                        value={problem.order}
-                                                        onChange={(e) => handleReorderProblem(index, parseInt(e.target.value) || 1)}
-                                                        className="w-16"
-                                                    />
-                                                </TableCell>
-                                                <TableCell>{problem.problemId}</TableCell>
-                                                <TableCell>
-                                                    <Input
-                                                        value={problem.memo}
-                                                        onChange={(e) => {
-                                                            const newProblems = [...problems];
-                                                            newProblems[index].memo = e.target.value;
-                                                            setProblems(newProblems);
-                                                        }}
-                                                    />
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Input
-                                                        value={problem.hint}
-                                                        onChange={(e) => {
-                                                            const newProblems = [...problems];
-                                                            newProblems[index].hint = e.target.value;
-                                                            setProblems(newProblems);
-                                                        }}
-                                                    />
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => handleRemoveProblem(index)}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </TableCell>
+                            <DndProvider backend={HTML5Backend}>
+                                <div className="rounded-md border bg-white">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead></TableHead>
+                                                <TableHead>問題名</TableHead>
+                                                <TableHead>コンテストID</TableHead>
+                                                <TableHead>メモ</TableHead>
+                                                <TableHead>ヒント</TableHead>
+                                                <TableHead className="w-[100px]"></TableHead>
                                             </TableRow>
-                                        ))}
-                                </TableBody>
-                            </Table>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {problems
+                                                .sort((a, b) => a.order - b.order)
+                                                .map((problem, index) => {
+                                                    const problemDetail = getProblemDetails(problem.problemId);
+                                                    const problemUrl = problemDetail ? buildProblemUrl({
+                                                        problemProvider: problemDetail.provider,
+                                                        contestId: problemDetail.contestId,
+                                                        problemId: problemDetail.problemId
+                                                    }) : "#";
+
+                                                    return (
+                                                        <DraggableRow key={index} index={index} moveRow={moveRow} id={problem.problemId}>
+                                                            <TableCell>
+                                                                <div className="flex items-center gap-2">
+                                                                    <div className="cursor-move">
+                                                                        <GripVertical className="h-4 w-4 text-gray-400" />
+                                                                    </div>
+                                                                    <Input
+                                                                        type="number"
+                                                                        min="1"
+                                                                        value={problem.order}
+                                                                        onChange={(e) => handleReorderProblem(index, parseInt(e.target.value) || 1)}
+                                                                        className="w-16 text"
+                                                                        hidden={true}
+                                                                    />
+                                                                </div>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {problemDetail ? (
+                                                                    <a href={problemUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline flex items-center gap-1">
+                                                                        {problemDetail.title}
+                                                                        <ExternalLink className="h-3 w-3" />
+                                                                    </a>
+                                                                ) : (
+                                                                    <span className="text-gray-400">問題情報なし</span>
+                                                                )}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {problemDetail ? (
+                                                                    <span className="text-sm">
+                                                                        {problemDetail.provider} / {problemDetail.contestId}
+                                                                    </span>
+                                                                ) : (
+                                                                    <span className="text-gray-400">-</span>
+                                                                )}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Input
+                                                                    value={problem.memo}
+                                                                    onChange={(e) => {
+                                                                        const newProblems = [...problems];
+                                                                        newProblems[index].memo = e.target.value;
+                                                                        setProblems(newProblems);
+                                                                    }}
+                                                                />
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Input
+                                                                    value={problem.hint}
+                                                                    onChange={(e) => {
+                                                                        const newProblems = [...problems];
+                                                                        newProblems[index].hint = e.target.value;
+                                                                        setProblems(newProblems);
+                                                                    }}
+                                                                />
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    onClick={() => handleRemoveProblem(index)}
+                                                                >
+                                                                    <Trash2 className="h-4 w-4" />
+                                                                </Button>
+                                                            </TableCell>
+                                                        </DraggableRow>
+                                                    );
+                                                })}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            </DndProvider>
                         ) : (
                             <div className="text-center p-6 border rounded-md text-gray-500">
                                 問題が追加されていません。「問題を追加」ボタンから問題を追加してください。
                             </div>
                         )}
                     </div>
-                </CardContent>
+                </form>
+            </CardContent>
 
-                <CardFooter className="flex justify-between border-t p-6">
-                    <Button type="button" variant="outline" onClick={() => router.back()}>
-                        キャンセル
-                    </Button>
-                    <Button type="submit" disabled={isSubmitting} className="flex items-center gap-1">
-                        <Save className="h-4 w-4" />
-                        {isSubmitting ? "保存中..." : "問題リストを更新"}
-                    </Button>
-                </CardFooter>
-            </form>
-        </Card>
+            <CardFooter className="flex justify-between border-t p-6">
+                <Button type="button" variant="outline" onClick={() => router.back()}>
+                    キャンセル
+                </Button>
+                <Button
+                    form="edit-problem-form"
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="flex items-center gap-1"
+                >
+                    <Save className="h-4 w-4" />
+                    {isSubmitting ? "保存中..." : "問題リストを更新"}
+                </Button>
+            </CardFooter>
+        </Card >
     );
 }
 
@@ -241,12 +401,19 @@ function AddProblemForm({ onAddProblem, existingProblems }: {
     const [hint, setHint] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [showForm, setShowForm] = useState(false);
+    const [previewProblem, setPreviewProblem] = useState<{
+        title: string;
+        provider: ProblemProvider;
+        contestId: string;
+        problemId: string;
+    } | null>(null);
 
     const resetForm = () => {
         setUrl("");
         setMemo("");
         setHint("");
         setError(null);
+        setPreviewProblem(null);
     };
 
     const searchProblemFromUrl = (url: string) => {
@@ -269,7 +436,39 @@ function AddProblemForm({ onAddProblem, existingProblems }: {
         return ret;
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    // URLが変更されたときに問題情報を検索して表示
+    useEffect(() => {
+        if (url.trim() === "") {
+            setPreviewProblem(null);
+            setError(null);
+            return;
+        }
+
+        const problem = searchProblemFromUrl(url);
+        if (!problem) {
+            setPreviewProblem(null);
+            setError("指定されたURLから問題を見つけることができませんでした");
+            return;
+        }
+
+        // 問題が既に追加されているか確認
+        const isDuplicate = existingProblems.some(p => p.problemId === problem.id.toString());
+        if (isDuplicate) {
+            setPreviewProblem(null);
+            setError("この問題は既にリストに追加されています");
+            return;
+        }
+
+        setError(null);
+        setPreviewProblem({
+            title: problem.title,
+            provider: problem.provider,
+            contestId: problem.contestId,
+            problemId: problem.problemId
+        });
+    }, [url, problems, existingProblems]);
+
+    const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setError(null);
 
@@ -300,9 +499,9 @@ function AddProblemForm({ onAddProblem, existingProblems }: {
             order: maxOrder + 1,
         });
 
-        // フォームをリセットして閉じる
+        // フォームをリセットするが閉じない
         resetForm();
-        setShowForm(false);
+        // setShowForm(false); // この行を削除
     };
 
     if (!showForm) {
@@ -321,8 +520,8 @@ function AddProblemForm({ onAddProblem, existingProblems }: {
     }
 
     return (
-        <Card className="p-4 border rounded-md shadow-sm">
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <Card className="p-4 border rounded-md shadow-sm w-full">
+            <div className="space-y-4">
                 <h4 className="font-medium">新しい問題を追加</h4>
 
                 {error && (
@@ -339,26 +538,41 @@ function AddProblemForm({ onAddProblem, existingProblems }: {
                         required
                     />
                     <p className="text-xs text-gray-500">
-                        AtCoder、Codeforces、YukiCoder、AOJの問題URLを入力してください
+                        AtCoder / Codeforces / yukicoder / AOJ の問題URLを入力してください
                     </p>
                 </div>
 
+                {previewProblem && (
+                    <div className="p-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-md space-y-2">
+                        <h5 className="font-medium">追加する問題:</h5>
+                        <div className="text-sm">
+                            <div><span className="font-semibold">タイトル:</span> {previewProblem.title}</div>
+                            <div>
+                                <span className="font-semibold">出典:</span>
+                                {previewProblem.provider} / {previewProblem.contestId} / {previewProblem.problemId}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 <div className="space-y-2">
                     <Label htmlFor="memo">メモ</Label>
-                    <Input
+                    <Textarea
                         id="memo"
                         value={memo}
                         onChange={(e) => setMemo(e.target.value)}
+                        className="min-h-[120px]"
                         placeholder="問題に関するメモ"
                     />
                 </div>
 
                 <div className="space-y-2">
                     <Label htmlFor="hint">ヒント</Label>
-                    <Input
+                    <Textarea
                         id="hint"
                         value={hint}
                         onChange={(e) => setHint(e.target.value)}
+                        className="min-h-[120px]"
                         placeholder="解法のヒント"
                     />
                 </div>
@@ -367,11 +581,16 @@ function AddProblemForm({ onAddProblem, existingProblems }: {
                     <Button type="button" variant="outline" size="sm" onClick={() => setShowForm(false)}>
                         キャンセル
                     </Button>
-                    <Button type="submit" size="sm">
+                    <Button
+                        type="button"
+                        size="sm"
+                        onClick={handleSubmit}
+                        disabled={!previewProblem}
+                    >
                         追加
                     </Button>
                 </div>
-            </form>
+            </div>
         </Card>
     );
 }
