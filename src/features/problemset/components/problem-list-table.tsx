@@ -8,6 +8,7 @@ import { Star, Search, ChevronDown, ChevronUp } from "lucide-react"
 import { getPublicProblemSets } from "../db/getPublicProblemSets"
 
 import { Resolve, ReturnType } from "@/lib/utils"
+import { formatDate } from "@/utils/formatDate"
 
 type SortField = "name" | "author" | "stars" | "createdAt"
 type SortDirection = "asc" | "desc"
@@ -122,7 +123,7 @@ export function ProblemListTable({ problemLists }: { problemLists: Resolve<Retur
                     {list._count.stars}
                   </div>
                 </TableCell>
-                <TableCell>{list.createdAt.toDateString()}</TableCell>
+                <TableCell>{formatDate(list.createdAt)}</TableCell>
                 <TableCell className="hidden md:table-cell max-w-xs truncate">{list.description}</TableCell>
               </TableRow>
             ))}

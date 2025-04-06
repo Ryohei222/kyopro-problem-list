@@ -9,19 +9,10 @@ import { UserProblemLists } from "@/features/user/components/user-problem-lists"
 import { Calendar, Twitter, Github, ExternalLink } from "lucide-react"
 import { Prisma } from "@prisma/client"
 import { getUserById } from "@/features/user/db/getUser"
+import { formatDate } from "@/utils/formatDate"
 
 
 export function UserProfile({ user }: { user: NonNullable<Prisma.PromiseReturnType<typeof getUserById>> }) {
-
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString)
-        return date.toLocaleDateString("ja-JP", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        })
-    }
-
     return (
         <div className="space-y-6">
             <Card>
@@ -42,7 +33,7 @@ export function UserProfile({ user }: { user: NonNullable<Prisma.PromiseReturnTy
                             <div className="mt-3 text-sm text-gray-600">
                                 <div className="flex items-center">
                                     <Calendar className="h-4 w-4 mr-2" />
-                                    {formatDate(user.createdAt.toDateString())}に登録
+                                    {formatDate(user.createdAt)}に登録
                                 </div>
                             </div>
 

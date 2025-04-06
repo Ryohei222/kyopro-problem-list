@@ -8,6 +8,7 @@ import { queryProblemSetDetail } from "@/db/types"
 import { ProblemSetStarButton } from "@/components/star-button"
 import React from 'react';
 import { auth } from "@/lib/auth"
+import { formatDate } from "@/utils/formatDate"
 
 export async function ProblemSetDetail({ problemset }: { problemset: NonNullable<queryProblemSetDetail> }) {
 
@@ -16,15 +17,6 @@ export async function ProblemSetDetail({ problemset }: { problemset: NonNullable
     const logined = session ? true : false;
     const isAuthor = session ? session.user.id === problemset.author.id : false;
     const problems = problemset.problemSetProblems;
-
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString)
-        return date.toLocaleDateString("ja-JP", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        })
-    }
 
     return (
         <Card>
@@ -43,7 +35,7 @@ export async function ProblemSetDetail({ problemset }: { problemset: NonNullable
 
                             <span className="flex items-center">
                                 <Calendar className="h-4 w-4 mr-1" />
-                                {formatDate(problemset.createdAt.toDateString())}
+                                {formatDate(problemset.createdAt)}
                             </span>
 
                             <Badge variant={problemset.isPublic ? "default" : "outline"}>
