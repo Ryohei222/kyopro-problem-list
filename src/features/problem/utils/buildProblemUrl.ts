@@ -1,14 +1,13 @@
-import { Problem } from "@/features/problem/types/Problem";
 import { ProblemProvider } from "@prisma/client";
 
 type Props =
     | {
-          problemProvider: ProblemProvider.ATCODER | ProblemProvider.CODEFORCES;
+          problemProvider: "ATCODER" | "CODEFORCES";
           problemId: string;
           contestId: string;
       }
     | {
-          problemProvider: ProblemProvider.AOJ | ProblemProvider.YUKICODER;
+          problemProvider: "AOJ" | "YUKICODER";
           problemId: string;
           contestId: string;
       };
