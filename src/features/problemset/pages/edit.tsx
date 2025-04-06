@@ -7,9 +7,9 @@ import { ReactElement } from "react";
 export default async function EditProblemSetPage({
     params,
 }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }): Promise<ReactElement> {
-    const { id } = params;
+    const { id } = await params;
     const problemSet = await getProblemSetById(Number(id));
 
     if (!problemSet) {

@@ -4,16 +4,16 @@ import { getProblemSetById } from "@/features/problemset/db/ProblemSet";
 import { prisma } from "@/prisma";
 import { PUTRequestBody, PUTResponseBody } from "@/features/problemset/types/api";
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         // ユーザー認証の確認
         const session = await auth();
-        if (!session || !session.user) {
+        const userId = session?.user?.id;
+        const problemSetId = Number((await params).id);
+
+        if (!userId) {
             return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
         }
-
-        const userId = session.user.id;
-        const problemSetId = parseInt(params.id);
 
         // 問題リストの存在確認
         const existingProblemSet = await getProblemSetById(problemSetId);
