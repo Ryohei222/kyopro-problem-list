@@ -1,22 +1,23 @@
 import { ProblemProvider } from "@prisma/client";
 import { APIProblem } from "../types/Problem";
-import fetchAtCoderProblems from "./fetchAtCoderProblems";
-import fetchCodeforcesProblems from "./fetchCodeforcesProblems";
-import fetchAOJProblems from "./fetchAOJProblems";
-import fetchYukicoderProblems from "./fetchYukicoderProblems";
+import AOJProblemsFetcher from "./fetchers/AOJProblemsFetcher";
+import AtCoderProblemsFetcher from "./fetchers/AtCoderProblemsFetcher";
+import CodeforcesProblemsFetcher from "./fetchers/CodeforcesProblemsFetcher";
+import YukicoderProblemsFetcher from "./fetchers/YukicoderProblemsFetcher";
+import { API_URLS } from "../constants/api-urls";
 
 export default async function fetchProblems(
     problemProvider: ProblemProvider,
 ): Promise<APIProblem[]> {
     switch (problemProvider) {
         case ProblemProvider.ATCODER:
-            return await fetchAtCoderProblems();
+            return await AtCoderProblemsFetcher(API_URLS.ATCODER);
         case ProblemProvider.CODEFORCES:
-            return await fetchCodeforcesProblems();
+            return await CodeforcesProblemsFetcher(API_URLS.CODEFORCES);
         case ProblemProvider.AOJ:
-            return await fetchAOJProblems();
+            return await AOJProblemsFetcher(API_URLS.AOJ);
         case ProblemProvider.YUKICODER:
-            return await fetchYukicoderProblems();
+            return await YukicoderProblemsFetcher(API_URLS.YUKICODER);
         default:
             throw new Error("Unknown problem provider");
     }
