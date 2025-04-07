@@ -3,6 +3,7 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { Toolbar } from "@/components/toolbar";
 import { PageLayout } from "@/components/page-layout";
+import { SWRProvider } from "@/hooks/swr-provider";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -21,11 +22,13 @@ export default async function RootLayout({
 }>) {
     return (
         <html lang="ja">
-            <SessionProvider>
-                <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                    <PageLayout toolbar={<Toolbar />} content={children} />
-                </body>
-            </SessionProvider>
+            <SWRProvider>
+                <SessionProvider>
+                    <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+                        <PageLayout toolbar={<Toolbar />} content={children} />
+                    </body>
+                </SessionProvider>
+            </SWRProvider>
         </html>
     );
 }
