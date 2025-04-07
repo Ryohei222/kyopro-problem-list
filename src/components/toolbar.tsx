@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Home, Plus } from "lucide-react";
-import UserButton from "./login-button";
+import { Home, Plus, Star } from "lucide-react";
+import LoginButton from "./login-button";
 import { auth } from "@/lib/auth";
+import MyPageButton from "./MyPageButton";
 
 export async function Toolbar() {
     const session = await auth();
@@ -23,6 +24,14 @@ export async function Toolbar() {
                         </Button>
                         {isLoggedIn && (
                             <Button variant="ghost" size="sm" asChild>
+                                <Link href="/stared" className="flex items-center space-x-1">
+                                    <Star className="h-4 w-4" />
+                                    <span>お気に入りの問題リスト</span>
+                                </Link>
+                            </Button>
+                        )}
+                        {isLoggedIn && (
+                            <Button variant="ghost" size="sm" asChild>
                                 <Link
                                     href="/problemset/create"
                                     className="flex items-center space-x-1"
@@ -35,7 +44,11 @@ export async function Toolbar() {
                     </nav>
                 </div>
                 <div className="flex items-center space-x-2">
-                    <UserButton />
+                    {isLoggedIn ? (
+                        <MyPageButton userId={session.user?.id || ""} />
+                    ) : (
+                        <LoginButton />
+                    )}
                 </div>
             </div>
         </header>
