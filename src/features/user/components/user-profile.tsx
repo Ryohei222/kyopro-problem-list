@@ -1,12 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { UserProblemLists } from "@/features/user/components/user-problem-lists";
-import { Calendar, Twitter, Github, ExternalLink } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar, Github, ExternalLink, X, Code2 } from "lucide-react";
 import { Prisma } from "@prisma/client";
 import { getUserById } from "@/features/user/db/getUser";
 import { formatDate } from "@/utils/formatDate";
@@ -18,114 +14,112 @@ export function UserProfile({
 }) {
     return (
         <div className="space-y-6">
-            <Card>
-                <CardHeader className="pb-2">
-                    <div className="flex flex-col md:flex-row md:items-center gap-6">
-                        <div className="flex-shrink-0">
-                            {/* <Image
+            <Card className="overflow-hidden border-none shadow-lg">
+                <div className="h-24 bg-gradient-to-r from-blue-500 to-purple-600" />
+                <CardHeader className="relative pb-2 pt-0">
+                    <div className="flex flex-col md:flex-row gap-6">
+                        <div className="flex-shrink-0 -mt-12 md:-mt-16 ml-6">
+                            <Image
                                 src={user.image || "/placeholder.svg"}
                                 alt={`${user.name}のプロフィール画像`}
-                                width={120}
-                                height={120}
-                                className="rounded-full border-4 border-white shadow-md"
-                            /> */}
+                                width={130}
+                                height={130}
+                                className="rounded-full border-4 border-white shadow-md bg-white"
+                            />
                         </div>
-                        <div className="flex-grow">
-                            <CardTitle className="text-2xl font-bold">{user.name}</CardTitle>
-
-                            <div className="mt-3 text-sm text-gray-600">
-                                <div className="flex items-center">
-                                    <Calendar className="h-4 w-4 mr-2" />
+                        <div className="flex-grow md:pt-4">
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                                <CardTitle className="text-2xl md:text-3xl font-bold">
+                                    {user.name}
+                                </CardTitle>
+                                <div className="flex items-center text-sm text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full">
+                                    <Calendar className="h-4 w-4 mr-2 text-gray-500" />
                                     {formatDate(user.createdAt)}に登録
                                 </div>
                             </div>
 
-                            {/* <div className="mt-3 flex flex-wrap gap-2">
-                                {user. && (
-                                    <a
-                                        href={`https://atcoder.jp/users/${user.atcoderId}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
-                                    >
-                                        <span className="font-bold mr-1">AtCoder:</span> {user.atcoderId}
-                                        <ExternalLink className="h-3 w-3 ml-1" />
-                                    </a>
-                                )}
+                            <div className="mt-4 flex flex-wrap gap-2">
+                                {hasAnySocialLinks(user) && (
+                                    <div className="w-full">
+                                        <p className="text-sm font-medium text-gray-500 mb-2">
+                                            プロフィールリンク
+                                        </p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {user.AtCoderId && (
+                                                <a
+                                                    href={`https://atcoder.jp/users/${user.AtCoderId}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center text-sm hover:text-orange-600 bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-full transition-colors"
+                                                >
+                                                    <Image
+                                                        src="/atcoder-logo.png"
+                                                        alt="AtCoder Logo"
+                                                        width={16}
+                                                        height={16}
+                                                        className="mr-1.5"
+                                                    />
+                                                    <span className="ml-0.5">{user.AtCoderId}</span>
+                                                    <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
+                                                </a>
+                                            )}
 
-                                {user.twitterId && (
-                                    <a
-                                        href={`https://twitter.com/${user.twitterId}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center text-sm text-gray-600 hover:text-blue-500 bg-gray-100 hover:bg-blue-50 px-3 py-1 rounded-full"
-                                    >
-                                        <Twitter className="h-3 w-3 mr-1" />
-                                        {user.twitterId}
-                                    </a>
-                                )}
+                                            {user.CodeforcesId && (
+                                                <a
+                                                    href={`https://codeforces.com/profile/${user.CodeforcesId}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center text-sm hover:text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-full transition-colors"
+                                                >
+                                                    <Code2 className="h-4 w-4 mr-1.5 text-red-500" />
+                                                    <span className="font-medium">Codeforces:</span>
+                                                    <span className="ml-1">
+                                                        {user.CodeforcesId}
+                                                    </span>
+                                                    <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
+                                                </a>
+                                            )}
 
-                                {user.githubId && (
-                                    <a
-                                        href={`https://github.com/${user.githubId}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full"
-                                    >
-                                        <Github className="h-3 w-3 mr-1" />
-                                        {user.githubId}
-                                    </a>
+                                            {user.GitHubId && (
+                                                <a
+                                                    href={`https://github.com/${user.GitHubId}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center text-sm hover:text-gray-800 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition-colors"
+                                                >
+                                                    <Github className="h-4 w-4 mr-1.5 text-gray-700" />
+                                                    <span className="ml-0.5">{user.GitHubId}</span>
+                                                    <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
+                                                </a>
+                                            )}
+
+                                            {user.XId && (
+                                                <a
+                                                    href={`https://x.com/${user.XId}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center text-sm hover:text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-full transition-colors"
+                                                >
+                                                    <X className="h-4 w-4 mr-1.5 text-blue-500" />
+                                                    <span className="ml-0.5">{user.XId}</span>
+                                                    <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
+                                                </a>
+                                            )}
+                                        </div>
+                                    </div>
                                 )}
-                            </div> */}
+                            </div>
                         </div>
                     </div>
                 </CardHeader>
-
-                <CardContent>
-                    {/* <div className="mt-4">
-                        <h3 className="text-sm font-medium text-gray-500">自己紹介</h3>
-                        <p className="mt-1 text-gray-700 whitespace-pre-line">{user.bio}</p>
-                    </div> */}
-
-                    {/* <div className="mt-6 flex flex-wrap gap-4">
-                        <div className="bg-white border rounded-lg px-4 py-2 min-w-[120px]">
-                            <div className="text-2xl font-bold">{user.createdLists.length}</div>
-                            <div className="text-xs text-gray-500">作成したリスト</div>
-                        </div>
-                        <div className="bg-white border rounded-lg px-4 py-2 min-w-[120px]">
-                            <div className="text-2xl font-bold">{user.starredLists.length}</div>
-                            <div className="text-xs text-gray-500">スターしたリスト</div>
-                        </div>
-                        <div className="bg-white border rounded-lg px-4 py-2 min-w-[120px]">
-                            <div className="text-2xl font-bold">{user.createdLists.reduce((sum, list) => sum + list.stars, 0)}</div>
-                            <div className="text-xs text-gray-500">獲得スター</div>
-                        </div>
-                    </div> */}
-                </CardContent>
             </Card>
-
-            {/* <Tabs defaultValue="created" onValueChange={setActiveTab} className="w-full">
-                <TabsList className="mb-4">
-                    <TabsTrigger value="created">作成したリスト ({user.createdLists.length})</TabsTrigger>
-                    <TabsTrigger value="starred">スターしたリスト ({user.starredLists.length})</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="created">
-                    <UserProblemLists
-                        lists={user.createdLists}
-                        emptyMessage="作成した問題リストはありません。"
-                        showAuthor={false}
-                    />
-                </TabsContent>
-
-                <TabsContent value="starred">
-                    <UserProblemLists
-                        lists={user.starredLists}
-                        emptyMessage="スターした問題リストはありません。"
-                        showAuthor={true}
-                    />
-                </TabsContent> */}
-            {/* </Tabs> */}
         </div>
     );
+}
+
+// ユーザーが何かしらのソーシャルリンクを持っているかチェックする関数
+function hasAnySocialLinks(
+    user: NonNullable<Prisma.PromiseReturnType<typeof getUserById>>,
+): boolean {
+    return Boolean(user.AtCoderId || user.CodeforcesId || user.GitHubId || user.XId);
 }
