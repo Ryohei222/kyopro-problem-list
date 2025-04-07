@@ -3,7 +3,7 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { Toolbar } from "@/components/toolbar";
 import { PageLayout } from "@/components/page-layout";
-import { SWRProvider } from "@/hooks/swr-provider";
+import { SWRProvider } from "@/hooks/SWRProvider";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
