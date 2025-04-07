@@ -3,10 +3,10 @@ import { auth } from "@/lib/auth";
 import { getProblemSetById } from "@/features/problemset/db/ProblemSet";
 import { prisma } from "@/prisma";
 import { PUTRequestBody, PUTResponseBody } from "@/features/problemset/types/api";
+import { createProblemKey } from "@/features/problemset/types/Problem";
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        // ユーザー認証の確認
         const session = await auth();
         const userId = session?.user?.id;
         const problemSetId = Number((await params).id);
@@ -15,7 +15,6 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
             return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
         }
 
-        // 問題リストの存在確認
         const existingProblemSet = await getProblemSetById(problemSetId);
         if (!existingProblemSet) {
             return NextResponse.json(
@@ -24,7 +23,6 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
             );
         }
 
-        // 権限確認（作成者のみが編集可能）
         if (existingProblemSet.author.id !== userId) {
             return NextResponse.json(
                 { success: false, error: "Permission denied" },
@@ -32,10 +30,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
             );
         }
 
-        // リクエストボディの取得
         const body: PUTRequestBody = await request.json();
 
-        // 問題リストの更新
+        console.log("PUT request body:", body);
+
         const updatedProblemSet = await prisma.problemSet.update({
             where: { id: problemSetId },
             data: {
@@ -45,65 +43,55 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
             },
         });
 
-        // 現在の問題リストの問題を取得
-        const currentProblems = await prisma.problemSetProblem.findMany({
-            where: { problemSetId },
+        const newProblemIds = await prisma.problem.findMany({
+            where: {
+                problemId: {
+                    in: body.problemSetProblems.map((problem) => problem.problemId),
+                },
+            },
         });
 
-        // 既存の問題IDを取得
-        const existingProblemIds = new Set(currentProblems.map((p) => p.id));
-        const newProblemIds = new Set(body.problemSetProblems.map((p) => p.problemId));
+        await prisma.problemSetProblem.deleteMany({
+            where: {
+                problemSetId: problemSetId,
+            },
+        });
 
-        // 削除する問題を特定（新しいリストに含まれない問題）
-        const problemIdsToDelete = currentProblems
-            .filter(
-                (p) =>
-                    !body.problemSetProblems.some(
-                        (newP) => newP.problemId === p.problemId.toString(),
-                    ),
-            )
-            .map((p) => p.id);
+        console.log("New problem IDs:", newProblemIds);
 
-        // 問題の削除
-        if (problemIdsToDelete.length > 0) {
-            await prisma.problemSetProblem.deleteMany({
-                where: {
-                    id: { in: problemIdsToDelete },
-                },
-            });
-        }
+        const problemMap = new Map<string, number>(
+            newProblemIds.map((problem) => {
+                return [createProblemKey(problem), problem.id];
+            }),
+        );
 
-        // 問題の追加や更新
-        for (const problemData of body.problemSetProblems) {
-            const existingProblem = currentProblems.find(
-                (p) => p.problemId.toString() === problemData.problemId,
+        console.log("Problem map:", problemMap);
+
+        const problemsToCreate = body.problemSetProblems.flatMap((problemData) => {
+            const innerId = problemMap.get(
+                createProblemKey({
+                    provider: problemData.problemProvider,
+                    ...problemData,
+                }),
             );
-
-            if (existingProblem) {
-                // 既存の問題を更新
-                await prisma.problemSetProblem.update({
-                    where: { id: existingProblem.id },
-                    data: {
-                        memo: problemData.memo,
-                        hint: problemData.hint,
-                        order: problemData.order,
-                    },
-                });
-            } else {
-                // 新しい問題を追加
-                await prisma.problemSetProblem.create({
-                    data: {
-                        problemSetId,
-                        problemId: parseInt(problemData.problemId),
-                        memo: problemData.memo,
-                        hint: problemData.hint,
-                        order: problemData.order,
-                    },
-                });
+            if (!innerId) {
+                return [];
             }
-        }
+            return {
+                problemSetId,
+                problemId: innerId,
+                memo: problemData.memo,
+                hint: problemData.hint,
+                order: problemData.order,
+            };
+        });
 
-        // 成功レスポンスを返す
+        console.log("Problems to create:", problemsToCreate);
+
+        await prisma.problemSetProblem.createMany({
+            data: problemsToCreate,
+        });
+
         const response: PUTResponseBody = { success: true };
         return NextResponse.json(response);
     } catch (error) {
