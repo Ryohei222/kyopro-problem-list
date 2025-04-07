@@ -3,4 +3,5 @@ export const API_URLS = {
     ATCODER: "https://kenkoooo.com/atcoder/resources/problems.json",
     CODEFORCES: "https://codeforces.com/api/problemset.problems",
     YUKICODER: "https://yukicoder.me/api/v1/problems",
+    MOFE: "/api/problems/mofe",
 };

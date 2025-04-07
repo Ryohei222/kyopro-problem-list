@@ -162,6 +162,11 @@ export function ProblemListCards({
                                         <Calendar className="h-4 w-4 mr-1" />
                                         {formatDate(list.createdAt)}
                                     </div>
+                                    <div>
+                                        {!list.isPublic && (
+                                            <span className="text-red-500">非公開</span>
+                                        )}
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>

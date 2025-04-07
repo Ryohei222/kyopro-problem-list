@@ -1,17 +1,13 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { getProblemSetById } from "@/features/problemset/db/ProblemSet";
-import { Prisma, ProblemProvider } from "@prisma/client";
-import { useState, FormEvent, useEffect, useRef } from "react";
-import useProblems from "@/features/problem/hooks/useProblems";
-import extractProblemFromUrl from "../utils/extractProblemFromUrl";
+import { Prisma } from "@prisma/client";
+import { useState, FormEvent } from "react";
+import useProblems from "@/features/problemset/hooks/useProblems";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Save, Plus, Trash2, ExternalLink, GripVertical } from "lucide-react";
+import { Save, Trash2, ExternalLink, GripVertical } from "lucide-react";
 import {
     Table,
     TableBody,
@@ -21,102 +17,17 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { PUTRequestBody } from "../types/api";
-import { buildProblemUrl } from "@/features/problem/utils/buildProblemUrl";
+import { buildProblemUrl } from "@/features/problemset/utils/buildProblemUrl";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-type ProblemSetProblemData = {
-    id?: number;
-    problemId: string;
-    memo: string;
-    hint: string;
-    order: number;
-};
+import type { ProblemSetProblem } from "../types/ProblemSetProblem";
 
-// ドラッグ可能な行のアイテムタイプ
-const ItemTypes = {
-    ROW: "row",
-};
-
-// ドラッグ可能な行コンポーネント
-function DraggableRow({
-    index,
-    moveRow,
-    children,
-    id,
-}: {
-    index: number;
-    moveRow: (dragIndex: number, hoverIndex: number) => void;
-    children: React.ReactNode;
-    id: any;
-}) {
-    const ref = useRef<HTMLTableRowElement>(null);
-
-    const [{ handlerId }, drop] = useDrop({
-        accept: ItemTypes.ROW,
-        collect(monitor) {
-            return {
-                handlerId: monitor.getHandlerId(),
-            };
-        },
-        hover(item: any, monitor) {
-            if (!ref.current) {
-                return;
-            }
-            const dragIndex = item.index;
-            const hoverIndex = index;
-
-            // 自分自身の上にドロップしても何もしない
-            if (dragIndex === hoverIndex) {
-                return;
-            }
-
-            // マウスの位置を取得
-            const hoverBoundingRect = ref.current?.getBoundingClientRect();
-            const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-            const clientOffset = monitor.getClientOffset();
-            const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
-
-            // ドラッグしている要素が上から来た場合は、マウスが中央よりも上にあるときだけ移動する
-            if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-                return;
-            }
-
-            // ドラッグしている要素が下から来た場合は、マウスが中央よりも下にあるときだけ移動する
-            if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-                return;
-            }
-
-            // 実際に順序を入れ替える
-            moveRow(dragIndex, hoverIndex);
-            item.index = hoverIndex;
-        },
-    });
-
-    const [{ isDragging }, drag] = useDrag({
-        type: ItemTypes.ROW,
-        item: () => {
-            return { id, index };
-        },
-        collect: (monitor) => ({
-            isDragging: monitor.isDragging(),
-        }),
-    });
-
-    const opacity = isDragging ? 0.5 : 1;
-    drag(drop(ref));
-
-    return (
-        <TableRow
-            ref={ref}
-            style={{ opacity }}
-            data-handler-id={handlerId}
-            className="hover:bg-gray-50 cursor-move"
-        >
-            {children}
-        </TableRow>
-    );
-}
+import DraggableRow from "./draggable-row";
+import ProblemSetNameInput from "./ProblemSetNameInput";
+import ProblemSetDescriptionInput from "./ProblemSetDescriptionInput";
+import ProblemSetIsPublicInput from "./ProblemSetIsPublicInput";
+import AddProblemForm from "./AddProblem";
 
 export default function EditProblemListForm({
     problemSet,
@@ -128,10 +39,12 @@ export default function EditProblemListForm({
     const [name, setName] = useState(problemSet.name);
     const [description, setDescription] = useState(problemSet.description);
     const [isPublic, setIsPublic] = useState(problemSet.isPublic);
-    const [problems, setProblems] = useState<ProblemSetProblemData[]>(
+    const [problems, setProblems] = useState<ProblemSetProblem[]>(
         problemSet.problemSetProblems.map((p) => ({
-            id: p.problem.id,
-            problemId: p.problem.id.toString(),
+            problemProvider: p.problem.provider,
+            contestId: p.problem.contestId,
+            problemId: p.problem.problemId,
+            title: p.problem.title,
             memo: p.memo,
             hint: p.hint,
             order: p.order,
@@ -141,7 +54,7 @@ export default function EditProblemListForm({
     const { problems: allProblems } = useProblems();
 
     // 問題追加
-    const handleAddProblem = (problem: ProblemSetProblemData) => {
+    const handleAddProblem = (problem: ProblemSetProblem) => {
         setProblems((prev) => [...prev, problem]);
     };
 
@@ -159,7 +72,7 @@ export default function EditProblemListForm({
 
     // 問題IDから問題の詳細情報を取得
     const getProblemDetails = (problemId: string) => {
-        const problem = allProblems.find((p) => p.id.toString() === problemId);
+        const problem = allProblems.find((p) => p.problemId === problemId);
         return problem || null;
     };
 
@@ -243,37 +156,20 @@ export default function EditProblemListForm({
                         </div>
                     )}
 
-                    <div className="space-y-2">
-                        <Label htmlFor="name">リスト名</Label>
-                        <Input
-                            id="name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="例: 初心者向けグラフアルゴリズム集"
-                            required
-                        />
-                    </div>
+                    <ProblemSetNameInput
+                        name={name}
+                        handleNameChange={(e) => setName(e.target.value)}
+                    />
 
-                    <div className="space-y-2 mt-6">
-                        <Label htmlFor="description">概要</Label>
-                        <Textarea
-                            id="description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            placeholder="この問題リストの内容や目的について説明してください"
-                            className="min-h-[120px]"
-                            required
-                        />
-                    </div>
+                    <ProblemSetDescriptionInput
+                        description={description}
+                        handleDescriptionChange={(e) => setDescription(e.target.value)}
+                    />
 
-                    <div className="flex items-center space-x-2 mt-6 mb-8">
-                        <Checkbox
-                            id="isPublic"
-                            checked={isPublic}
-                            onCheckedChange={(checked) => setIsPublic(checked === true)}
-                        />
-                        <Label htmlFor="isPublic">公開する</Label>
-                    </div>
+                    <ProblemSetIsPublicInput
+                        isPublic={isPublic}
+                        handleIsPublicChange={(checked) => setIsPublic(checked === true)}
+                    />
 
                     <div className="space-y-6 mt-8">
                         <div className="flex justify-between items-center">
@@ -438,224 +334,6 @@ export default function EditProblemListForm({
                     {isSubmitting ? "保存中..." : "問題リストを更新"}
                 </Button>
             </CardFooter>
-        </Card>
-    );
-}
-
-function AddProblemForm({
-    onAddProblem,
-    existingProblems,
-}: {
-    onAddProblem: (problem: ProblemSetProblemData) => void;
-    existingProblems: ProblemSetProblemData[];
-}) {
-    const { problems } = useProblems();
-    const [url, setUrl] = useState("");
-    const [memo, setMemo] = useState("");
-    const [hint, setHint] = useState("");
-    const [error, setError] = useState<string | null>(null);
-    const [showForm, setShowForm] = useState(false);
-    const [previewProblem, setPreviewProblem] = useState<{
-        title: string;
-        provider: ProblemProvider;
-        contestId: string;
-        problemId: string;
-    } | null>(null);
-
-    const resetForm = () => {
-        setUrl("");
-        setMemo("");
-        setHint("");
-        setError(null);
-        setPreviewProblem(null);
-    };
-
-    const searchProblemFromUrl = (url: string) => {
-        const extractedProblem = extractProblemFromUrl(url);
-        if (!extractedProblem) {
-            return null;
-        }
-
-        if (!problems) {
-            return null;
-        }
-
-        const ret =
-            problems.find(
-                (p) =>
-                    p.provider === extractedProblem.problemProvider &&
-                    p.contestId === extractedProblem.contestId &&
-                    p.problemId === extractedProblem.problemId,
-            ) || null;
-        console.log("searchProblemFromUrl", extractedProblem, ret);
-        return ret;
-    };
-
-    // URLが変更されたときに問題情報を検索して表示
-    useEffect(() => {
-        if (url.trim() === "") {
-            setPreviewProblem(null);
-            setError(null);
-            return;
-        }
-
-        const problem = searchProblemFromUrl(url);
-        if (!problem) {
-            setPreviewProblem(null);
-            setError("指定されたURLから問題を見つけることができませんでした");
-            return;
-        }
-
-        // 問題が既に追加されているか確認
-        const isDuplicate = existingProblems.some((p) => p.problemId === problem.id.toString());
-        if (isDuplicate) {
-            setPreviewProblem(null);
-            setError("この問題は既にリストに追加されています");
-            return;
-        }
-
-        setError(null);
-        setPreviewProblem({
-            title: problem.title,
-            provider: problem.provider,
-            contestId: problem.contestId,
-            problemId: problem.problemId,
-        });
-    }, [url, problems, existingProblems]);
-
-    const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        setError(null);
-
-        // URLから問題を検索
-        const problem = searchProblemFromUrl(url);
-        if (!problem) {
-            setError("指定されたURLから問題を見つけることができませんでした");
-            return;
-        }
-
-        // 問題が既に追加されているか確認
-        const isDuplicate = existingProblems.some((p) => p.problemId === problem.id.toString());
-        if (isDuplicate) {
-            setError("この問題は既にリストに追加されています");
-            return;
-        }
-
-        // 新しい問題の順序は既存の問題の最大順序+1
-        const maxOrder =
-            existingProblems.length > 0 ? Math.max(...existingProblems.map((p) => p.order)) : 0;
-
-        // 問題を追加
-        onAddProblem({
-            problemId: problem.id.toString(),
-            memo,
-            hint,
-            order: maxOrder + 1,
-        });
-
-        // フォームをリセットするが閉じない
-        resetForm();
-        // setShowForm(false); // この行を削除
-    };
-
-    if (!showForm) {
-        return (
-            <Button
-                type="button"
-                onClick={() => setShowForm(true)}
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-1"
-            >
-                <Plus className="h-4 w-4" />
-                問題を追加
-            </Button>
-        );
-    }
-
-    return (
-        <Card className="p-4 border rounded-md shadow-sm w-full">
-            <div className="space-y-4">
-                <h4 className="font-medium">新しい問題を追加</h4>
-
-                {error && (
-                    <div className="p-2 bg-red-50 border border-red-200 text-red-700 text-sm rounded-md">
-                        {error}
-                    </div>
-                )}
-
-                <div className="space-y-2">
-                    <Label htmlFor="url">問題URL</Label>
-                    <Input
-                        id="url"
-                        value={url}
-                        onChange={(e) => setUrl(e.target.value)}
-                        placeholder="https://atcoder.jp/contests/abc123/tasks/abc123_a"
-                        required
-                    />
-                    <p className="text-xs text-gray-500">
-                        AtCoder / Codeforces / yukicoder / AOJ の問題URLを入力してください
-                    </p>
-                </div>
-
-                {previewProblem && (
-                    <div className="p-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-md space-y-2">
-                        <h5 className="font-medium">追加する問題:</h5>
-                        <div className="text-sm">
-                            <div>
-                                <span className="font-semibold">タイトル:</span>{" "}
-                                {previewProblem.title}
-                            </div>
-                            <div>
-                                <span className="font-semibold">出典:</span>
-                                {previewProblem.provider} / {previewProblem.contestId} /{" "}
-                                {previewProblem.problemId}
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                <div className="space-y-2">
-                    <Label htmlFor="memo">メモ</Label>
-                    <Textarea
-                        id="memo"
-                        value={memo}
-                        onChange={(e) => setMemo(e.target.value)}
-                        className="min-h-[120px]"
-                        placeholder="問題に関するメモ"
-                    />
-                </div>
-
-                <div className="space-y-2">
-                    <Label htmlFor="hint">ヒント</Label>
-                    <Textarea
-                        id="hint"
-                        value={hint}
-                        onChange={(e) => setHint(e.target.value)}
-                        className="min-h-[120px]"
-                        placeholder="解法のヒント"
-                    />
-                </div>
-
-                <div className="flex justify-end gap-2 pt-2">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setShowForm(false)}
-                    >
-                        キャンセル
-                    </Button>
-                    <Button
-                        type="button"
-                        size="sm"
-                        onClick={handleSubmit}
-                        disabled={!previewProblem}
-                    >
-                        追加
-                    </Button>
-                </div>
-            </div>
         </Card>
     );
 }

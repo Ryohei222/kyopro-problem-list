@@ -14,7 +14,7 @@ export default async function updateProblems(problems: APIProblem[]): Promise<Cr
     const dbProblemSet = new Set(dbProblems);
 
     const createdProblems = await prisma.problem.createManyAndReturn({
-        data: problems.filter((problem) => dbProblemSet.has(problem)),
+        data: problems.filter((problem) => !dbProblemSet.has(problem)),
     });
 
     return createdProblems;

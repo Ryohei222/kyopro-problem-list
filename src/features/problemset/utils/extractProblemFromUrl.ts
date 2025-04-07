@@ -11,18 +11,20 @@ export default function extractProblemFromUrl(url: string): {
         /https:\/\/codeforces\.com\/contest\/(?<contestId>.+)\/problem\/(?<problemId>.+)/;
     const YukicoderProblemURLRegex = /https:\/\/yukicoder\.me\/problems\/no\/(?<problemId>.+)/;
     const AOJProblemURLRegex = /https:\/\/onlinejudge\.u-aizu\.ac\.jp\/problems\/(?<problemId>.+)/;
+    const MOFEProblemURLRegex =
+        /https:\/\/mofecoder\.com\/contests\/(?<contestId>.+)\/tasks\/(?<problemId>.+)/;
 
     const Regexes: Map<ProblemProvider, RegExp> = new Map([
         [ProblemProvider.ATCODER, AtCoderProblemURLRegex],
         [ProblemProvider.CODEFORCES, CodeforcesProblemURLRegex],
         [ProblemProvider.YUKICODER, YukicoderProblemURLRegex],
         [ProblemProvider.AOJ, AOJProblemURLRegex],
+        [ProblemProvider.MOFE, MOFEProblemURLRegex],
     ]);
 
     function findMatch(regex: RegExp, url: string, problemProvider: ProblemProvider) {
         const match = url.match(regex);
         if (match?.groups?.problemId) {
-            console.log("Match found:", match.groups);
             const contestId = match.groups.contestId || "0";
             const problemId = match.groups.problemId || "";
             return { contestId, problemId, problemProvider };
@@ -36,6 +38,5 @@ export default function extractProblemFromUrl(url: string): {
             return match;
         }
     }
-    console.error("No match found for URL:", url);
     return null;
 }

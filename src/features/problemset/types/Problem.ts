@@ -9,6 +9,14 @@ type APIProblem = {
     title: string;
 };
 
+const problemKeyBrand = Symbol();
+
+export type ProblemKey = string & { [problemKeyBrand]: unknown };
+
+export function createProblemKey(problem: APIProblem): ProblemKey {
+    return `${problem.provider}-${problem.contestId}-${problem.problemId}` as ProblemKey;
+}
+
 type CreatedProblem = NonNullable<Prisma.PromiseReturnType<typeof prisma.problem.findFirst>>;
 
 export type { APIProblem, CreatedProblem };

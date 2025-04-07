@@ -1,6 +1,6 @@
 import { prisma } from "@/prisma";
 
-export async function getUserProblemSets(authorId: string, needPublic: boolean) {
+export async function getStaredProblemSets(userId: string) {
     const problemSets = await prisma.problemSet.findMany({
         select: {
             id: true,
@@ -13,6 +13,7 @@ export async function getUserProblemSets(authorId: string, needPublic: boolean) 
                 },
             },
             description: true,
+            stars: true,
             _count: {
                 select: {
                     stars: true,
@@ -23,14 +24,19 @@ export async function getUserProblemSets(authorId: string, needPublic: boolean) 
             createdAt: true,
             updatedAt: true,
         },
-        where: needPublic
-            ? {
-                  authorId: authorId,
-                  isPublic: true,
-              }
-            : {
-                  authorId: authorId,
-              },
+        where: {
+            stars: {
+                every: {
+                    userId: userId,
+                },
+            },
+        },
     });
-    return problemSets;
+    const filteredProblemSets = problemSets.filter((problemSet) => {
+        return (
+            problemSet.stars.filter((star) => star.userId === userId).length > 0 &&
+            (problemSet.isPublic || problemSet.author.id === userId)
+        );
+    });
+    return filteredProblemSets;
 }

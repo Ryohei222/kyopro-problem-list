@@ -64,7 +64,12 @@ export function ProblemTable({ problems }: { problems: ProblemSetProblem[] }) {
                     </TableHeader>
                     <TableBody>
                         {sortedRecords.map((problem) => (
-                            <ProblemTableRow key={problem.problem.id} problemSetProblem={problem} />
+                            <ProblemTableRow
+                                key={
+                                    problem.problemProvider + problem.contestId + problem.problemId
+                                }
+                                problemSetProblem={problem}
+                            />
                         ))}
                     </TableBody>
                 </Table>

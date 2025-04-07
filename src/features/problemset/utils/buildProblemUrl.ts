@@ -2,7 +2,7 @@ import { ProblemProvider } from "@prisma/client";
 
 type Props =
     | {
-          problemProvider: "ATCODER" | "CODEFORCES";
+          problemProvider: "ATCODER" | "CODEFORCES" | "MOFE";
           problemId: string;
           contestId: string;
       }
@@ -23,5 +23,7 @@ export const buildProblemUrl = (props: Props): string => {
             return `https://codeforces.com/contest/${contestId}/problem/${problemId}`;
         case ProblemProvider.YUKICODER:
             return `https://yukicoder.me/problems/no/${problemId}`;
+        case ProblemProvider.MOFE:
+            return `https://mofecoder.com/contests/${contestId}/tasks/${problemId}`;
     }
 };

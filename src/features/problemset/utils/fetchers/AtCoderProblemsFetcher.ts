@@ -24,7 +24,7 @@ const AtCoderProblemsFetcher = async function (url: string): Promise<APIProblem[
             ({
                 provider: "ATCODER",
                 contestId: problem.contest_id,
-                problemId: problem.problem_index,
+                problemId: problem.id,
                 title: problem.title,
             }) as APIProblem,
     );

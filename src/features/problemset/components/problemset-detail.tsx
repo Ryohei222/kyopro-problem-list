@@ -9,6 +9,7 @@ import { ProblemSetStarButton } from "@/components/star-button";
 import React from "react";
 import { auth } from "@/lib/auth";
 import { formatDate } from "@/utils/formatDate";
+import { ProblemSetProblem } from "../types/ProblemSetProblem";
 
 export async function ProblemSetDetail({
     problemset,
@@ -19,7 +20,18 @@ export async function ProblemSetDetail({
 
     const logined = session ? true : false;
     const isAuthor = session ? session.user.id === problemset.author.id : false;
-    const problems = problemset.problemSetProblems;
+    const problems = problemset.problemSetProblems.map(
+        (problem) =>
+            ({
+                problemId: problem.problem.problemId,
+                contestId: problem.problem.contestId,
+                problemProvider: problem.problem.provider,
+                title: problem.problem.title,
+                order: problem.order,
+                hint: problem.hint,
+                memo: problem.memo,
+            }) satisfies ProblemSetProblem,
+    );
 
     return (
         <Card>

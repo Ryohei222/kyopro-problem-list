@@ -5,6 +5,7 @@ import AtCoderProblemsFetcher from "./fetchers/AtCoderProblemsFetcher";
 import CodeforcesProblemsFetcher from "./fetchers/CodeforcesProblemsFetcher";
 import YukicoderProblemsFetcher from "./fetchers/YukicoderProblemsFetcher";
 import { API_URLS } from "../constants/api-urls";
+import MOFEProblemsFetcher from "./fetchers/MOFEProblemsFetcher";
 
 export default async function fetchProblems(
     problemProvider: ProblemProvider,
@@ -18,6 +19,8 @@ export default async function fetchProblems(
             return await AOJProblemsFetcher(API_URLS.AOJ);
         case ProblemProvider.YUKICODER:
             return await YukicoderProblemsFetcher(API_URLS.YUKICODER);
+        case ProblemProvider.MOFE:
+            return await MOFEProblemsFetcher(API_URLS.MOFE);
         default:
             throw new Error("Unknown problem provider");
     }

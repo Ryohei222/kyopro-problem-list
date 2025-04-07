@@ -1,6 +1,6 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import { ProblemSetProblem } from "../types/ProblemSetProblem";
-import { buildProblemUrl } from "@/features/problem/utils/buildProblemUrl";
+import { buildProblemUrl } from "@/features/problemset/utils/buildProblemUrl";
 import { useState } from "react";
 
 export default function ProblemTableRow({
@@ -8,7 +8,6 @@ export default function ProblemTableRow({
 }: {
     problemSetProblem: ProblemSetProblem;
 }) {
-    const problem = problemSetProblem.problem;
     const [showHint, setShowHint] = useState(false);
 
     return (
@@ -17,20 +16,21 @@ export default function ProblemTableRow({
             <TableCell>
                 <a
                     href={buildProblemUrl({
-                        problemProvider: problem.provider,
-                        problemId: problem.problemId,
-                        contestId: problem.contestId,
+                        problemProvider: problemSetProblem.problemProvider,
+                        problemId: problemSetProblem.problemId,
+                        contestId: problemSetProblem.contestId,
                     })}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center space-x-2"
                 >
                     <div>
-                        <div className="font-medium">{problem.title}</div>
+                        <div className="font-medium">{problemSetProblem.title}</div>
                         <div className="text-xs text-gray-500">
-                            {problem.provider.toLowerCase() +
-                                (problem.provider === "ATCODER" || problem.provider === "CODEFORCES"
-                                    ? " - " + problem.contestId
+                            {problemSetProblem.problemProvider.toLowerCase() +
+                                (problemSetProblem.problemProvider === "ATCODER" ||
+                                problemSetProblem.problemProvider === "CODEFORCES"
+                                    ? " - " + problemSetProblem.contestId
                                     : "")}
                         </div>
                     </div>
