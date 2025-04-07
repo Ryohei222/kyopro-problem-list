@@ -43,18 +43,25 @@ model Account {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String
-  email         String    @unique
+  email         String       @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  problemset ProblemSet[]
-  star       Star[]
+  AtCoderId     String?
+  CodeforcesId  String?
+  YukicoderId   String?
+  AOJId         String?
+  MOFEId        String?
+  GitHubId      String?
+  XId           String?
+  BlogURL       String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  problemset    ProblemSet[]
+  star          Star[]
 }
 
 model Session {
@@ -79,6 +86,7 @@ enum ProblemProvider {
   CODEFORCES
   YUKICODER
   AOJ
+  MOFE
 }
 
 model Problem {
