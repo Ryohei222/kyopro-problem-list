@@ -3,8 +3,6 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { Toolbar } from "@/components/toolbar";
 import { PageLayout } from "@/components/page-layout";
-import { getProblems } from "@/features/problem/db/getProblems";
-import { ProblemsProvider } from "@/features/problem/components/problems-provider";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -21,16 +19,12 @@ export default async function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const problems = await getProblems();
-
     return (
         <html lang="ja">
             <SessionProvider>
-                <ProblemsProvider problems={problems}>
-                    <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                        <PageLayout toolbar={<Toolbar />} content={children} />
-                    </body>
-                </ProblemsProvider>
+                <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+                    <PageLayout toolbar={<Toolbar />} content={children} />
+                </body>
             </SessionProvider>
         </html>
     );
