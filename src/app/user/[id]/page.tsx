@@ -1,3 +1,21 @@
-import UserPage from "@/compositepages/user";
+import { UserProfile } from "@/features/user/components/user-profile";
+import { notFound } from "next/navigation";
+import { getUserById } from "@/features/user/db/getUser";
+import { getUserProblemSets } from "@/features/problemset/db/getUserProblemSets";
+import { ProblemListTable } from "@/features/problemset/components/problem-list-table";
 
-export default UserPage;
+export default async function UserPage({ params }: { params: Promise<{ id: string }> }) {
+    const userId = (await params).id;
+    const user = await getUserById(userId);
+    const usersProblemSets = await getUserProblemSets(userId, true);
+    console.log(usersProblemSets);
+    if (!user) {
+        notFound();
+    }
+    return (
+        <>
+            <UserProfile user={user} />
+            <ProblemListTable problemLists={usersProblemSets} />
+        </>
+    );
+}
