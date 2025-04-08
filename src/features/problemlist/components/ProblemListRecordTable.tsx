@@ -7,7 +7,7 @@ import ProblemTableRow from "./ProblemListRecord";
 import { ProblemListRecordResponse } from "../types/ProblemLists";
 import { createProblemKey } from "@/types/Problem";
 
-type SortField = "order";
+type SortField = "order" | "resource";
 type SortDirection = "asc" | "desc";
 
 export function ProblemListRecordTable({
@@ -27,8 +27,20 @@ export function ProblemListRecordTable({
         }
     };
 
-    const sortedRecords = problemListRecords.sort((a, b) => {
-        return sortDirection === "asc" ? a[sortField] - b[sortField] : b[sortField] - a[sortField];
+    const sortedRecords = [...problemListRecords].sort((a, b) => {
+        if (sortField === "resource") {
+            // コンテストサイトでソート
+            const resourceA = a.problem.resource.toLowerCase();
+            const resourceB = b.problem.resource.toLowerCase();
+            return sortDirection === "asc"
+                ? resourceA.localeCompare(resourceB)
+                : resourceB.localeCompare(resourceA);
+        } else {
+            // 順序でソート（デフォルト）
+            return sortDirection === "asc"
+                ? a[sortField] - b[sortField]
+                : b[sortField] - a[sortField];
+        }
     });
 
     const SortIcon = ({ field }: { field: SortField }) => {
@@ -47,7 +59,7 @@ export function ProblemListRecordTable({
                     <TableHeader>
                         <TableRow>
                             <TableHead
-                                className="w-[100px] cursor-pointer"
+                                className="w-[80px] cursor-pointer"
                                 onClick={() => handleSort("order")}
                             >
                                 <div className="flex items-center">
@@ -55,16 +67,24 @@ export function ProblemListRecordTable({
                                     <SortIcon field="order" />
                                 </div>
                             </TableHead>
+                            <TableHead
+                                className="w-[120px] cursor-pointer"
+                                onClick={() => handleSort("resource")}
+                            >
+                                <div className="flex items-center">
+                                    サイト
+                                    <SortIcon field="resource" />
+                                </div>
+                            </TableHead>
                             <TableHead className="w-[200px]">
                                 <div className="flex items-center">問題名</div>
                             </TableHead>
-                            <TableHead className="w-[40%]">
+                            <TableHead className="w-[30%]">
                                 <div className="flex items-center">メモ</div>
                             </TableHead>
-                            <TableHead className="w-[40%]">
+                            <TableHead className="w-[30%]">
                                 <div className="flex items-center">ヒント</div>
                             </TableHead>
-                            <TableHead className="w-[80px]"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

@@ -2,15 +2,18 @@
 
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Github, ExternalLink, X, Code2 } from "lucide-react";
+import { Calendar, Github, ExternalLink, X, Globe, FileText } from "lucide-react";
 import { Prisma } from "@prisma/client";
 import { getUserById } from "@/features/user/db/getUser";
 import { formatDate } from "@/utils/formatDate";
+import { Separator } from "@/components/ui/separator";
 
 export function UserProfile({
     user,
+    yukicoderUrl,
 }: {
     user: NonNullable<Prisma.PromiseReturnType<typeof getUserById>>;
+    yukicoderUrl: string;
 }) {
     return (
         <div className="space-y-6">
@@ -38,77 +41,160 @@ export function UserProfile({
                                 </div>
                             </div>
 
-                            <div className="mt-4 flex flex-wrap gap-2">
-                                {hasAnySocialLinks(user) && (
-                                    <div className="w-full">
-                                        <p className="text-sm font-medium text-gray-500 mb-2">
-                                            プロフィールリンク
-                                        </p>
-                                        <div className="flex flex-wrap gap-2">
-                                            {user.atcoderId && (
-                                                <a
-                                                    href={`https://atcoder.jp/users/${user.atcoderId}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center text-sm hover:text-orange-600 bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-full transition-colors"
-                                                >
-                                                    <Image
-                                                        src="/atcoder-logo.png"
-                                                        alt="AtCoder Logo"
-                                                        width={16}
-                                                        height={16}
-                                                        className="mr-1.5"
-                                                    />
-                                                    <span className="ml-0.5">{user.atcoderId}</span>
-                                                    <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
-                                                </a>
-                                            )}
+                            {/* ブログURL */}
+                            {user.blogURL && (
+                                <div className="mt-3">
+                                    <a
+                                        href={user.blogURL}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                                    >
+                                        <Globe className="h-4 w-4 mr-1.5 text-blue-500" />
+                                        <span>{user.blogURL}</span>
+                                        <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
+                                    </a>
+                                </div>
+                            )}
 
-                                            {user.codeforcesId && (
-                                                <a
-                                                    href={`https://codeforces.com/profile/${user.codeforcesId}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center text-sm hover:text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-full transition-colors"
-                                                >
-                                                    <Code2 className="h-4 w-4 mr-1.5 text-red-500" />
-                                                    <span className="font-medium">Codeforces:</span>
-                                                    <span className="ml-1">
-                                                        {user.codeforcesId}
-                                                    </span>
-                                                    <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
-                                                </a>
-                                            )}
-
-                                            {user.githubId && (
-                                                <a
-                                                    href={`https://github.com/${user.githubId}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center text-sm hover:text-gray-800 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition-colors"
-                                                >
-                                                    <Github className="h-4 w-4 mr-1.5 text-gray-700" />
-                                                    <span className="ml-0.5">{user.githubId}</span>
-                                                    <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
-                                                </a>
-                                            )}
-
-                                            {user.xId && (
-                                                <a
-                                                    href={`https://x.com/${user.xId}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center text-sm hover:text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-full transition-colors"
-                                                >
-                                                    <X className="h-4 w-4 mr-1.5 text-blue-500" />
-                                                    <span className="ml-0.5">{user.xId}</span>
-                                                    <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
-                                                </a>
-                                            )}
-                                        </div>
+                            {/* 自己紹介文 */}
+                            {user.bio && (
+                                <div className="mt-4">
+                                    <div className="flex items-center text-sm font-medium text-gray-700 mb-2">
+                                        <FileText className="h-4 w-4 mr-1.5 text-gray-500" />
+                                        <span>自己紹介</span>
                                     </div>
-                                )}
-                            </div>
+                                    <p className="text-sm text-gray-600 whitespace-pre-line">
+                                        {user.bio}
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* ソーシャルリンク */}
+                            {hasAnySocialLinks(user) && (
+                                <div className="mt-4">
+                                    {(user.bio || user.blogURL) && <Separator className="my-4" />}
+                                    <p className="text-sm font-medium text-gray-500 mb-2">
+                                        プロフィールリンク
+                                    </p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {user.aojId && (
+                                            <a
+                                                href={`https://onlinejudge.u-aizu.ac.jp/status/users/${user.aojId}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center text-sm hover:text-orange-600 bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-full transition-colors"
+                                            >
+                                                <Image
+                                                    src="/aoj-logo.ico"
+                                                    alt="Aizu Online Judge Logo"
+                                                    width={16}
+                                                    height={16}
+                                                    className="mr-1.5"
+                                                />
+                                                <span className="ml-0.5">{user.aojId}</span>
+                                                <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
+                                            </a>
+                                        )}
+
+                                        {user.atcoderId && (
+                                            <a
+                                                href={`https://atcoder.jp/users/${user.atcoderId}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center text-sm hover:text-orange-600 bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-full transition-colors"
+                                            >
+                                                <Image
+                                                    src="/atcoder-logo.png"
+                                                    alt="AtCoder Logo"
+                                                    width={16}
+                                                    height={16}
+                                                    className="mr-1.5"
+                                                />
+                                                <span className="ml-0.5">{user.atcoderId}</span>
+                                                <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
+                                            </a>
+                                        )}
+
+                                        {user.codeforcesId && (
+                                            <a
+                                                href={`https://codeforces.com/profile/${user.codeforcesId}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center text-sm hover:text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-full transition-colors"
+                                            >
+                                                <Image
+                                                    src="/codeforces-logo.png"
+                                                    alt="Codeforces Logo"
+                                                    width={16}
+                                                    height={16}
+                                                    className="mr-1.5"
+                                                />
+                                                <span className="ml-0.5">{user.codeforcesId}</span>
+                                                <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
+                                            </a>
+                                        )}
+
+                                        {user.yukicoderId && (
+                                            <a
+                                                href={yukicoderUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center text-sm hover:text-green-600 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-full transition-colors"
+                                            >
+                                                <Image
+                                                    src="/yukicoder-logo.png"
+                                                    alt="Yukicoder Logo"
+                                                    width={16}
+                                                    height={16}
+                                                    className="mr-1.5"
+                                                />
+                                                <span className="ml-0.5">{user.yukicoderId}</span>
+                                                <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
+                                            </a>
+                                        )}
+
+                                        {user.mofeId && (
+                                            <div className="inline-flex items-center text-sm hover:text-purple-600 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-full transition-colors">
+                                                <Image
+                                                    src="/mofe-logo.jpg"
+                                                    alt="MoFe Logo"
+                                                    width={16}
+                                                    height={16}
+                                                    className="mr-1.5 rounded-full"
+                                                />
+                                                <span className="ml-0.5">{user.mofeId}</span>
+                                            </div>
+                                        )}
+
+                                        {user.githubId && (
+                                            <a
+                                                href={`https://github.com/${user.githubId}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center text-sm hover:text-gray-800 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition-colors"
+                                            >
+                                                <Github className="h-4 w-4 mr-1.5 text-gray-700" />
+                                                <span className="ml-0.5">{user.githubId}</span>
+                                                <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
+                                            </a>
+                                        )}
+
+                                        {user.xId && (
+                                            <a
+                                                href={`https://x.com/${user.xId}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center text-sm hover:text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-full transition-colors"
+                                            >
+                                                <X className="h-4 w-4 mr-1.5 text-blue-500" />
+                                                <span className="ml-0.5">{user.xId}</span>
+                                                <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
+                                            </a>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </CardHeader>
@@ -121,5 +207,13 @@ export function UserProfile({
 function hasAnySocialLinks(
     user: NonNullable<Prisma.PromiseReturnType<typeof getUserById>>,
 ): boolean {
-    return Boolean(user.atcoderId || user.codeforcesId || user.githubId || user.xId);
+    return Boolean(
+        user.aojId ||
+            user.atcoderId ||
+            user.codeforcesId ||
+            user.yukicoderId ||
+            user.mofeId ||
+            user.githubId ||
+            user.xId,
+    );
 }
