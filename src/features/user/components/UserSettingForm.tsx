@@ -258,6 +258,24 @@ export function UserSettingsForm({ user }: { user: User }) {
                                         </FormItem>
                                     )}
                                 />
+
+                                <FormField
+                                    control={form.control}
+                                    name="blogURL"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>ブログの URL</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="ブログの URL"
+                                                    {...field}
+                                                    value={field.value || ""}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
                         </div>
                     </CardContent>

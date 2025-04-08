@@ -6,6 +6,7 @@ import { getUserProblemList } from "@/features/problemlist/db/getUserProblemList
 import { Separator } from "@/components/ui/separator";
 import { Book } from "lucide-react";
 import { auth } from "@/lib/auth";
+import { fetchYukicoderUserUrl } from "@/features/user/utils/fetchYukicoderUserUrl";
 
 export default async function UserPage({ params }: { params: Promise<{ id: string }> }) {
     const userId = (await params).id;
@@ -14,7 +15,8 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
     if (!user) {
         notFound();
     }
-
+    const yukicoderUrl = await fetchYukicoderUserUrl(user.yukicoderId);
+    console.log("yukicoderUrl", yukicoderUrl);
     const session = await auth();
     const isAuthor = session?.user.id === userId;
 
@@ -23,12 +25,10 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
     return (
         <div className="container mx-auto px-4 py-8 max-w-6xl">
             <div className="space-y-10">
-                {/* ユーザープロフィールセクション */}
                 <section>
-                    <UserProfile user={user} />
+                    <UserProfile user={user} yukicoderUrl={yukicoderUrl} />
                 </section>
 
-                {/* 作成した問題リストセクション */}
                 <section className="mt-12">
                     <div className="flex items-center mb-6">
                         <Book className="h-6 w-6 mr-3 text-blue-600" />

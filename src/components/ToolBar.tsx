@@ -13,7 +13,7 @@ export async function ToolBar() {
             <div className="container mx-auto px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                     <Link href="/" className="flex items-center space-x-2">
-                        <span className="font-bold text-xl text-green-600">AtCoder Problemset</span>
+                        <span className="font-bold text-xl text-green-600">CP Problemlist</span>
                     </Link>
                     <nav className="hidden md:flex items-center space-x-4">
                         <Button variant="ghost" size="sm" asChild>
