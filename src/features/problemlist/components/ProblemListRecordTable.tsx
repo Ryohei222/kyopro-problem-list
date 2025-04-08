@@ -3,13 +3,18 @@
 import { useState } from "react";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import ProblemTableRow from "./problem-table-row";
-import { ProblemSetProblem } from "../types/ProblemSetProblem";
+import ProblemTableRow from "./ProblemListRecord";
+import { ProblemListRecordResponse } from "../types/ProblemLists";
+import { createProblemKey } from "@/types/Problem";
 
 type SortField = "order";
 type SortDirection = "asc" | "desc";
 
-export function ProblemTable({ problems }: { problems: ProblemSetProblem[] }) {
+export function ProblemListRecordTable({
+    problemListRecords,
+}: {
+    problemListRecords: ProblemListRecordResponse[];
+}) {
     const [sortField, setSortField] = useState<SortField>("order");
     const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
@@ -22,7 +27,7 @@ export function ProblemTable({ problems }: { problems: ProblemSetProblem[] }) {
         }
     };
 
-    const sortedRecords = problems.sort((a, b) => {
+    const sortedRecords = problemListRecords.sort((a, b) => {
         return sortDirection === "asc" ? a[sortField] - b[sortField] : b[sortField] - a[sortField];
     });
 
@@ -63,12 +68,10 @@ export function ProblemTable({ problems }: { problems: ProblemSetProblem[] }) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {sortedRecords.map((problem) => (
+                        {sortedRecords.map((problemListRecord) => (
                             <ProblemTableRow
-                                key={
-                                    problem.problemProvider + problem.contestId + problem.problemId
-                                }
-                                problemSetProblem={problem}
+                                key={createProblemKey(problemListRecord.problem)}
+                                problemListRecord={problemListRecord}
                             />
                         ))}
                     </TableBody>

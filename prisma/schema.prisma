@@ -43,25 +43,24 @@ model Account {
 }
 
 model User {
-  id            String       @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String
-  email         String       @unique
+  email         String        @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  AtCoderId     String?
-  CodeforcesId  String?
-  YukicoderId   String?
-  AOJId         String?
-  MOFEId        String?
-  GitHubId      String?
-  XId           String?
-  BlogURL       String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  problemset    ProblemSet[]
-  star          Star[]
+  atcoderId     String?
+  yukicoderId   String?
+  aojId         String?
+  mofeId        String?
+  githubId      String?
+  xId           String?
+  blogURL       String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  problemLists  ProblemList[]
+  stars         Star[]
 }
 
 model Session {
@@ -81,7 +80,7 @@ model VerificationToken {
   @@id([identifier, token])
 }
 
-enum ProblemProvider {
+enum Resource {
   ATCODER
   CODEFORCES
   YUKICODER
@@ -90,45 +89,45 @@ enum ProblemProvider {
 }
 
 model Problem {
-  id                Int                 @id @default(autoincrement())
-  provider          ProblemProvider     @default(ATCODER)
-  contestId         String
-  problemId         String
-  title             String
-  difficulty        Int?
-  problemSetProblem ProblemSetProblem[]
+  id                 Int                 @id @default(autoincrement())
+  resource           Resource            @default(ATCODER)
+  contestId          String
+  problemId          String
+  name               String
+  difficulty         Int?
+  problemListRecords ProblemListRecord[]
 }
 
-model ProblemSet {
-  id                 Int                 @id @default(autoincrement())
+model ProblemList {
+  id                 String              @id @default(cuid())
   name               String
   authorId           String
   description        String
   isPublic           Boolean             @default(false)
   author             User                @relation(fields: [authorId], references: [id])
-  problemSetProblems ProblemSetProblem[]
+  problemListRecords ProblemListRecord[]
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   stars              Star[]
 }
 
-model ProblemSetProblem {
-  id           Int        @id @default(autoincrement())
-  problemSetId Int
-  problemId    Int
-  memo         String
-  hint         String
-  order        Int
-  problemSet   ProblemSet @relation(fields: [problemSetId], references: [id])
-  problem      Problem    @relation(fields: [problemId], references: [id])
+model ProblemListRecord {
+  id            Int         @id @default(autoincrement())
+  problemListId String
+  problemId     Int
+  memo          String
+  hint          String
+  order         Int
+  problemList   ProblemList @relation(fields: [problemListId], references: [id])
+  problem       Problem     @relation(fields: [problemId], references: [id])
 }
 
 model Star {
-  id           Int        @id @default(autoincrement())
-  userId       String
-  problemSetId Int
-  user         User       @relation(fields: [userId], references: [id])
-  problemSet   ProblemSet @relation(fields: [problemSetId], references: [id])
+  id            String      @id @default(cuid())
+  userId        String
+  problemListId String
+  user          User        @relation(fields: [userId], references: [id])
+  problemSet    ProblemList @relation(fields: [problemListId], references: [id])
 
-  @@unique([userId, problemSetId], name: "star_identifier")
+  @@unique([userId, problemListId], name: "star_identifier")
 }

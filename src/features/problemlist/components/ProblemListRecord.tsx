@@ -1,55 +1,51 @@
 import { TableCell, TableRow } from "@/components/ui/table";
-import { ProblemSetProblem } from "../types/ProblemSetProblem";
 import { buildProblemUrl } from "@/features/problemset/utils/buildProblemUrl";
 import { useState } from "react";
+import { ProblemListRecordResponse } from "../types/ProblemLists";
 
-export default function ProblemTableRow({
-    problemSetProblem,
+export default function ProblemListRecord({
+    problemListRecord,
 }: {
-    problemSetProblem: ProblemSetProblem;
+    problemListRecord: ProblemListRecordResponse;
 }) {
     const [showHint, setShowHint] = useState(false);
-
+    const { problem, memo, hint, order } = problemListRecord;
     return (
-        <TableRow key={problemSetProblem.order} className="hover:bg-gray-50">
-            <TableCell className="font-mono">{problemSetProblem.order}</TableCell>
+        <TableRow key={order} className="hover:bg-gray-50">
+            <TableCell className="font-mono">{order}</TableCell>
             <TableCell>
                 <a
                     href={buildProblemUrl({
-                        problemProvider: problemSetProblem.problemProvider,
-                        problemId: problemSetProblem.problemId,
-                        contestId: problemSetProblem.contestId,
+                        problemProvider: problem.resource,
+                        problemId: problem.problemId,
+                        contestId: problem.contestId,
                     })}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center space-x-2"
                 >
                     <div>
-                        <div className="font-medium">{problemSetProblem.title}</div>
+                        <div className="font-medium">{problemListRecord.problem.name}</div>
                         <div className="text-xs text-gray-500">
-                            {problemSetProblem.problemProvider.toLowerCase() +
-                                (problemSetProblem.problemProvider === "ATCODER" ||
-                                problemSetProblem.problemProvider === "CODEFORCES"
-                                    ? " - " + problemSetProblem.contestId
-                                    : "")}
+                            {problem.resource.toLowerCase()}
                         </div>
                     </div>
                 </a>
             </TableCell>
-            <TableCell className="text">{problemSetProblem.memo}</TableCell>
+            <TableCell className="text">{memo}</TableCell>
             <TableCell
                 className="relative group"
                 onMouseEnter={() => setShowHint(true)}
                 onMouseLeave={() => setShowHint(false)}
             >
-                {problemSetProblem.hint ? (
+                {hint ? (
                     <>
                         <div className="text-gray-400 italic cursor-help">
                             {!showHint && "カーソルを合わせてヒントを表示"}
                         </div>
                         {showHint && (
                             <div className="bg-yellow-50 p-2 rounded shadow-sm border border-yellow-200">
-                                {problemSetProblem.hint}
+                                {hint}
                             </div>
                         )}
                     </>

@@ -16,45 +16,36 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { PUTRequestBody } from "../types/api";
 import { buildProblemUrl } from "@/features/problemset/utils/buildProblemUrl";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import type { ProblemSetProblem } from "../types/ProblemSetProblem";
-
-import DraggableRow from "../../problemlist/components/DraggableRow";
-import ProblemSetNameInput from "../../problemlist/components/ProblemSetNameInput";
-import ProblemSetDescriptionInput from "../../problemlist/components/ProblemSetDescriptionInput";
-import ProblemSetIsPublicInput from "../../problemlist/components/ProblemSetIsPublicInput";
-import AddProblemForm from "../../problemlist/components/AddProblem";
+import DraggableRow from "./DraggableRow";
+import ProblemSetNameInput from "./ProblemSetNameInput";
+import ProblemSetDescriptionInput from "./ProblemSetDescriptionInput";
+import ProblemSetIsPublicInput from "./ProblemSetIsPublicInput";
+import AddProblemForm from "./AddProblem";
+import { updateProblemList } from "../db/updateProblemList";
+import { ProblemListRecordResponse, ProblemListResponse } from "../types/ProblemLists";
 
 export default function EditProblemListForm({
-    problemSet,
+    problemList,
 }: {
-    problemSet: NonNullable<Prisma.PromiseReturnType<typeof getProblemSetById>>;
+    problemList: NonNullable<ProblemListResponse>;
 }) {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [name, setName] = useState(problemSet.name);
-    const [description, setDescription] = useState(problemSet.description);
-    const [isPublic, setIsPublic] = useState(problemSet.isPublic);
-    const [problems, setProblems] = useState<ProblemSetProblem[]>(
-        problemSet.problemSetProblems.map((p) => ({
-            problemProvider: p.problem.provider,
-            contestId: p.problem.contestId,
-            problemId: p.problem.problemId,
-            title: p.problem.title,
-            memo: p.memo,
-            hint: p.hint,
-            order: p.order,
-        })),
+    const [name, setName] = useState(problemList.name);
+    const [description, setDescription] = useState(problemList.description);
+    const [isPublic, setIsPublic] = useState(problemList.isPublic);
+    const [problems, setProblems] = useState<ProblemListRecordResponse[]>(
+        problemList.problemListRecords,
     );
     const [error, setError] = useState<string | null>(null);
     const { problems: allProblems } = useProblems();
 
     // 問題追加
-    const handleAddProblem = (problem: ProblemSetProblem) => {
+    const handleAddProblem = (problem: ProblemListRecordResponse) => {
         setProblems((prev) => [...prev, problem]);
     };
 
@@ -90,30 +81,27 @@ export default function EditProblemListForm({
                 order: index + 1,
             }));
 
-            const requestData: PUTRequestBody = {
-                id: problemSet.id,
+            const response = await updateProblemList({
+                id: problemList.id,
                 name,
                 description,
                 isPublic,
-                problemSetProblems: reorderedProblems,
-            };
-
-            const response = await fetch(`/api/problemset/${problemSet.id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestData),
+                problemListRecords: reorderedProblems.map((record) => ({
+                    resource: record.problem.resource,
+                    contestId: record.problem.contestId,
+                    problemId: record.problem.problemId,
+                    memo: record.memo,
+                    hint: record.hint,
+                    order: record.order,
+                })),
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || "問題リストの更新に失敗しました");
+            if (!response.success) {
+                throw new Error(response.error || "問題リストの更新に失敗しました");
             }
 
             // 更新成功
-            router.push(`/problemset/show/${problemSet.id}`);
+            router.push(`/problemset/show/${problemList.id}`);
             router.refresh();
         } catch (err) {
             console.error("更新エラー:", err);
@@ -196,9 +184,9 @@ export default function EditProblemListForm({
                                         <TableBody>
                                             {problems
                                                 .sort((a, b) => a.order - b.order)
-                                                .map((problem, index) => {
+                                                .map((record, index) => {
                                                     const problemDetail = getProblemDetails(
-                                                        problem.problemId,
+                                                        record.problem.problemId,
                                                     );
                                                     const problemUrl = problemDetail
                                                         ? buildProblemUrl({
@@ -214,7 +202,7 @@ export default function EditProblemListForm({
                                                             key={index}
                                                             index={index}
                                                             moveRow={moveRow}
-                                                            id={problem.problemId}
+                                                            id={record.problem.problemId}
                                                         >
                                                             <TableCell>
                                                                 <div className="flex items-center gap-2">
@@ -224,7 +212,7 @@ export default function EditProblemListForm({
                                                                     <Input
                                                                         type="number"
                                                                         min="1"
-                                                                        value={problem.order}
+                                                                        value={record.order}
                                                                         onChange={(e) =>
                                                                             handleReorderProblem(
                                                                                 index,
@@ -269,7 +257,7 @@ export default function EditProblemListForm({
                                                             </TableCell>
                                                             <TableCell>
                                                                 <Input
-                                                                    value={problem.memo}
+                                                                    value={record.memo}
                                                                     onChange={(e) => {
                                                                         const newProblems = [
                                                                             ...problems,
@@ -282,7 +270,7 @@ export default function EditProblemListForm({
                                                             </TableCell>
                                                             <TableCell>
                                                                 <Input
-                                                                    value={problem.hint}
+                                                                    value={record.hint}
                                                                     onChange={(e) => {
                                                                         const newProblems = [
                                                                             ...problems,

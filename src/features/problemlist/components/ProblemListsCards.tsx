@@ -1,30 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Star, Search, ChevronDown, ChevronUp, Calendar, User } from "lucide-react";
-import { getPublicProblemSets } from "../db/getPublicProblemSets";
-
-import { Resolve, ReturnType } from "@/lib/utils";
+import { Star, Search, Calendar, User } from "lucide-react";
 import { formatDate } from "@/utils/formatDate";
+import { ProblemListsResponse } from "../types/ProblemLists";
 
 type SortField = "name" | "author" | "stars" | "createdAt";
 type SortDirection = "asc" | "desc";
 
-export function ProblemListCards({
-    problemLists,
-}: {
-    problemLists: Resolve<ReturnType<typeof getPublicProblemSets>>;
-}) {
+export function ProblemListsCards({ problemLists }: { problemLists: ProblemListsResponse }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [sortField, setSortField] = useState<SortField>("stars");
     const [sortDirection, setSortDirection] = useState<SortDirection>("desc");

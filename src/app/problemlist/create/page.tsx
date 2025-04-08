@@ -1,4 +1,4 @@
-import { CreateProblemListForm } from "@/features/problemset/components/create-problem-list-form";
+import { CreateProblemListForm } from "@/features/problemlist/components/CreateProblemListForm";
 
 export default function CreateProblemSetPage() {
     return (

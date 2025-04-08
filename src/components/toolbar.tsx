@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Home, Plus, Star } from "lucide-react";
-import LoginButton from "./login-button";
+import LoginButton from "./LoginButton";
 import { auth } from "@/lib/auth";
 import MyPageButton from "./MyPageButton";
 
@@ -33,7 +33,7 @@ export async function Toolbar() {
                         {isLoggedIn && (
                             <Button variant="ghost" size="sm" asChild>
                                 <Link
-                                    href="/problemset/create"
+                                    href="/problemlist/create"
                                     className="flex items-center space-x-1"
                                 >
                                     <Plus className="h-4 w-4" />

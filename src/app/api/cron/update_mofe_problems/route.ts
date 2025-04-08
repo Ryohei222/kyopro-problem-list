@@ -1,6 +1,6 @@
-import updateProblems from "@/features/problemset/db/updateProblems";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import updateProblems from "@/features/problem/db/updateProblems";
 
 const MOFEContestsSchema = z.object({
     slug: z.string(),
@@ -96,10 +96,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const createdProblems = await updateProblems(
             problems.map((problem) => ({
-                provider: "MOFE",
+                resource: "MOFE",
                 contestId: contest.slug,
                 problemId: problem.slug,
-                title: problem.name,
+                name: problem.name,
             })),
         );
 

@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { Session } from "next-auth";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/prisma";
-import { ProblemProvider } from "@prisma/client";
+import { Resource } from "@prisma/client";
 
 export async function GET(
     req: NextRequest,
-    { params }: { params: Promise<{ provider: string }> },
+    { params }: { params: Promise<{ resource: string }> },
 ): Promise<NextResponse> {
     const session: Session | null = await auth();
     if (!session) {
@@ -17,21 +17,21 @@ export async function GET(
         return NextResponse.json({ error: "User ID not found" }, { status: 400 });
     }
 
-    const provider = (await params).provider.toUpperCase() as ProblemProvider;
+    const resource = (await params).resource.toUpperCase() as Resource;
 
-    if (provider !== ProblemProvider.MOFE) {
+    if (resource !== Resource.MOFE) {
         return NextResponse.json({ error: "Provider not found" }, { status: 400 });
     }
 
     const problems = await prisma.problem.findMany({
         select: {
-            provider: true,
+            resource: true,
             contestId: true,
             problemId: true,
-            title: true,
+            name: true,
         },
         where: {
-            provider: provider,
+            resource: resource,
         },
     });
     return NextResponse.json(problems);

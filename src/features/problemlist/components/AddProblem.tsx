@@ -2,14 +2,16 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type { ProblemSetProblem } from "../types/ProblemSetProblem";
-import { ProblemProvider } from "@prisma/client";
+import { Resource } from "@prisma/client";
 import { Label } from "@radix-ui/react-label";
 import { Plus } from "lucide-react";
 import React, { ReactElement, useState } from "react";
-import useProblems from "../hooks/useProblems";
-import extractProblemFromUrl from "../utils/extractProblemFromUrl";
-import { APIProblem } from "../types/Problem";
+import useProblems from "@/hooks/useProblems";
+import extractProblemFromUrl from "@/features/problem/utils/extractProblemFromUrl";
+import { APIProblem } from "@/types/Problem";
+import { ProblemListRecordResponse } from "../types/ProblemLists";
+import { createProblemKey } from "@/types/Problem";
+import { create } from "domain";
 
 function searchProblemFromUrl(url: string, problems: APIProblem[]): APIProblem | null {
     const extractedProblem = extractProblemFromUrl(url);
@@ -20,12 +22,7 @@ function searchProblemFromUrl(url: string, problems: APIProblem[]): APIProblem |
         return null;
     }
     const ret =
-        problems.find(
-            (p) =>
-                p.provider === extractedProblem.problemProvider &&
-                p.contestId === extractedProblem.contestId &&
-                p.problemId === extractedProblem.problemId,
-        ) || null;
+        problems.find((p) => createProblemKey(p) === createProblemKey(extractedProblem)) || null;
     return ret;
 }
 
@@ -48,8 +45,8 @@ export default function AddProblemForm({
     onAddProblem,
     existingProblems,
 }: {
-    onAddProblem: (problem: ProblemSetProblem) => void;
-    existingProblems: ProblemSetProblem[];
+    onAddProblem: (problem: ProblemListRecordResponse) => void;
+    existingProblems: ProblemListRecordResponse[];
 }) {
     const { problems } = useProblems();
     const [url, setUrl] = useState("");
@@ -59,8 +56,8 @@ export default function AddProblemForm({
     const [showForm, setShowForm] = useState(false);
 
     const [previewProblem, setPreviewProblem] = useState<{
-        title: string;
-        provider: ProblemProvider;
+        name: string;
+        resource: Resource;
         contestId: string;
         problemId: string;
     } | null>(null);
@@ -92,7 +89,9 @@ export default function AddProblemForm({
             return;
         }
 
-        const isDuplicate = existingProblems.some((p) => p.problemId === problem.problemId);
+        const isDuplicate = existingProblems.some(
+            (p) => createProblemKey(p.problem) === createProblemKey(problem),
+        );
         if (isDuplicate) {
             setPreviewProblem(null);
             setError("この問題は既にリストに追加されています");
@@ -100,12 +99,7 @@ export default function AddProblemForm({
         }
 
         setError(null);
-        setPreviewProblem({
-            title: problem.title,
-            provider: problem.provider,
-            contestId: problem.contestId,
-            problemId: problem.problemId,
-        });
+        setPreviewProblem(problem);
     }
 
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -120,7 +114,9 @@ export default function AddProblemForm({
         }
 
         // 問題が既に追加されているか確認
-        const isDuplicate = existingProblems.some((p) => p.problemId === problem.problemId);
+        const isDuplicate = existingProblems.some(
+            (p) => createProblemKey(p.problem) === createProblemKey(problem),
+        );
         if (isDuplicate) {
             setError("この問題は既にリストに追加されています");
             return;
@@ -128,13 +124,12 @@ export default function AddProblemForm({
 
         // 新しい問題の順序は既存の問題の最大順序+1
         const newProblemOrder = existingProblems.length + 1;
-
         // 問題を追加
         onAddProblem({
-            problemProvider: problem.provider,
-            problemId: problem.problemId,
-            contestId: problem.contestId,
-            title: problem.title,
+            problem: {
+                ...problem,
+                difficulty: 0,
+            },
             memo,
             hint,
             order: newProblemOrder,
@@ -191,11 +186,11 @@ export default function AddProblemForm({
                         <div className="text-sm">
                             <div>
                                 <span className="font-semibold">タイトル:</span>{" "}
-                                {previewProblem.title}
+                                {previewProblem.name}
                             </div>
                             <div>
                                 <span className="font-semibold">出典:</span>
-                                {previewProblem.provider} / {previewProblem.contestId} /{" "}
+                                {previewProblem.resource} / {previewProblem.contestId} /{" "}
                                 {previewProblem.problemId}
                             </div>
                         </div>

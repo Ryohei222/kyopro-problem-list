@@ -1,5 +1,3 @@
-import { Session } from "next-auth";
-
 import Link from "next/link";
 
 export default function MyPageButton({ userId }: { userId: string }) {
