@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Home, Plus, Star } from "lucide-react";
+import { Home, Plus, Star, Settings } from "lucide-react";
 import LoginButton from "./LoginButton";
 import MyPageButton from "./MyPageButton";
 import { auth } from "@/lib/auth";
 
-export async function Toolbar() {
+export async function ToolBar() {
     const session = await auth();
     const isLoggedIn = !!session?.user;
     return (
@@ -23,23 +23,29 @@ export async function Toolbar() {
                             </Link>
                         </Button>
                         {isLoggedIn && (
-                            <Button variant="ghost" size="sm" asChild>
-                                <Link href="/stared" className="flex items-center space-x-1">
-                                    <Star className="h-4 w-4" />
-                                    <span>お気に入りの問題リスト</span>
-                                </Link>
-                            </Button>
-                        )}
-                        {isLoggedIn && (
-                            <Button variant="ghost" size="sm" asChild>
-                                <Link
-                                    href="/problemlist/create"
-                                    className="flex items-center space-x-1"
-                                >
-                                    <Plus className="h-4 w-4" />
-                                    <span>新規作成</span>
-                                </Link>
-                            </Button>
+                            <>
+                                <Button variant="ghost" size="sm" asChild>
+                                    <Link href="/starred" className="flex items-center space-x-1">
+                                        <Star className="h-4 w-4" />
+                                        <span>お気に入りの問題リスト</span>
+                                    </Link>
+                                </Button>
+                                <Button variant="ghost" size="sm" asChild>
+                                    <Link
+                                        href="/problemlist/create"
+                                        className="flex items-center space-x-1"
+                                    >
+                                        <Plus className="h-4 w-4" />
+                                        <span>新規作成</span>
+                                    </Link>
+                                </Button>
+                                <Button variant="ghost" size="sm" asChild>
+                                    <Link href="/settings" className="flex items-center space-x-1">
+                                        <Settings className="h-4 w-4" />
+                                        <span>設定</span>
+                                    </Link>
+                                </Button>
+                            </>
                         )}
                     </nav>
                 </div>

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getUserById } from "@/features/user/db/getUser";
-import { UserSettingsForm } from "@/features/user/components/user-settings-form";
+import { UserSettingsForm } from "@/features/user/components/UserSettingForm";
 import { auth } from "@/lib/auth";
 
 export default async function SettingPage() {

@@ -47,17 +47,18 @@ model User {
   name          String
   email         String        @unique
   emailVerified DateTime?
-  image         String?
+  image         String        @default("")
   accounts      Account[]
   sessions      Session[]
-  aojId         String?
-  atcoderId     String?
-  codeforcesId  String?
-  yukicoderId   String?
-  mofeId        String?
-  githubId      String?
-  xId           String?
-  blogURL       String?
+  bio           String        @default("")
+  aojId         String        @default("")
+  atcoderId     String        @default("")
+  codeforcesId  String        @default("")
+  yukicoderId   String        @default("")
+  mofeId        String        @default("")
+  githubId      String        @default("")
+  xId           String        @default("")
+  blogURL       String        @default("")
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   problemLists  ProblemList[]

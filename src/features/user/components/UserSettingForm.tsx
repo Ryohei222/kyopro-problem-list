@@ -25,104 +25,37 @@ import {
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Save, Loader2 } from "lucide-react";
-import { AvatarUpload } from "./avater-upload";
 import { toast } from "sonner";
+import { UserForm, UserFormSchema } from "../types/User";
+import { User } from "@prisma/client";
+import { updateUser } from "../db/updateUser";
+import Image from "next/image";
+import { formatDate } from "@/utils/formatDate";
 
-type UserProps = {
-    id: string;
-    name: string;
-    displayName?: string;
-    bio?: string | null;
-    image?: string | null;
-    AtCoderId?: string | null;
-    CodeforcesId?: string | null;
-    XId?: string | null;
-    GitHubId?: string | null;
-    email: string;
-    createdAt: Date;
-    updatedAt: Date;
-};
-
-// フォームのバリデーションスキーマ
-const formSchema = z.object({
-    displayName: z
-        .string()
-        .min(2, { message: "名前は2文字以上である必要があります" })
-        .max(50, { message: "名前は50文字以内である必要があります" }),
-    bio: z
-        .string()
-        .max(500, { message: "自己紹介は500文字以内である必要があります" })
-        .optional()
-        .nullable(),
-    AtCoderId: z
-        .string()
-        .max(50, { message: "AtCoder IDは50文字以内である必要があります" })
-        .optional()
-        .nullable(),
-    CodeforcesId: z
-        .string()
-        .max(50, { message: "Codeforces IDは50文字以内である必要があります" })
-        .optional()
-        .nullable(),
-    XId: z
-        .string()
-        .max(15, { message: "X(Twitter) IDは15文字以内である必要があります" })
-        .optional()
-        .nullable(),
-    GitHubId: z
-        .string()
-        .max(39, { message: "GitHub IDは39文字以内である必要があります" })
-        .optional()
-        .nullable(),
-    image: z.string().optional().nullable(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
-export function UserSettingsForm({ user }: { user: UserProps }) {
+export function UserSettingsForm({ user }: { user: User }) {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [avatarPreview, setAvatarPreview] = useState<string | null>(user.image || null);
 
     // フォームの初期値
-    const defaultValues: Partial<FormValues> = {
-        displayName: user.displayName || user.name,
-        bio: user.bio || "",
-        AtCoderId: user.AtCoderId || "",
-        CodeforcesId: user.CodeforcesId || "",
-        XId: user.XId || "",
-        GitHubId: user.GitHubId || "",
-        image: user.image || null,
-    };
+    const defaultValues: UserForm = { ...user };
 
     // フォームの設定
-    const form = useForm<FormValues>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<UserForm>({
+        resolver: zodResolver(UserFormSchema),
         defaultValues,
         mode: "onChange",
     });
 
     // フォーム送信処理
-    const onSubmit = async (data: FormValues) => {
+    const onSubmit = async (data: UserForm) => {
         setIsSubmitting(true);
 
         try {
-            // APIリクエストを実行
-            const response = await fetch(`/api/user/${user.id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "設定の保存に失敗しました");
+            const response = await updateUser(data);
+            if (!response) {
+                throw new Error("ユーザー情報の更新に失敗しました");
             }
-
             toast.success("設定が保存されました");
             router.refresh(); // ページを再取得して最新のデータを表示
         } catch (error) {
@@ -143,35 +76,20 @@ export function UserSettingsForm({ user }: { user: UserProps }) {
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div className="flex flex-col md:flex-row gap-6">
-                            <div className="md:w-1/3">
-                                <FormField
-                                    control={form.control}
-                                    name="image"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>プロフィール画像</FormLabel>
-                                            <FormControl>
-                                                <AvatarUpload
-                                                    currentAvatar={avatarPreview}
-                                                    onAvatarChange={(url) => {
-                                                        setAvatarPreview(url);
-                                                        field.onChange(url);
-                                                    }}
-                                                />
-                                            </FormControl>
-                                            <FormDescription>
-                                                JPG、PNG、GIF形式、最大2MBまで
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
+                            <div className="md:w-1/3 flex justify-center items-center">
+                                <Image
+                                    src={user.image || "/placeholder.svg"}
+                                    alt={`${user.name}のプロフィール画像`}
+                                    width={200}
+                                    height={200}
+                                    className="rounded-full border-4 border-white shadow-md bg-white"
                                 />
                             </div>
 
                             <div className="md:w-2/3 space-y-4">
                                 <FormField
                                     control={form.control}
-                                    name="displayName"
+                                    name="name"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>表示名</FormLabel>
@@ -217,7 +135,7 @@ export function UserSettingsForm({ user }: { user: UserProps }) {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <FormField
                                     control={form.control}
-                                    name="AtCoderId"
+                                    name="atcoderId"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>AtCoder ID</FormLabel>
@@ -235,7 +153,7 @@ export function UserSettingsForm({ user }: { user: UserProps }) {
 
                                 <FormField
                                     control={form.control}
-                                    name="CodeforcesId"
+                                    name="codeforcesId"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Codeforces ID</FormLabel>
@@ -253,7 +171,61 @@ export function UserSettingsForm({ user }: { user: UserProps }) {
 
                                 <FormField
                                     control={form.control}
-                                    name="XId"
+                                    name="mofeId"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>MOFE ID</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="MOFE ID"
+                                                    {...field}
+                                                    value={field.value || ""}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="yukicoderId"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>yukicoder ID</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="yukicoder ID"
+                                                    {...field}
+                                                    value={field.value || ""}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="aojId"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>AOJ ID</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="AOJ ID"
+                                                    {...field}
+                                                    value={field.value || ""}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="xId"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>X (Twitter) ID</FormLabel>
@@ -271,7 +243,7 @@ export function UserSettingsForm({ user }: { user: UserProps }) {
 
                                 <FormField
                                     control={form.control}
-                                    name="GitHubId"
+                                    name="githubId"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>GitHub ID</FormLabel>
@@ -325,19 +297,17 @@ export function UserSettingsForm({ user }: { user: UserProps }) {
                     <CardContent className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <p className="text-sm font-medium text-gray-500">ユーザー名</p>
-                                <p className="mt-1">{user.name}</p>
-                                <p className="text-xs text-gray-500 mt-1">
-                                    ユーザー名は変更できません
-                                </p>
-                            </div>
-
-                            <div>
                                 <p className="text-sm font-medium text-gray-500">メールアドレス</p>
                                 <p className="mt-1">{user.email}</p>
                                 <p className="text-xs text-gray-500 mt-1">
-                                    メールアドレスは認証プロバイダーを通じて設定されています
+                                    メールアドレスは認証プロバイダーを通じて設定されています(他のユーザーには表示されません)
                                 </p>
+                            </div>
+                            <div>
+                                <p className="text-sm font-medium text-gray-500">
+                                    アカウント作成日
+                                </p>
+                                <p className="mt-1">{formatDate(user.createdAt)}</p>
                             </div>
                         </div>
                     </CardContent>
