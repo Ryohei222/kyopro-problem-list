@@ -17,6 +17,7 @@ import {
 import { buildProblemUrl } from "@/utils/buildProblemUrl";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { Textarea } from "@/components/ui/textarea";
 
 import DraggableRow from "./DraggableRow";
 import ProblemSetNameInput from "./ProblemSetNameInput";
@@ -25,6 +26,7 @@ import ProblemSetIsPublicInput from "./ProblemSetIsPublicInput";
 import AddProblemForm from "./AddProblem";
 import { updateProblemList } from "../db/updateProblemList";
 import { ProblemListRecordResponse, ProblemListResponse } from "../types/ProblemLists";
+import { APIProblem, createProblemKey } from "@/types/Problem";
 
 export default function EditProblemListForm({
     problemList,
@@ -41,6 +43,12 @@ export default function EditProblemListForm({
     );
     const [error, setError] = useState<string | null>(null);
     const { problems: allProblems } = useProblems();
+
+    // フォーカス状態を管理する状態
+    const [focusedCell, setFocusedCell] = useState<{
+        index: number;
+        field: "memo" | "hint";
+    } | null>(null);
 
     // 問題追加
     const handleAddProblem = (problem: ProblemListRecordResponse) => {
@@ -60,9 +68,9 @@ export default function EditProblemListForm({
     };
 
     // 問題IDから問題の詳細情報を取得
-    const getProblemDetails = (problemId: string) => {
-        const problem = allProblems.find((p) => p.problemId === problemId);
-        return problem || null;
+    const getProblemDetails = (problem: APIProblem) => {
+        const result = allProblems.find((p) => createProblemKey(p) === createProblemKey(problem));
+        return result || null;
     };
 
     // フォーム送信
@@ -184,11 +192,18 @@ export default function EditProblemListForm({
                                                 .sort((a, b) => a.order - b.order)
                                                 .map((record, index) => {
                                                     const problemDetail = getProblemDetails(
-                                                        record.problem.problemId,
+                                                        record.problem,
                                                     );
                                                     const problemUrl = problemDetail
                                                         ? buildProblemUrl({ ...problemDetail })
                                                         : "#";
+
+                                                    const isMemoFocused =
+                                                        focusedCell?.index === index &&
+                                                        focusedCell?.field === "memo";
+                                                    const isHintFocused =
+                                                        focusedCell?.index === index &&
+                                                        focusedCell?.field === "hint";
 
                                                     return (
                                                         <DraggableRow
@@ -248,8 +263,14 @@ export default function EditProblemListForm({
                                                                     </span>
                                                                 )}
                                                             </TableCell>
-                                                            <TableCell>
-                                                                <Input
+                                                            <TableCell
+                                                                className={`transition-all duration-200 ${
+                                                                    isMemoFocused
+                                                                        ? "p-0 min-w-[300px]"
+                                                                        : ""
+                                                                }`}
+                                                            >
+                                                                <Textarea
                                                                     value={record.memo}
                                                                     onChange={(e) => {
                                                                         const newProblems = [
@@ -259,10 +280,31 @@ export default function EditProblemListForm({
                                                                             e.target.value;
                                                                         setProblems(newProblems);
                                                                     }}
+                                                                    onFocus={() =>
+                                                                        setFocusedCell({
+                                                                            index,
+                                                                            field: "memo",
+                                                                        })
+                                                                    }
+                                                                    onBlur={() =>
+                                                                        setFocusedCell(null)
+                                                                    }
+                                                                    className={`resize-none transition-all duration-200 ${
+                                                                        isMemoFocused
+                                                                            ? "min-h-[120px]"
+                                                                            : "h-9"
+                                                                    }`}
+                                                                    placeholder="メモを入力"
                                                                 />
                                                             </TableCell>
-                                                            <TableCell>
-                                                                <Input
+                                                            <TableCell
+                                                                className={`transition-all duration-200 ${
+                                                                    isHintFocused
+                                                                        ? "p-0 min-w-[300px]"
+                                                                        : ""
+                                                                }`}
+                                                            >
+                                                                <Textarea
                                                                     value={record.hint}
                                                                     onChange={(e) => {
                                                                         const newProblems = [
@@ -272,10 +314,26 @@ export default function EditProblemListForm({
                                                                             e.target.value;
                                                                         setProblems(newProblems);
                                                                     }}
+                                                                    onFocus={() =>
+                                                                        setFocusedCell({
+                                                                            index,
+                                                                            field: "hint",
+                                                                        })
+                                                                    }
+                                                                    onBlur={() =>
+                                                                        setFocusedCell(null)
+                                                                    }
+                                                                    className={`resize-none transition-all duration-200 ${
+                                                                        isHintFocused
+                                                                            ? "min-h-[120px]"
+                                                                            : "h-9"
+                                                                    }`}
+                                                                    placeholder="ヒントを入力"
                                                                 />
                                                             </TableCell>
                                                             <TableCell>
                                                                 <Button
+                                                                    type="button"
                                                                     variant="outline"
                                                                     size="sm"
                                                                     onClick={() =>

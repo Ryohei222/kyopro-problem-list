@@ -102,6 +102,7 @@ export default function AddProblemForm({
 
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        e.stopPropagation(); // 親フォームへのイベントの伝播を防止
         setError(null);
 
         // URLから問題を検索
