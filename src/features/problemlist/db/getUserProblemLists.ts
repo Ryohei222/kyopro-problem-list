@@ -1,7 +1,7 @@
 import { prisma } from "@/prisma";
 
-export async function getUserProblemSets(authorId: string, needPublic: boolean) {
-    const problemSets = await prisma.problemSet.findMany({
+export async function getUserProblemList(authorId: string, needPublic: boolean) {
+    const problemSets = await prisma.problemList.findMany({
         select: {
             id: true,
             name: true,
@@ -16,7 +16,7 @@ export async function getUserProblemSets(authorId: string, needPublic: boolean) 
             _count: {
                 select: {
                     stars: true,
-                    problemSetProblems: true,
+                    problemListRecords: true,
                 },
             },
             isPublic: true,

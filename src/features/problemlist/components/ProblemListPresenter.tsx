@@ -1,4 +1,4 @@
-import { ProblemSetStarButton } from "@/components/star-button";
+import { ProblemListStarButton } from "@/components/ProblemListStarButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ProblemListRecordTable } from "./ProblemListRecordTable";
@@ -32,7 +32,6 @@ export async function ProblemListPresenter({
                                     {problemList.author.name}
                                 </Link>
                             </span>
-
                             <span className="flex items-center">
                                 <Calendar className="h-4 w-4 mr-1" />
                                 {formatDate(problemList.createdAt)}
@@ -42,23 +41,22 @@ export async function ProblemListPresenter({
                             </Badge>
                         </CardDescription>
                     </div>
-
                     <div className="flex space-x-2">
-                        {logined && <ProblemSetStarButton problemSet={problemList} />}
-
+                        {logined && <ProblemListStarButton problemList={problemList} />}
                         <Button variant="outline" size="sm">
                             <Share2 className="h-4 w-4 mr-1" />
                             <span>共有</span>
                         </Button>
-
                         {isAuthor && (
-                            <Link
-                                href={`/problemlist/edit/${problemList.id}`}
-                                className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
-                            >
-                                <Edit className="h-4 w-4 mr-1" />
-                                <span>編集</span>
-                            </Link>
+                            <>
+                                <a
+                                    href={`/problemlist/edit/${problemList.id}`}
+                                    className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                                >
+                                    <Edit className="h-4 w-4 mr-1" />
+                                    <span>編集</span>
+                                </a>
+                            </>
                         )}
                     </div>
                 </div>

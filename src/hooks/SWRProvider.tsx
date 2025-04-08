@@ -17,7 +17,7 @@ const gcStorageHandler = {
             ? timestampStorageHandler.revive(key, storeObject)
             : undefined,
     replace: (key: string, value: any) =>
-        !key.startsWith("/api/problemset/")
+        !key.startsWith("/api/problemlist/")
             ? timestampStorageHandler.replace(key, value)
             : undefined,
 };

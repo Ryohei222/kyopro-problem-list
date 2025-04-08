@@ -119,7 +119,7 @@ export function ProblemListsCards({ problemLists }: { problemLists: ProblemLists
                             <CardHeader>
                                 <CardTitle>
                                     <a
-                                        href={`/problemset/show/${list.id}`}
+                                        href={`/problemlist/show/${list.id}`}
                                         className="text-blue-600 hover:underline"
                                     >
                                         {list.name}

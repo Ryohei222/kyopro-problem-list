@@ -1,4 +1,4 @@
-import { BackButton } from "@/features/problemset/components/back-button";
+import { BackButton } from "@/features/problemlist/components/BackButton";
 import { notFound } from "next/navigation";
 import { ReactElement } from "react";
 import EditProblemListForm from "@/features/problemlist/components/EditProblemListForm";

@@ -1,7 +1,7 @@
 import { prisma } from "@/prisma";
 
-export async function getStaredProblemSets(userId: string) {
-    const problemSets = await prisma.problemSet.findMany({
+export async function getStarredProblemLists(userId: string) {
+    const problemLists = await prisma.problemList.findMany({
         select: {
             id: true,
             name: true,
@@ -17,7 +17,7 @@ export async function getStaredProblemSets(userId: string) {
             _count: {
                 select: {
                     stars: true,
-                    problemSetProblems: true,
+                    problemListRecords: true,
                 },
             },
             isPublic: true,
@@ -32,11 +32,11 @@ export async function getStaredProblemSets(userId: string) {
             },
         },
     });
-    const filteredProblemSets = problemSets.filter((problemSet) => {
+    const filteredProblemLists = problemLists.filter((problemList) => {
         return (
-            problemSet.stars.filter((star) => star.userId === userId).length > 0 &&
-            (problemSet.isPublic || problemSet.author.id === userId)
+            problemList.stars.filter((star) => star.userId === userId).length > 0 &&
+            (problemList.isPublic || problemList.author.id === userId)
         );
     });
-    return filteredProblemSets;
+    return filteredProblemLists;
 }

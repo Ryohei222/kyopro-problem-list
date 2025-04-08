@@ -1,8 +1,8 @@
 import { UserProfile } from "@/features/user/components/user-profile";
 import { notFound } from "next/navigation";
 import { getUserById } from "@/features/user/db/getUser";
-import { getUserProblemSets } from "@/features/problemset/db/getUserProblemSets";
-import { ProblemListCards } from "@/features/problemset/components/problem-list-cards";
+import { ProblemListsCards } from "@/features/problemlist/components/ProblemListsCards";
+import { getUserProblemList } from "@/features/problemlist/db/getUserProblemLists";
 import { Separator } from "@/components/ui/separator";
 import { Book } from "lucide-react";
 import { auth } from "@/lib/auth";
@@ -18,7 +18,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
     const session = await auth();
     const isAuthor = session?.user.id === userId;
 
-    const usersProblemSets = await getUserProblemSets(userId, !isAuthor);
+    const usersProblemSets = await getUserProblemList(userId, !isAuthor);
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -41,7 +41,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
 
                     {usersProblemSets && usersProblemSets.length > 0 ? (
                         <div className="grid grid-cols-1 gap-6">
-                            <ProblemListCards problemLists={usersProblemSets} />
+                            <ProblemListsCards problemLists={usersProblemSets} />
                         </div>
                     ) : (
                         <div className="text-center py-12 bg-gray-50 rounded-lg border border-gray-100">

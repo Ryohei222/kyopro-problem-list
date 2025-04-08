@@ -5,13 +5,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Resource } from "@prisma/client";
 import { Label } from "@radix-ui/react-label";
 import { Plus } from "lucide-react";
-import React, { ReactElement, useState } from "react";
+import React, { useState } from "react";
 import useProblems from "@/hooks/useProblems";
 import extractProblemFromUrl from "@/features/problem/utils/extractProblemFromUrl";
 import { APIProblem } from "@/types/Problem";
 import { ProblemListRecordResponse } from "../types/ProblemLists";
 import { createProblemKey } from "@/types/Problem";
-import { create } from "domain";
 
 function searchProblemFromUrl(url: string, problems: APIProblem[]): APIProblem | null {
     const extractedProblem = extractProblemFromUrl(url);
@@ -80,7 +79,6 @@ export default function AddProblemForm({
             return;
         }
 
-        console.log(url, problems);
         const problem = searchProblemFromUrl(newUrl, problems);
 
         if (!problem) {
@@ -163,6 +161,7 @@ export default function AddProblemForm({
                 {error && (
                     <div className="p-2 bg-red-50 border border-red-200 text-red-700 text-sm rounded-md">
                         <ProblemUrlErrorHelpComponent />
+                        <p className="mt-2">{error}</p>
                     </div>
                 )}
 

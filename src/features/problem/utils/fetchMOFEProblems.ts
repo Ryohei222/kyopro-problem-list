@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 import updateProblems from "@/features/problem/db/updateProblems";
-import { fetchMOFEProblems } from "@/features/problem/utils/fetchMOFEProblems";
+import { APIProblem } from "@/types/Problem";
+import { Resource } from "@prisma/client";
+import { z } from "zod";
 
 const MOFEContestsSchema = z.object({
     slug: z.string(),
@@ -55,19 +55,30 @@ const MOFEContestsByIdSchema = MOFEContestsSchema.extend({
 
 const URL = "https://api.mofecoder.com/api/contests";
 
-export async function GET(req: NextRequest): Promise<NextResponse> {
-    const authHeader = req.headers.get("authorization");
-    if (
-        authHeader !== `Bearer ${process.env.CRON_SECRET}` &&
-        process.env.NODE_ENV !== "development"
-    ) {
-        return new NextResponse("Unauthorized", {
-            status: 401,
-        });
+export async function fetchMOFEProblems(): Promise<APIProblem[]> {
+    const contests = await fetch(URL)
+        .then((res) => res.json())
+        .then(MOFEContestsAPISchema.safeParse);
+    if (!contests.success) {
+        return [];
     }
-
-    const problems = await fetchMOFEProblems();
-    const result = await updateProblems(problems);
-
-    return NextResponse.json({ success: true, response: result });
+    let problems = [];
+    for (const contest of contests.data.past) {
+        const contestId = contest.slug;
+        const contestDetail = await fetch(`${URL}/${contestId}`)
+            .then((res) => res.json())
+            .then(MOFEContestsByIdSchema.safeParse);
+        if (!contestDetail.success) {
+            return [];
+        }
+        problems.push(
+            ...contestDetail.data.tasks.map((problem) => ({
+                name: problem.name,
+                contestId: contestId,
+                problemId: problem.slug,
+                resource: Resource.MOFE,
+            })),
+        );
+    }
+    return problems;
 }

@@ -1,5 +1,6 @@
 import { APIProblem, CreatedProblem } from "@/types/Problem";
 import { prisma } from "@/prisma";
+import { createProblemKey } from "@/types/Problem";
 
 export default async function updateProblems(problems: APIProblem[]): Promise<CreatedProblem[]> {
     const dbProblems = await prisma.problem.findMany({
@@ -11,10 +12,10 @@ export default async function updateProblems(problems: APIProblem[]): Promise<Cr
         },
     });
 
-    const dbProblemSet = new Set(dbProblems);
+    const dbProblemSet = new Set(dbProblems.map((problem) => createProblemKey(problem)));
 
     const createdProblems = await prisma.problem.createManyAndReturn({
-        data: problems.filter((problem) => !dbProblemSet.has(problem)),
+        data: problems.filter((problem) => !dbProblemSet.has(createProblemKey(problem))),
     });
 
     return createdProblems;

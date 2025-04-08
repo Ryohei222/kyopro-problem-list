@@ -50,9 +50,10 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  atcoderId     String?
-  yukicoderId   String?
   aojId         String?
+  atcoderId     String?
+  codeforcesId  String?
+  yukicoderId   String?
   mofeId        String?
   githubId      String?
   xId           String?
@@ -127,7 +128,7 @@ model Star {
   userId        String
   problemListId String
   user          User        @relation(fields: [userId], references: [id])
-  problemSet    ProblemList @relation(fields: [problemListId], references: [id])
+  problemList   ProblemList @relation(fields: [problemListId], references: [id])
 
   @@unique([userId, problemListId], name: "star_identifier")
 }

@@ -45,9 +45,9 @@ export function UserProfile({
                                             プロフィールリンク
                                         </p>
                                         <div className="flex flex-wrap gap-2">
-                                            {user.AtCoderId && (
+                                            {user.atcoderId && (
                                                 <a
-                                                    href={`https://atcoder.jp/users/${user.AtCoderId}`}
+                                                    href={`https://atcoder.jp/users/${user.atcoderId}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="inline-flex items-center text-sm hover:text-orange-600 bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-full transition-colors"
@@ -59,14 +59,14 @@ export function UserProfile({
                                                         height={16}
                                                         className="mr-1.5"
                                                     />
-                                                    <span className="ml-0.5">{user.AtCoderId}</span>
+                                                    <span className="ml-0.5">{user.atcoderId}</span>
                                                     <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
                                                 </a>
                                             )}
 
-                                            {user.CodeforcesId && (
+                                            {user.codeforcesId && (
                                                 <a
-                                                    href={`https://codeforces.com/profile/${user.CodeforcesId}`}
+                                                    href={`https://codeforces.com/profile/${user.codeforcesId}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="inline-flex items-center text-sm hover:text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-full transition-colors"
@@ -74,34 +74,34 @@ export function UserProfile({
                                                     <Code2 className="h-4 w-4 mr-1.5 text-red-500" />
                                                     <span className="font-medium">Codeforces:</span>
                                                     <span className="ml-1">
-                                                        {user.CodeforcesId}
+                                                        {user.codeforcesId}
                                                     </span>
                                                     <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
                                                 </a>
                                             )}
 
-                                            {user.GitHubId && (
+                                            {user.githubId && (
                                                 <a
-                                                    href={`https://github.com/${user.GitHubId}`}
+                                                    href={`https://github.com/${user.githubId}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="inline-flex items-center text-sm hover:text-gray-800 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition-colors"
                                                 >
                                                     <Github className="h-4 w-4 mr-1.5 text-gray-700" />
-                                                    <span className="ml-0.5">{user.GitHubId}</span>
+                                                    <span className="ml-0.5">{user.githubId}</span>
                                                     <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
                                                 </a>
                                             )}
 
-                                            {user.XId && (
+                                            {user.xId && (
                                                 <a
-                                                    href={`https://x.com/${user.XId}`}
+                                                    href={`https://x.com/${user.xId}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="inline-flex items-center text-sm hover:text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-full transition-colors"
                                                 >
                                                     <X className="h-4 w-4 mr-1.5 text-blue-500" />
-                                                    <span className="ml-0.5">{user.XId}</span>
+                                                    <span className="ml-0.5">{user.xId}</span>
                                                     <ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
                                                 </a>
                                             )}
@@ -121,5 +121,5 @@ export function UserProfile({
 function hasAnySocialLinks(
     user: NonNullable<Prisma.PromiseReturnType<typeof getUserById>>,
 ): boolean {
-    return Boolean(user.AtCoderId || user.CodeforcesId || user.GitHubId || user.XId);
+    return Boolean(user.atcoderId || user.codeforcesId || user.githubId || user.xId);
 }

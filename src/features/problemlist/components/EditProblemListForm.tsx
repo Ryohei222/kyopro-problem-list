@@ -1,9 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { getProblemSetById } from "@/features/problemset/db/ProblemSet";
-import { Prisma } from "@prisma/client";
 import { useState, FormEvent } from "react";
-import useProblems from "@/features/problemset/hooks/useProblems";
+import useProblems from "@/hooks/useProblems";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -16,8 +14,8 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { buildProblemUrl } from "@/features/problemset/utils/buildProblemUrl";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { buildProblemUrl } from "@/utils/buildProblemUrl";
+import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 import DraggableRow from "./DraggableRow";
@@ -101,7 +99,7 @@ export default function EditProblemListForm({
             }
 
             // 更新成功
-            router.push(`/problemset/show/${problemList.id}`);
+            router.push(`/problemlist/show/${problemList.id}`);
             router.refresh();
         } catch (err) {
             console.error("更新エラー:", err);
@@ -189,12 +187,7 @@ export default function EditProblemListForm({
                                                         record.problem.problemId,
                                                     );
                                                     const problemUrl = problemDetail
-                                                        ? buildProblemUrl({
-                                                              problemProvider:
-                                                                  problemDetail.provider,
-                                                              contestId: problemDetail.contestId,
-                                                              problemId: problemDetail.problemId,
-                                                          })
+                                                        ? buildProblemUrl({ ...problemDetail })
                                                         : "#";
 
                                                     return (
@@ -234,7 +227,7 @@ export default function EditProblemListForm({
                                                                         rel="noopener noreferrer"
                                                                         className="text-blue-600 hover:underline flex items-center gap-1"
                                                                     >
-                                                                        {problemDetail.title}
+                                                                        {problemDetail.name}
                                                                         <ExternalLink className="h-3 w-3" />
                                                                     </a>
                                                                 ) : (
@@ -246,7 +239,7 @@ export default function EditProblemListForm({
                                                             <TableCell>
                                                                 {problemDetail ? (
                                                                     <span className="text-sm">
-                                                                        {problemDetail.provider} /{" "}
+                                                                        {problemDetail.resource} /{" "}
                                                                         {problemDetail.contestId}
                                                                     </span>
                                                                 ) : (

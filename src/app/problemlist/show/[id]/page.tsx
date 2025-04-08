@@ -1,15 +1,15 @@
-import { BackButton } from "@/features/problemset/components/back-button";
 import { ProblemListContainer } from "@/features/problemlist/components/ProblemListContainer";
+import { BackButton } from "@/features/problemlist/components/BackButton";
 
-export default async function ProblemSetShowPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ProblemListShowPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     if (!id) {
-        throw new Error("Problem set ID is required");
+        throw new Error("Problem list ID is required");
     }
     return (
         <div className="space-y-6">
             <BackButton />
-            <ProblemListContainer problemListId={id}></ProblemListContainer>
+            <ProblemListContainer problemListId={id} />
         </div>
     );
 }

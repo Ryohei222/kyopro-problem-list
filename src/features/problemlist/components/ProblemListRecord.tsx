@@ -1,5 +1,5 @@
 import { TableCell, TableRow } from "@/components/ui/table";
-import { buildProblemUrl } from "@/features/problemset/utils/buildProblemUrl";
+import { buildProblemUrl } from "@/utils/buildProblemUrl";
 import { useState } from "react";
 import { ProblemListRecordResponse } from "../types/ProblemLists";
 
@@ -15,11 +15,7 @@ export default function ProblemListRecord({
             <TableCell className="font-mono">{order}</TableCell>
             <TableCell>
                 <a
-                    href={buildProblemUrl({
-                        problemProvider: problem.resource,
-                        problemId: problem.problemId,
-                        contestId: problem.contestId,
-                    })}
+                    href={buildProblemUrl(problem)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center space-x-2"

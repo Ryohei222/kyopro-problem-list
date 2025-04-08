@@ -2,7 +2,8 @@ import { Resource } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import updateProblems from "@/features/problem/db/updateProblems";
 import fetchProblems from "@/features/problem/utils/fetchProblems";
-import { CreatedProblem } from "@/features/problemset/types/Problem";
+import { CreatedProblem } from "@/types/Problem";
+import { fetchMOFEProblems } from "@/features/problem/utils/fetchMOFEProblems";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     const authHeader = req.headers.get("authorization");
@@ -18,10 +19,16 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     let problems: CreatedProblem[] = [];
 
     for (const resource of Object.values(Resource)) {
+        if (resource === Resource.MOFE) {
+            continue;
+        }
         const fetchedProblems = await fetchProblems(resource);
         const insertedProblems = await updateProblems(fetchedProblems);
         problems.push(...insertedProblems);
     }
 
-    return NextResponse.json({ success: true, createdProblems: problems });
+    const fetchedMOFEProblems = await fetchMOFEProblems();
+    const result = await updateProblems(fetchedMOFEProblems);
+
+    return NextResponse.json({ success: true, createdProblems: [...problems, ...result] });
 }

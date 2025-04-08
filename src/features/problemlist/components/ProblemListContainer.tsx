@@ -9,7 +9,6 @@ export async function ProblemListContainer({ problemListId }: { problemListId: s
     }
     const session = await auth();
     const logined = session?.user?.id ? true : false;
-    const isAuthor = logined && session?.user.id === problemList.author.id;
-    console.log(session, logined, isAuthor);
+    const isAuthor = logined && session?.user?.id === problemList.author.id;
     return <ProblemListPresenter problemList={problemList} logined={logined} isAuthor={isAuthor} />;
 }

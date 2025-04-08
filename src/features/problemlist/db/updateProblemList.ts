@@ -1,3 +1,5 @@
+"use server";
+
 import { auth } from "@/lib/auth";
 import { prisma } from "@/prisma";
 import { createProblemKey } from "@/types/Problem";
@@ -34,6 +36,8 @@ export async function updateProblemList(updateProblemListProps: UpdateProblemLis
         if (!userId) {
             return { success: false, error: "Unauthorized" };
         }
+
+        console.log(updateProblemListProps);
 
         const existingProblemList = await getProblemList(problemListId);
 
@@ -81,7 +85,6 @@ export async function updateProblemList(updateProblemListProps: UpdateProblemLis
             const innerId = problemMap.get(
                 createProblemKey({
                     ...problemData,
-                    name: "",
                 }),
             );
             if (!innerId) {

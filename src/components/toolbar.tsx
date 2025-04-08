@@ -2,8 +2,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Home, Plus, Star } from "lucide-react";
 import LoginButton from "./LoginButton";
-import { auth } from "@/lib/auth";
 import MyPageButton from "./MyPageButton";
+import { auth } from "@/lib/auth";
 
 export async function Toolbar() {
     const session = await auth();
