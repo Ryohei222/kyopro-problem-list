@@ -7,8 +7,10 @@ import getResourceName from "@/utils/getResourceName";
 
 export default function ProblemListRecord({
     problemListRecord,
+    className,
 }: {
     problemListRecord: ProblemListRecordResponse;
+    className?: string;
 }) {
     const [showHint, setShowHint] = useState(false);
     const { problem, memo, hint, order } = problemListRecord;
@@ -17,7 +19,7 @@ export default function ProblemListRecord({
     const { logoSrc, logoAlt, bgColorClass } = getSiteLogo(problem.resource);
 
     return (
-        <TableRow key={order} className="hover:bg-gray-50">
+        <TableRow key={order} className={`hover:bg-gray-50 ${className}`}>
             <TableCell className="font-mono">{order}</TableCell>
             <TableCell>
                 <div
