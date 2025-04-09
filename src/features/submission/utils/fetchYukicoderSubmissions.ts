@@ -17,6 +17,7 @@ const YukicoderSubmissionSchema = z.object({
 const API_URL = "https://yukicoder.me/api/v1";
 
 export async function getYukicoderSubmissions(username: string): Promise<CommonSubmission[]> {
+    if (!username) return [];
     const result = await fetch(`${API_URL}/solved/name/${username}`)
         .then((res) => res.json())
         .then(YukicoderSubmissionSchema.array().safeParse);
@@ -26,6 +27,7 @@ export async function getYukicoderSubmissions(username: string): Promise<CommonS
     return result.data.map((submission) => ({
         submissionId: submission.No.toString(),
         resource: Resource.YUKICODER,
+        contestId: "0",
         problemId: submission.No.toString(),
         verdict: "AC",
         submittedAt: new Date(submission.Date),

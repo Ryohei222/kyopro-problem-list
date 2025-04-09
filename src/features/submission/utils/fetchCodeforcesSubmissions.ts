@@ -47,6 +47,7 @@ const FetchCodeforcesSubmissionsSchema = z.object({
 const API_URL = "https://codeforces.com/api";
 
 export async function getCodeforcesSubmissions(user_id: string): Promise<CommonSubmission[]> {
+    if (!user_id) return [];
     const result = await fetch(`${API_URL}/user.status?handle=${user_id}&count=100000`)
         .then((res) => res.json())
         .then(FetchCodeforcesSubmissionsSchema.safeParse);

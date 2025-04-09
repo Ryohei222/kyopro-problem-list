@@ -24,6 +24,7 @@ export type AOJSubmission = z.infer<typeof AOJSubmissionSchema>;
 const API_URL = "https://judgeapi.u-aizu.ac.jp";
 
 export async function getAOJSubmissions(user_id: string): Promise<CommonSubmission[]> {
+    if (!user_id) return [];
     const result = await fetch(`${API_URL}/solutions/users/${user_id}?size=100000`)
         .then((res) => res.json())
         .then(AOJSubmissionSchema.array().safeParse);
@@ -33,6 +34,7 @@ export async function getAOJSubmissions(user_id: string): Promise<CommonSubmissi
     return result.data.map((submission) => ({
         submissionId: submission.judgeId.toString(),
         resource: Resource.AOJ,
+        contestId: "0",
         problemId: submission.problemId,
         verdict: "AC",
         submittedAt: new Date(submission.submissionDate),

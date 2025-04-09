@@ -48,7 +48,6 @@ async function fetchAtCoderSubmissionsFromSecond(
     submissions: AtCoderSubmission[] = [],
 ): Promise<AtCoderSubmission[]> {
     const partialSubmissions = await fetchPartialAtCoderSubmissions(user_id, from_second);
-    console.log("Parameters:", { user_id, from_second });
     if (partialSubmissions.length === 0) {
         return submissions;
     }
@@ -62,7 +61,8 @@ async function fetchAtCoderSubmissionsFromSecond(
 }
 
 export async function getAtCoderSubmissions(user_id: string): Promise<CommonSubmission[]> {
-    const db = await openDB<AtCoderSubmissionDB>("atcoder-submissions", 1, {
+    if (!user_id) return [];
+    const db = await openDB<AtCoderSubmissionDB>(`atcoder-submissions-${user_id}`, 1, {
         upgrade(db) {
             db.createObjectStore("submissions");
         },
@@ -71,7 +71,7 @@ export async function getAtCoderSubmissions(user_id: string): Promise<CommonSubm
     const lastSubmissionSecond =
         cachedSubmissions.length > 0
             ? Math.max(...cachedSubmissions.map((submission) => submission.epoch_second))
-            : 0;
+            : ALWAYS_FETCH_INTERVAL_SEC;
     const newSubmissions = await fetchAtCoderSubmissionsFromSecond(
         user_id,
         lastSubmissionSecond + 1 - ALWAYS_FETCH_INTERVAL_SEC,
