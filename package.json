@@ -29,6 +29,7 @@
         "axios": "^1.8.4",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
+        "idb": "^8.0.2",
         "lucide-react": "^0.487.0",
         "next": "15.2.4",
         "next-auth": "^5.0.0-beta.25",
@@ -58,6 +59,7 @@
         "prettier": "3.5.3",
         "prisma": "^6.5.0",
         "tailwindcss": "^4",
+        "ts-node": "^10.9.2",
         "typescript": "^5"
     },
     "lint-staged": {
