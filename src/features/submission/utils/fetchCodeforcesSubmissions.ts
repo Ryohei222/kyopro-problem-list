@@ -58,6 +58,7 @@ export async function getCodeforcesSubmissions(user_id: string): Promise<CommonS
     return result.data.result.map((submission) => ({
         submissionId: submission.id.toString(),
         resource: Resource.CODEFORCES,
+        contestId: submission.contestId.toString(),
         problemId: `${submission.contestId}${submission.problem.index}`,
         verdict: submission.verdict === "OK" ? "AC" : "WA",
         submittedAt: new Date(submission.creationTimeSeconds * 1000),
