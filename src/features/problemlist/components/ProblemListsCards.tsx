@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Star, Search, Calendar, User } from "lucide-react";
 import { formatDate } from "@/utils/formatDate";
 import { ProblemListsResponse } from "../types/ProblemLists";
+import Image from "next/image";
 
 type SortField = "name" | "author" | "stars" | "createdAt";
 type SortDirection = "asc" | "desc";
@@ -130,9 +131,15 @@ export function ProblemListsCards({ problemLists }: { problemLists: ProblemLists
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                                    <div className="flex items-center">
-                                        <User className="h-4 w-4 mr-1" />
+                                <div className="flex flex-wrap gap-4 text-sm text-gray-600 items-center">
+                                    <div className="flex items-center gap-2">
+                                        <Image
+                                            src={list.author.image}
+                                            alt={list.name}
+                                            width={100}
+                                            height={100}
+                                            className="h-8 w-8 rounded-full border border-gray-300 shadow-sm"
+                                        />
                                         <a
                                             href={`/user/${list.author.id}`}
                                             className="text-blue-600 hover:underline"
@@ -140,19 +147,21 @@ export function ProblemListsCards({ problemLists }: { problemLists: ProblemLists
                                             {list.author.name}
                                         </a>
                                     </div>
-                                    <div className="flex items-center">
-                                        <Star className="h-4 w-4 text-yellow-400 mr-1 fill-yellow-400" />
-                                        {list._count.stars}
+                                    <div className="flex items-center gap-1">
+                                        <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                                        <span className="font-medium text-gray-800">
+                                            {list._count.stars}
+                                        </span>
                                     </div>
-                                    <div className="flex items-center">
-                                        <Calendar className="h-4 w-4 mr-1" />
-                                        {formatDate(list.createdAt)}
+                                    <div className="flex items-center gap-1">
+                                        <Calendar className="h-4 w-4 text-gray-500" />
+                                        <span className="text-gray-700">
+                                            {formatDate(list.createdAt)}
+                                        </span>
                                     </div>
-                                    <div>
-                                        {!list.isPublic && (
-                                            <span className="text-red-500">非公開</span>
-                                        )}
-                                    </div>
+                                    {!list.isPublic && (
+                                        <span className="text-red-500 font-semibold">非公開</span>
+                                    )}
                                 </div>
                             </CardContent>
                         </Card>

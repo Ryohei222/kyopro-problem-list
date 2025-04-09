@@ -25,12 +25,12 @@ export async function ProblemListPresenter({
                         <CardDescription className="flex items-center mt-2 space-x-4">
                             <span className="flex items-center">
                                 <UserCircle className="h-4 w-4 mr-1" />
-                                <Link
+                                <a
                                     href={`/user/${problemList.author.id}`}
                                     className="text-blue-600 hover:underline"
                                 >
                                     {problemList.author.name}
-                                </Link>
+                                </a>
                             </span>
                             <span className="flex items-center">
                                 <Calendar className="h-4 w-4 mr-1" />
@@ -43,10 +43,12 @@ export async function ProblemListPresenter({
                     </div>
                     <div className="flex space-x-2">
                         {logined && <ProblemListStarButton problemList={problemList} />}
+
                         <Button variant="outline" size="sm">
                             <Share2 className="h-4 w-4 mr-1" />
                             <span>共有</span>
                         </Button>
+
                         {isAuthor && (
                             <>
                                 <a
