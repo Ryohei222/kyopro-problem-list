@@ -1,21 +1,24 @@
 "use server";
 
 import { prisma } from "@/prisma";
-import { UserForm, UserFormSchema } from "../types/User";
-import getUserIdFromSession from "@/utils/getUserIdFromSession";
+import { UserSettingsFormSchema } from "../types/UserSettingsFormSchema";
+import { withAuthorization } from "@/utils/withAuthorization";
+import { redirect } from "next/navigation";
 
-export async function updateUser(userForm: UserForm) {
-    const userId = await getUserIdFromSession();
-    if (!userId) {
-        throw new Error("Unauthorized");
+async function __updateUser(
+    requestedUserId: string,
+    formData: Zod.infer<typeof UserSettingsFormSchema>,
+) {
+    const result = UserSettingsFormSchema.safeParse(formData);
+    if (!result.success) {
+        return result.error.format();
     }
-    const validationResult = UserFormSchema.safeParse(userForm);
-    if (!validationResult.success) {
-        throw new Error("Validation failed: " + validationResult.error.format());
-    }
-    const updatedUser = await prisma.user.update({
-        where: { id: userId },
-        data: { ...validationResult.data },
+    const newUserData = result.data;
+    await prisma.user.update({
+        data: { ...newUserData },
+        where: { id: requestedUserId },
     });
-    return updatedUser;
+    return redirect(`/user/${requestedUserId}`);
 }
+
+export const updateUser = withAuthorization(__updateUser);

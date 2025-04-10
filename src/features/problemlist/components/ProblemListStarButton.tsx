@@ -1,7 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Star } from "lucide-react";
 import { ProblemListResponse } from "@/features/problemlist/types/ProblemLists";
-import { auth } from "@/lib/auth";
+import { auth } from "@/auth";
 import { getStar } from "@/features/problemlist/db/Star";
 import { ClientStarButton } from "./ClientStarButton";
 

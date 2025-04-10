@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/lib/auth";
+import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 
 export const createStar = async (problemListId: string, userId: string) => {

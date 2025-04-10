@@ -1,7 +1,7 @@
 import { getUserById } from "@/features/user/db/getUser";
 import { getProblemList } from "../db/getProblemList";
 import { ProblemListPresenter } from "./ProblemListPresenter";
-import { auth } from "@/lib/auth";
+import { auth } from "@/auth";
 
 export async function ProblemListContainer({ problemListId }: { problemListId: string }) {
     const session = await auth();

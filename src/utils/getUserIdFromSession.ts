@@ -1,5 +1,5 @@
 "use server";
-import { auth } from "@/lib/auth";
+import { auth } from "@/auth";
 
 export default async function getUserIdFromSession(): Promise<string | null> {
     const session = await auth();

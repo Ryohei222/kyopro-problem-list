@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/lib/auth";
+import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 import { createProblemKey } from "@/types/Problem";
 import { Resource } from "@prisma/client";

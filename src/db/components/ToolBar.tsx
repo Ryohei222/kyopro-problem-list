@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Home, Plus, Star, Settings } from "lucide-react";
-import LoginButton from "./LoginButton";
-import MyPageButton from "./MyPageButton";
+import React from "react";
 import { auth } from "@/auth";
+import LoginButton from "@/components/LoginButton";
+import MyPageButton from "@/components/MyPageButton";
+import { Button } from "@/components/ui/button";
 
 export async function ToolBar() {
     const session = await auth();

@@ -1,15 +1,10 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthConfig } from "next-auth";
+import Github from "next-auth/providers/github";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/prisma";
 import { getUserById } from "@/features/user/db/getUser";
-import authConfig from "./auth.config";
 
-export const {
-    handlers: { GET, POST },
-    signIn,
-    signOut,
-    auth,
-} = NextAuth({
+const authConfig = {
     adapter: PrismaAdapter(prisma),
     callbacks: {
         authorized({ request, auth }) {
@@ -36,5 +31,12 @@ export const {
         },
     },
     session: { strategy: "jwt" },
-    ...authConfig,
-});
+    providers: [
+        Github({
+            clientId: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        }),
+    ],
+} satisfies NextAuthConfig;
+
+export const { handlers, signIn, signOut, auth } = NextAuth(authConfig);
