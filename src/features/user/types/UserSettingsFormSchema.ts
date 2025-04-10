@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const UserFormSchema = z.object({
+export const UserSettingsFormSchema = z.object({
     name: z
         .string()
         .min(1, { message: "名前は1文字以上である必要があります" })
@@ -74,4 +74,4 @@ export const UserFormSchema = z.object({
     ]),
 });
 
-export type UserForm = z.infer<typeof UserFormSchema>;
+export type UserSettingsFormType = z.infer<typeof UserSettingsFormSchema>;

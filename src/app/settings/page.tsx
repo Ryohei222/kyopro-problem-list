@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 import { getUserById } from "@/features/user/db/getUser";
-import { UserSettingsForm } from "@/features/user/components/UserSettingForm";
-import { auth } from "@/lib/auth";
+import { auth } from "@/auth";
+import UserSettingsForm from "@/features/user/components/UserSettingsForm";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { formatDate } from "@/utils/formatDate";
 
 export default async function SettingPage() {
     const session = await auth();
@@ -25,10 +27,30 @@ export default async function SettingPage() {
                     </h1>
                     <p className="text-gray-500">プロフィール情報やアカウント設定を管理できます</p>
                 </div>
-
-                <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-6">
-                    <UserSettingsForm user={user} />
-                </div>
+                <UserSettingsForm user={user} />
+                <Card>
+                    <CardHeader>
+                        <CardTitle>アカウント情報</CardTitle>
+                        <CardDescription>アカウントに関する基本情報です</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p className="text-sm font-medium text-gray-500">メールアドレス</p>
+                                <p className="mt-1">{user.email}</p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                    メールアドレスは認証プロバイダーを通じて設定されています(他のユーザーには表示されません)
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-sm font-medium text-gray-500">
+                                    アカウント作成日
+                                </p>
+                                <p className="mt-1">{formatDate(user.createdAt)}</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );

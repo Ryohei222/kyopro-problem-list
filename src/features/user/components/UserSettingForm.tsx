@@ -27,9 +27,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Save, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { UserForm, UserFormSchema } from "../types/User";
+import { UserForm, UserFormSchema } from "../types/UserFormSchema";
 import { User } from "@prisma/client";
-import { updateUser } from "../db/updateUser";
+import { updateUser } from "../db/updateUserAction";
 import Image from "next/image";
 import { formatDate } from "@/utils/formatDate";
 

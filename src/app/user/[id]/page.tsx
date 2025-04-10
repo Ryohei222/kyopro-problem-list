@@ -5,7 +5,7 @@ import { ProblemListsCards } from "@/features/problemlist/components/ProblemList
 import { getUserProblemList } from "@/features/problemlist/db/getUserProblemLists";
 import { Separator } from "@/components/ui/separator";
 import { Book } from "lucide-react";
-import { auth } from "@/lib/auth";
+import { auth } from "@/auth";
 import { fetchYukicoderUserUrl } from "@/features/user/utils/fetchYukicoderUserUrl";
 
 export default async function UserPage({ params }: { params: Promise<{ id: string }> }) {
@@ -18,7 +18,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
     const yukicoderUrl = await fetchYukicoderUserUrl(user.yukicoderId);
     console.log("yukicoderUrl", yukicoderUrl);
     const session = await auth();
-    const isAuthor = session?.user.id === userId;
+    const isAuthor = session?.user?.id === userId;
 
     const usersProblemSets = await getUserProblemList(userId, !isAuthor);
 
