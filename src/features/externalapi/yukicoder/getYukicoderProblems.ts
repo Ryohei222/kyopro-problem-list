@@ -13,6 +13,8 @@ export async function getYukicoderProblems(): Promise<CommonProblem[]> {
                     contestId: "0",
                     problemId: problem.No ? problem.No.toString() : "unknown",
                     name: problem.Title,
+                    difficulty: null,
+                    contestName: null,
                 };
             })
             .filter((problem) => problem.problemId !== "unknown");

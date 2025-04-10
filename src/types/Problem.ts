@@ -7,8 +7,8 @@ type CommonProblem = {
     contestId: string;
     problemId: string;
     name: string;
-    difficulty?: number;
-    contestName?: string;
+    difficulty: number | null;
+    contestName: string | null;
 };
 
 const problemKeyBrand = Symbol();

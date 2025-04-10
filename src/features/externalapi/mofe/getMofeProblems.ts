@@ -16,9 +16,11 @@ export async function getMofeProblems(): Promise<CommonProblem[]> {
             ...contestDetail.tasks
                 .map((problem) => ({
                     name: problem.name,
-                    contestId: contest?.id ? contest.id.toString() : "",
+                    contestId: contest.slug,
                     problemId: problem.slug,
                     resource: Resource.MOFE,
+                    contestName: contest.name,
+                    difficulty: null,
                 }))
                 .filter((problem) => problem.problemId !== ""),
         );

@@ -11,6 +11,8 @@ export async function getInnerMofeProblems(): Promise<CommonProblem[]> {
             contestId: true,
             problemId: true,
             name: true,
+            difficulty: true,
+            contestName: true,
         },
         where: {
             resource: Resource.MOFE,

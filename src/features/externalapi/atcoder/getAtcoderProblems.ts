@@ -24,12 +24,8 @@ export async function getAtcoderProblems(): Promise<CommonProblem[]> {
                     contestId: problem.contest_id,
                     problemId: problem.id,
                     name: problem.name,
-                    ...(contests.has(problem.contest_id) && {
-                        contestName: contests.get(problem.contest_id),
-                    }),
-                    ...(difficulties.has(problem.id) && {
-                        difficulty: difficulties.get(problem.id),
-                    }),
+                    difficulty: difficulties.get(problem.id) || null,
+                    contestName: contests.get(problem.contest_id) || null,
                 };
             });
         },

@@ -13,6 +13,8 @@ export async function getAojProblems(): Promise<CommonProblem[]> {
                     contestId: "0",
                     problemId: problem.id,
                     name: problem.name,
+                    difficulty: null,
+                    contestName: null,
                 };
             });
         },
