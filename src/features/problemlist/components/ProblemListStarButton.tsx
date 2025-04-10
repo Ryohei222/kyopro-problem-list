@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import { ProblemListResponse } from "@/features/problemlist/types/ProblemLists";
 import { auth } from "@/lib/auth";
-import { getStar } from "@/db/Star";
+import { getStar } from "@/features/problemlist/db/Star";
 import { ClientStarButton } from "./ClientStarButton";
 
 export async function ProblemListStarButton({

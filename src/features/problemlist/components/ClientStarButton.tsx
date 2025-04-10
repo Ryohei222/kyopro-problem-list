@@ -5,7 +5,7 @@ import { Star } from "lucide-react";
 import { ProblemListResponse } from "@/features/problemlist/types/ProblemLists";
 import { useState } from "react";
 
-import { createStar, deleteStar } from "@/db/Star";
+import { createStar, deleteStar } from "@/features/problemlist/db/Star";
 
 export function ClientStarButton({
     userId,

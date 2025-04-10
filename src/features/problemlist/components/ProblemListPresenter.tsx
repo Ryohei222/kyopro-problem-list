@@ -1,4 +1,4 @@
-import { ProblemListStarButton } from "@/components/ProblemListStarButton";
+import { ProblemListStarButton } from "@/features/problemlist/components/ProblemListStarButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ProblemListRecordTable } from "./ProblemListRecordTable";
