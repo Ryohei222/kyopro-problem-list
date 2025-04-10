@@ -7,13 +7,21 @@ type CommonProblem = {
     contestId: string;
     problemId: string;
     name: string;
+    difficulty?: number;
+    contestName?: string;
 };
 
 const problemKeyBrand = Symbol();
 
 export type ProblemKey = string & { [problemKeyBrand]: unknown };
 
-export function createProblemKey(problem: Omit<CommonProblem, "name">): ProblemKey {
+export type createProblemKeyProps = {
+    resource: Resource;
+    contestId: string;
+    problemId: string;
+};
+
+export function createProblemKey(problem: createProblemKeyProps): ProblemKey {
     return `${problem.resource}-${problem.contestId}-${problem.problemId}` as ProblemKey;
 }
 

@@ -17,7 +17,8 @@ export default async function ProblemsPage({ params }: { params: Promise<{ resou
                 {problems.map((problem) => (
                     <li key={`${problem.resource}-${problem.contestId}-${problem.problemId}`}>
                         {problem.name} ({problem.resource}) - {problem.contestId} -{" "}
-                        {problem.problemId}
+                        {problem.problemId} - {problem.difficulty ? problem.difficulty : "N/A"} -{" "}
+                        {problem.contestName ? problem.contestName : "N/A"}
                     </li>
                 ))}
             </ul>

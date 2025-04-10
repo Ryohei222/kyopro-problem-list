@@ -96,6 +96,7 @@ model Problem {
   contestId          String
   problemId          String
   name               String
+  contestName        String?
   difficulty         Int?
   problemListRecords ProblemListRecord[]
 }
