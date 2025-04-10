@@ -13,13 +13,15 @@ export async function ToolBar() {
             <div className="container mx-auto px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                     <Link href="/" className="flex items-center space-x-2">
-                        <span className="font-bold text-xl text-green-600">CP Problemlist</span>
+                        <span className="font-bold text-xl text-green-600">
+                            Kyopro Problem List
+                        </span>
                     </Link>
                     <nav className="hidden md:flex items-center space-x-4">
                         <Button variant="ghost" size="sm" asChild>
                             <Link href="/" className="flex items-center space-x-1">
                                 <Home className="h-4 w-4" />
-                                <span>問題リスト</span>
+                                <span>すべての問題リスト</span>
                             </Link>
                         </Button>
                         {isLoggedIn && (
@@ -27,7 +29,7 @@ export async function ToolBar() {
                                 <Button variant="ghost" size="sm" asChild>
                                     <Link href="/starred" className="flex items-center space-x-1">
                                         <Star className="h-4 w-4" />
-                                        <span>お気に入りの問題リスト</span>
+                                        <span>お気に入り</span>
                                     </Link>
                                 </Button>
                                 <Button variant="ghost" size="sm" asChild>

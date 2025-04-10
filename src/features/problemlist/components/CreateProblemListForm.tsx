@@ -121,7 +121,7 @@ export function CreateProblemListForm() {
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        どのような問題が含まれているか、どのようなスキルを身につけられるかなどを記述してください
+                                        問題リストの内容や目的について説明してください
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -144,7 +144,9 @@ export function CreateProblemListForm() {
                                             公開設定
                                         </FormLabel>
                                         <FormDescription>
-                                            チェックを入れると、このリストは他のユーザーに公開されます。チェックを外すと、自分だけが閲覧できるプライベートリストになります。
+                                            チェックを入れると、このリストはトップページやあなたのプロフィールに表示されます。
+                                            <br />
+                                            チェックを外すと、リンクを知っている人のみが閲覧できるリストになります。
                                         </FormDescription>
                                     </div>
                                 </FormItem>
