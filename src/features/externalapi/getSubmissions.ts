@@ -15,13 +15,13 @@ export async function getSubmissions(
     }
     switch (resource) {
         case Resource.AOJ:
-            return await getAojSubmissions(userid);
+            return getAojSubmissions(userid);
         case Resource.ATCODER:
-            return await getAtcoderSubmissions(userid);
+            return getAtcoderSubmissions(userid);
         case Resource.CODEFORCES:
-            return await getCodeforcesSubmissions(userid);
+            return getCodeforcesSubmissions(userid);
         case Resource.YUKICODER:
-            return await getYukicoderSubmissions(userid);
+            return getYukicoderSubmissions(userid);
         case Resource.MOFE:
             throw new Error("MOFE is not supported yet");
     }

@@ -9,14 +9,14 @@ import { getInnerMofeProblems } from "./mofe/getInnerMofeProblems";
 export async function getProblems(resource: Resource): Promise<CommonProblem[]> {
     switch (resource) {
         case Resource.AOJ:
-            return await getAojProblems();
+            return getAojProblems();
         case Resource.ATCODER:
-            return await getAtcoderProblems();
+            return getAtcoderProblems();
         case Resource.CODEFORCES:
-            return await getCodeforcesProblems();
+            return getCodeforcesProblems();
         case Resource.MOFE:
-            return await getInnerMofeProblems();
+            return getInnerMofeProblems();
         case Resource.YUKICODER:
-            return await getYukicoderProblems();
+            return getYukicoderProblems();
     }
 }

@@ -3,6 +3,7 @@ export async function fetchApi<T>(url: string, zodSchema: Zod.Schema<T>): Promis
         .then((res) => res.json())
         .then(zodSchema.safeParse);
     if (!result.success) {
+        console.error(result.error);
         throw new Error(`Failed to fetch and parse data.\nPath: ${url}`, result.error);
     }
     return result.data;

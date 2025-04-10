@@ -5,7 +5,7 @@ import { fetchApi } from "../fetchApi";
 import { YUKICODER_API_URL } from "./constant";
 
 export async function getYukicoderSubmissions(username: string): Promise<CommonSubmission[]> {
-    return await fetchApi(
+    return fetchApi(
         `${YUKICODER_API_URL}/solved/name/${username}`,
         YukicoderSubmissionsApiSchema,
     ).then((result) => {

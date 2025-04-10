@@ -5,17 +5,16 @@ import { CodeforcesProblemsApiSchema } from "./ProblemsSchema";
 import { CommonProblem } from "@/types/Problem";
 
 export async function getCodeforcesProblems(): Promise<CommonProblem[]> {
-    return await fetchApi(
-        `${CODEFORCES_API_URL}/problemset.problems`,
-        CodeforcesProblemsApiSchema,
-    ).then((data) => {
-        return data.result.problems.map((problem) => {
-            return {
-                resource: Resource.CODEFORCES,
-                contestId: problem.contestId.toString(),
-                problemId: problem.index,
-                name: problem.name,
-            };
-        });
-    });
+    return fetchApi(`${CODEFORCES_API_URL}/problemset.problems`, CodeforcesProblemsApiSchema).then(
+        (data) => {
+            return data.result.problems.map((problem) => {
+                return {
+                    resource: Resource.CODEFORCES,
+                    contestId: problem.contestId.toString(),
+                    problemId: problem.index,
+                    name: problem.name,
+                };
+            });
+        },
+    );
 }

@@ -20,7 +20,7 @@ const REQUEST_INTERVAL_MS = 1000;
 const ALWAYS_FETCH_INTERVAL_SEC = 60 * 60 * 24; // 1 day
 
 async function fetchPartialAtcoderSubmissions(user_id: string, from_second: number) {
-    return await fetchApi(
+    return fetchApi(
         `${ATCODER_API_URL}/atcoder-api/v3/user/submissions?user=${user_id}&from_second=${from_second}`,
         AtcoderSubmissionsApiSchema,
     );
@@ -37,7 +37,7 @@ async function fetchAtcoderSubmissionsFromSecond(
     }
     await new Promise((resolve) => setTimeout(resolve, REQUEST_INTERVAL_MS));
     submissions.push(...partialSubmissions);
-    return await fetchAtcoderSubmissionsFromSecond(
+    return fetchAtcoderSubmissionsFromSecond(
         user_id,
         partialSubmissions[partialSubmissions.length - 1].epoch_second + 1,
         submissions,
@@ -63,7 +63,7 @@ export async function getAtcoderSubmissions(user_id: string): Promise<CommonSubm
     for (const submission of newSubmissions) {
         db.put("submissions", submission, submission.id.toString());
     }
-    return await db.getAll("submissions").then((submissions) => {
+    return db.getAll("submissions").then((submissions) => {
         return submissions.map((submission) => {
             return {
                 submissionId: submission.id.toString(),
