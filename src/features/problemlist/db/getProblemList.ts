@@ -22,6 +22,7 @@ export const getProblemList = async (problemListId: string) => {
                             problemId: true,
                             name: true,
                             difficulty: true,
+                            contestName: true,
                         },
                     },
                     memo: true,
