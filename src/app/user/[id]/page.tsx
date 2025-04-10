@@ -1,4 +1,4 @@
-import { UserProfile } from "@/features/user/components/user-profile";
+import { UserProfile } from "@/features/user/components/UserProfile";
 import { notFound } from "next/navigation";
 import { getUserById } from "@/features/user/db/getUser";
 import { ProblemListsCards } from "@/features/problemlist/components/ProblemListsCards";
