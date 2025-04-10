@@ -12,23 +12,26 @@ import {
     useYukicoderSubmissions,
     useCodeforcesSubmissions,
 } from "@/hooks/useSubmissions";
+import { User } from "@prisma/client";
 
 type SortField = "order" | "resource";
 type SortDirection = "asc" | "desc";
 
 export function ProblemListRecordTable({
     problemListRecords,
+    user,
 }: {
     problemListRecords: ProblemListRecordResponse[];
+    user: User | null;
 }) {
     const [sortField, setSortField] = useState<SortField>("order");
     const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
     const [userIds, setUserIds] = useState({
-        atcoder: "",
-        aoj: "",
-        yukicoder: "",
-        codeforces: "",
+        atcoder: user?.atcoderId || "",
+        aoj: user?.aojId || "",
+        yukicoder: user?.yukicoderId || "",
+        codeforces: user?.codeforcesId || "",
     });
     const [acProblems, setAcProblems] = useState<Set<ProblemKey>>(new Set());
     const { submissions: aojSubmissions, trigger: aojTrigger } = useAojSubmissions(userIds.aoj);
@@ -163,7 +166,7 @@ export function ProblemListRecordTable({
                     onClick={handleFetchSubmissions}
                     className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
                 >
-                    Fetch Submissions
+                    Check Submissions
                 </button>
             </div>
             <div className="rounded-md border bg-white">
@@ -171,7 +174,7 @@ export function ProblemListRecordTable({
                     <TableHeader>
                         <TableRow>
                             <TableHead
-                                className="w-[80px] cursor-pointer"
+                                className="w-[5%] cursor-pointer"
                                 onClick={() => handleSort("order")}
                             >
                                 <div className="flex items-center">
@@ -180,7 +183,7 @@ export function ProblemListRecordTable({
                                 </div>
                             </TableHead>
                             <TableHead
-                                className="w-[120px] cursor-pointer"
+                                className="w-[5%] cursor-pointer"
                                 onClick={() => handleSort("resource")}
                             >
                                 <div className="flex items-center">
@@ -188,13 +191,13 @@ export function ProblemListRecordTable({
                                     <SortIcon field="resource" />
                                 </div>
                             </TableHead>
-                            <TableHead className="w-[200px]">
+                            <TableHead className="w-[20%]">
                                 <div className="flex items-center">問題名</div>
                             </TableHead>
-                            <TableHead className="w-[30%]">
+                            <TableHead className="w-[35%]">
                                 <div className="flex items-center">メモ</div>
                             </TableHead>
-                            <TableHead className="w-[30%]">
+                            <TableHead className="w-[35%]">
                                 <div className="flex items-center">ヒント</div>
                             </TableHead>
                         </TableRow>
@@ -204,11 +207,9 @@ export function ProblemListRecordTable({
                             <ProblemTableRow
                                 key={createProblemKey(problemListRecord.problem)}
                                 problemListRecord={problemListRecord}
-                                className={
-                                    acProblems.has(createProblemKey(problemListRecord.problem))
-                                        ? "bg-green-500"
-                                        : ""
-                                }
+                                isSolved={acProblems.has(
+                                    createProblemKey(problemListRecord.problem),
+                                )}
                             />
                         ))}
                     </TableBody>

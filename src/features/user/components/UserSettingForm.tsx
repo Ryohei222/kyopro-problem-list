@@ -72,7 +72,7 @@ export function UserSettingsForm({ user }: { user: User }) {
                 <Card>
                     <CardHeader>
                         <CardTitle>プロフィール設定</CardTitle>
-                        <CardDescription>あなたのプロフィール情報を編集できます。</CardDescription>
+                        <CardDescription>あなたのプロフィール情報を編集できます</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div className="flex flex-col md:flex-row gap-6">
@@ -118,9 +118,7 @@ export function UserSettingsForm({ user }: { user: User }) {
                                                     value={field.value || ""}
                                                 />
                                             </FormControl>
-                                            <FormDescription>
-                                                競プロ歴や得意なアルゴリズムなどを書くと良いでしょう
-                                            </FormDescription>
+                                            <FormDescription>ご自由に記入ください</FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -131,7 +129,9 @@ export function UserSettingsForm({ user }: { user: User }) {
                         <Separator />
 
                         <div>
-                            <h3 className="text-lg font-medium mb-4">外部アカウント連携</h3>
+                            <h3 className="text-lg font-medium mb-4">
+                                外部アカウント連携(他のユーザーに表示されます)
+                            </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <FormField
                                     control={form.control}
@@ -280,12 +280,8 @@ export function UserSettingsForm({ user }: { user: User }) {
                         </div>
                     </CardContent>
                     <CardFooter className="flex justify-between border-t pt-6">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => router.push(`/user/${user.id}`)}
-                        >
-                            キャンセル
+                        <Button type="button" variant="outline" onClick={() => router.back()}>
+                            戻る
                         </Button>
                         <Button
                             type="submit"
@@ -310,7 +306,7 @@ export function UserSettingsForm({ user }: { user: User }) {
                 <Card>
                     <CardHeader>
                         <CardTitle>アカウント情報</CardTitle>
-                        <CardDescription>アカウントに関する基本情報です。</CardDescription>
+                        <CardDescription>アカウントに関する基本情報です</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

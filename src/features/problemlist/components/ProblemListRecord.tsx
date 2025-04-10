@@ -7,10 +7,10 @@ import getResourceName from "@/utils/getResourceName";
 
 export default function ProblemListRecord({
     problemListRecord,
-    className,
+    isSolved,
 }: {
     problemListRecord: ProblemListRecordResponse;
-    className?: string;
+    isSolved: boolean;
 }) {
     const [showHint, setShowHint] = useState(false);
     const { problem, memo, hint, order } = problemListRecord;
@@ -19,7 +19,7 @@ export default function ProblemListRecord({
     const { logoSrc, logoAlt, bgColorClass } = getSiteLogo(problem.resource);
 
     return (
-        <TableRow key={order} className={`hover:bg-gray-50 ${className}`}>
+        <TableRow key={order} className={isSolved ? "bg-green-200" : "hover:bg-gray-50"}>
             <TableCell className="font-mono">{order}</TableCell>
             <TableCell>
                 <div

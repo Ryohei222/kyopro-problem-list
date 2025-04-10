@@ -1,3 +1,4 @@
+import { getUserById } from "@/features/user/db/getUser";
 import { getProblemList } from "../db/getProblemList";
 import { ProblemListPresenter } from "./ProblemListPresenter";
 import { auth } from "@/lib/auth";
@@ -8,7 +9,6 @@ export async function ProblemListContainer({ problemListId }: { problemListId: s
     if (!problemList) {
         throw new Error("Problem list not found");
     }
-    const logined = session?.user?.id ? true : false;
-    const isAuthor = logined && session?.user?.id === problemList.author.id;
-    return <ProblemListPresenter problemList={problemList} logined={logined} isAuthor={isAuthor} />;
+    const user = session?.user?.id ? await getUserById(session.user.id) : null;
+    return <ProblemListPresenter problemList={problemList} user={user} />;
 }
