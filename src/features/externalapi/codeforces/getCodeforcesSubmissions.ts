@@ -13,7 +13,7 @@ export async function getCodeforcesSubmissions(user_id: string): Promise<CommonS
             submissionId: submission.id.toString(),
             resource: Resource.CODEFORCES,
             contestId: submission.contestId.toString(),
-            problemId: `${submission.contestId}${submission.problem.index}`,
+            problemId: `${submission.problem.index}`,
             verdict: submission.verdict === "OK" ? "AC" : "WA",
             submittedAt: new Date(submission.creationTimeSeconds * 1000),
         }));
