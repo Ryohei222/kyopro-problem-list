@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getUserById } from "@/features/user/db/getUser";
 import { auth } from "@/auth";
-import UserSettingsForm from "@/features/user/components/UserSettingsForm";
+import { UserSettingsForm } from "@/features/user/components/UserSettingsForm";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { formatDate } from "@/utils/formatDate";
 

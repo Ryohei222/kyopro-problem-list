@@ -74,4 +74,4 @@ export const UserSettingsFormSchema = z.object({
     ]),
 });
 
-export type UserSettingsFormType = z.infer<typeof UserSettingsFormSchema>;
+export type UserSettingsFormSchemaType = z.infer<typeof UserSettingsFormSchema>;
