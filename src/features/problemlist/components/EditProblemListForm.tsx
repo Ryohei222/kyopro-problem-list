@@ -26,7 +26,7 @@ import ProblemSetIsPublicInput from "./ProblemSetIsPublicInput";
 import AddProblemForm from "./AddProblem";
 import { updateProblemList } from "../db/updateProblemList";
 import { ProblemListRecordResponse, ProblemListResponse } from "../types/ProblemLists";
-import { APIProblem, createProblemKey } from "@/types/Problem";
+import { CommonProblem, createProblemKey } from "@/types/Problem";
 
 export default function EditProblemListForm({
     problemList,
@@ -68,7 +68,7 @@ export default function EditProblemListForm({
     };
 
     // 問題IDから問題の詳細情報を取得
-    const getProblemDetails = (problem: APIProblem) => {
+    const getProblemDetails = (problem: CommonProblem) => {
         const result = allProblems.find((p) => createProblemKey(p) === createProblemKey(problem));
         return result || null;
     };

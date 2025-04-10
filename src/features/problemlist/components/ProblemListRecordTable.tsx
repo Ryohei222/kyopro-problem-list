@@ -7,8 +7,8 @@ import ProblemTableRow from "./ProblemListRecord";
 import { ProblemListRecordResponse } from "../types/ProblemLists";
 import { createProblemKey, ProblemKey } from "@/types/Problem";
 import {
-    useAtCoderSubmissions,
-    useAOJSubmissions,
+    useAtcoderSubmissions,
+    useAojSubmissions,
     useYukicoderSubmissions,
     useCodeforcesSubmissions,
 } from "@/features/submission/hooks/useSubmissions";
@@ -31,9 +31,9 @@ export function ProblemListRecordTable({
         codeforces: "",
     });
     const [acProblems, setAcProblems] = useState<Set<ProblemKey>>(new Set());
-    const { submissions: aojSubmissions, trigger: aojTrigger } = useAOJSubmissions(userIds.aoj);
+    const { submissions: aojSubmissions, trigger: aojTrigger } = useAojSubmissions(userIds.aoj);
 
-    const { submissions: atcoderSubmissions, trigger: atcoderTrigger } = useAtCoderSubmissions(
+    const { submissions: atcoderSubmissions, trigger: atcoderTrigger } = useAtcoderSubmissions(
         userIds.atcoder,
     );
     const { submissions: codeforcesSubmissions, trigger: codeforcesTrigger } =

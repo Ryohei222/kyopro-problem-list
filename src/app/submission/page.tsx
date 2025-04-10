@@ -2,8 +2,8 @@
 
 import { ReactNode, useState } from "react";
 import {
-    useAtCoderSubmissions,
-    useAOJSubmissions,
+    useAtcoderSubmissions,
+    useAojSubmissions,
     useYukicoderSubmissions,
     useCodeforcesSubmissions,
 } from "@/features/submission/hooks/useSubmissions";
@@ -18,12 +18,12 @@ export default function SubmissionPage(): ReactNode {
         submissions: atcoderSubmissions,
         trigger: fetchAtCoder,
         isMutating: isAtCoderLoading,
-    } = useAtCoderSubmissions(userId);
+    } = useAtcoderSubmissions(userId);
     const {
         submissions: aojSubmissions,
         trigger: fetchAOJ,
         isMutating: isAOJLoading,
-    } = useAOJSubmissions(userId);
+    } = useAojSubmissions(userId);
     const {
         submissions: yukicoderSubmissions,
         trigger: fetchYukicoder,

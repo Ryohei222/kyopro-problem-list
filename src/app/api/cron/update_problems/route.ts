@@ -1,9 +1,9 @@
 import { Resource } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import updateProblems from "@/features/problem/db/updateProblems";
-import fetchProblems from "@/features/problem/utils/fetchProblems";
+import { getProblems } from "@/features/externalapi/getProblems";
+import { getMofeProblems } from "@/features/externalapi/mofe/getMofeProblems";
 import { CreatedProblem } from "@/types/Problem";
-import { fetchMOFEProblems } from "@/features/problem/utils/fetchMOFEProblems";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     const authHeader = req.headers.get("authorization");
@@ -22,12 +22,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         if (resource === Resource.MOFE) {
             continue;
         }
-        const fetchedProblems = await fetchProblems(resource);
+        const fetchedProblems = await getProblems(resource);
         const insertedProblems = await updateProblems(fetchedProblems);
         problems.push(...insertedProblems);
     }
 
-    const fetchedMOFEProblems = await fetchMOFEProblems();
+    const fetchedMOFEProblems = await getMofeProblems();
     const result = await updateProblems(fetchedMOFEProblems);
 
     return NextResponse.json({ success: true, createdProblems: [...problems, ...result] });

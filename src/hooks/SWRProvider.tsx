@@ -17,9 +17,7 @@ const gcStorageHandler = {
             ? timestampStorageHandler.revive(key, storeObject)
             : undefined,
     replace: (key: string, value: any) =>
-        !key.startsWith("/api/problemlist/") && !key.startsWith("/submissions")
-            ? timestampStorageHandler.replace(key, value)
-            : undefined,
+        !key.startsWith("/submissions") ? timestampStorageHandler.replace(key, value) : undefined,
 };
 
 export const SWRProvider = ({ children }: { children: React.ReactNode }) => {

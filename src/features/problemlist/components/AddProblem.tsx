@@ -7,12 +7,12 @@ import { Label } from "@radix-ui/react-label";
 import { Plus } from "lucide-react";
 import React, { useState } from "react";
 import useProblems from "@/hooks/useProblems";
-import extractProblemFromUrl from "@/features/problem/utils/extractProblemFromUrl";
-import { APIProblem } from "@/types/Problem";
+import extractProblemFromUrl from "@/utils/extractProblemFromUrl";
+import { CommonProblem } from "@/types/Problem";
 import { ProblemListRecordResponse } from "../types/ProblemLists";
 import { createProblemKey } from "@/types/Problem";
 
-function searchProblemFromUrl(url: string, problems: APIProblem[]): APIProblem | null {
+function searchProblemFromUrl(url: string, problems: CommonProblem[]): CommonProblem | null {
     const extractedProblem = extractProblemFromUrl(url);
     if (!extractedProblem) {
         return null;

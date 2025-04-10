@@ -1,11 +1,7 @@
 "use client";
 
-import { API_URLS } from "@/features/problem/constants/api-urls";
-import AOJProblemsFetcher from "@/features/problem/utils/fetchers/AOJProblemsFetcher";
-import AtCoderProblemsFetcher from "@/features/problem/utils/fetchers/AtCoderProblemsFetcher";
-import CodeforcesProblemsFetcher from "@/features/problem/utils/fetchers/CodeforcesProblemsFetcher";
-import MOFEProblemsFetcher from "@/features/problem/utils/fetchers/MOFEProblemsFetcher";
-import YukicoderProblemsFetcher from "@/features/problem/utils/fetchers/YukicoderProblemsFetcher";
+import { Resource } from "@prisma/client";
+import { getProblems } from "../features/externalapi/getProblems";
 import useSWR from "swr";
 
 export default function useProblems() {
@@ -13,28 +9,28 @@ export default function useProblems() {
         data: atcoderData,
         error: atcoderError,
         isLoading: atcoderIsLoading,
-    } = useSWR(API_URLS.ATCODER, AtCoderProblemsFetcher);
+    } = useSWR(Resource.ATCODER, getProblems);
     const {
         data: codeforcesData,
         error: codeforcesError,
         isLoading: codeforcesIsLoading,
-    } = useSWR(API_URLS.CODEFORCES, CodeforcesProblemsFetcher);
+    } = useSWR(Resource.CODEFORCES, getProblems);
     const {
         data: aojData,
         error: aojError,
         isLoading: aojIsLoading,
-    } = useSWR(API_URLS.AOJ, AOJProblemsFetcher);
+    } = useSWR(Resource.AOJ, getProblems);
     const {
         data: yukicoderData,
         error: yukicoderError,
         isLoading: yukicoderIsLoading,
-    } = useSWR(API_URLS.YUKICODER, YukicoderProblemsFetcher);
+    } = useSWR(Resource.YUKICODER, getProblems);
 
     const {
         data: mofeData,
         error: mofeError,
         isLoading: mofeIsLoading,
-    } = useSWR(API_URLS.MOFE, MOFEProblemsFetcher);
+    } = useSWR(Resource.MOFE, getProblems);
 
     return {
         problems: [
