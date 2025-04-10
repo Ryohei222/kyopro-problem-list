@@ -6,7 +6,7 @@ import {
     useAojSubmissions,
     useYukicoderSubmissions,
     useCodeforcesSubmissions,
-} from "@/features/submission/hooks/useSubmissions";
+} from "@/hooks/useSubmissions";
 
 export default function SubmissionPage(): ReactNode {
     const [service, setService] = useState<"atcoder" | "aoj" | "yukicoder" | "codeforces">(

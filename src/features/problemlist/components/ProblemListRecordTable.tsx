@@ -11,7 +11,7 @@ import {
     useAojSubmissions,
     useYukicoderSubmissions,
     useCodeforcesSubmissions,
-} from "@/features/submission/hooks/useSubmissions";
+} from "@/hooks/useSubmissions";
 
 type SortField = "order" | "resource";
 type SortDirection = "asc" | "desc";
