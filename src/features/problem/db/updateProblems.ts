@@ -1,8 +1,8 @@
-import { APIProblem, CreatedProblem } from "@/types/Problem";
+import { CommonProblem, CreatedProblem } from "@/types/Problem";
 import { prisma } from "@/prisma";
 import { createProblemKey } from "@/types/Problem";
 
-export default async function updateProblems(problems: APIProblem[]): Promise<CreatedProblem[]> {
+export default async function updateProblems(problems: CommonProblem[]): Promise<CreatedProblem[]> {
     const dbProblems = await prisma.problem.findMany({
         select: {
             resource: true,
