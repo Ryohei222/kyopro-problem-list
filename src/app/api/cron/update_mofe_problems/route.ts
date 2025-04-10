@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import updateProblems from "@/features/problem/db/updateProblems";
+import updateProblems from "@/db/updateProblems";
 import { getMofeProblems } from "@/features/externalapi/mofe/getMofeProblems";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {

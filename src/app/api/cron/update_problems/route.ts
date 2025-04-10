@@ -1,6 +1,6 @@
 import { Resource } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import updateProblems from "@/features/problem/db/updateProblems";
+import updateProblems from "@/db/updateProblems";
 import { getProblems } from "@/features/externalapi/getProblems";
 import { getMofeProblems } from "@/features/externalapi/mofe/getMofeProblems";
 import { CreatedProblem } from "@/types/Problem";
