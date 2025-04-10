@@ -4,13 +4,16 @@ import { useState } from "react";
 import { ProblemListRecordResponse } from "../types/ProblemLists";
 import Image from "next/image";
 import getResourceName from "@/utils/getResourceName";
+import { getProblemDifficultyColor } from "@/utils/getProblemDifficultyColor";
 
 export default function ProblemListRecord({
     problemListRecord,
     isSolved,
+    shouldDisplayDifficulty,
 }: {
     problemListRecord: ProblemListRecordResponse;
     isSolved: boolean;
+    shouldDisplayDifficulty: boolean;
 }) {
     const [showHint, setShowHint] = useState(false);
     const { problem, memo, hint, order } = problemListRecord;
@@ -44,11 +47,23 @@ export default function ProblemListRecord({
                     <div>
                         <div className="font-medium">{problemListRecord.problem.name}</div>
                         <div className="text-xs text-gray-500">
-                            {getResourceName(problem.resource)}
+                            {problem.contestName
+                                ? problem.contestName
+                                : getResourceName(problem.resource)}
                         </div>
                     </div>
                 </a>
             </TableCell>
+            {shouldDisplayDifficulty && (
+                <TableCell>
+                    <div
+                        className="font-mono text-sm"
+                        style={{ color: getProblemDifficultyColor(problem) }}
+                    >
+                        {problem.difficulty ? problem.difficulty : "-"}
+                    </div>
+                </TableCell>
+            )}
             <TableCell className="text">{memo}</TableCell>
             <TableCell
                 className="relative group"

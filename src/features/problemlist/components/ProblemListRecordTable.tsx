@@ -51,6 +51,10 @@ export function ProblemListRecordTable({
         yukicoderTrigger(userIds.yukicoder);
     };
 
+    for (const problem in problemListRecords) {
+        console.log(createProblemKey(problemListRecords[problem].problem));
+    }
+
     useEffect(() => {
         const submissions = [
             aojSubmissions || [],
@@ -62,7 +66,6 @@ export function ProblemListRecordTable({
             submissions.map((submission) => createProblemKey(submission)),
         );
         setAcProblems(acSet);
-        console.log("AC Problems:", acSet);
     }, [atcoderSubmissions, aojSubmissions, yukicoderSubmissions, codeforcesSubmissions]);
 
     const handleSort = (field: SortField) => {
@@ -194,10 +197,13 @@ export function ProblemListRecordTable({
                             <TableHead className="w-[20%]">
                                 <div className="flex items-center">問題名</div>
                             </TableHead>
-                            <TableHead className="w-[35%]">
+                            <TableHead className="w-[10%]">
+                                <div className="flex items-center">Difficulty</div>
+                            </TableHead>
+                            <TableHead className="w-[30%]">
                                 <div className="flex items-center">メモ</div>
                             </TableHead>
-                            <TableHead className="w-[35%]">
+                            <TableHead className="w-[30%]">
                                 <div className="flex items-center">ヒント</div>
                             </TableHead>
                         </TableRow>
@@ -210,6 +216,7 @@ export function ProblemListRecordTable({
                                 isSolved={acProblems.has(
                                     createProblemKey(problemListRecord.problem),
                                 )}
+                                shouldDisplayDifficulty={true}
                             />
                         ))}
                     </TableBody>
