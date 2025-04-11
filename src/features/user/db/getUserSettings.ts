@@ -1,10 +1,13 @@
 import { prisma } from "@/prisma";
+import { RequestedUserId } from "@/types/RequestedUserId";
+import { withAuthorization } from "@/utils/withAuthorization";
 
-export const getUser = async (userId: string) => {
+const _getUserSettings = async (userId: RequestedUserId) => {
     return await prisma.user.findUnique({
         select: {
             id: true,
             name: true,
+            email: true,
             bio: true,
             aojId: true,
             atcoderId: true,
@@ -20,3 +23,5 @@ export const getUser = async (userId: string) => {
         where: { id: userId },
     });
 };
+
+export const getUserSettings = withAuthorization(_getUserSettings);

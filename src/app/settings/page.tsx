@@ -1,18 +1,11 @@
 import { redirect } from "next/navigation";
-import { getUserById } from "@/features/user/db/getUser";
-import { auth } from "@/auth";
 import { UserSettingsForm } from "@/features/user/components/UserSettingsForm";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { formatDate } from "@/utils/formatDate";
+import { getUserSettings } from "@/features/user/db/getUserSettings";
 
 export default async function SettingPage() {
-    const session = await auth();
-
-    if (!session?.user?.id) {
-        redirect("/");
-    }
-
-    const user = await getUserById(session.user.id);
+    const user = await getUserSettings();
 
     if (!user) {
         redirect("/");

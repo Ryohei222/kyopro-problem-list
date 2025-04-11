@@ -1,6 +1,6 @@
 import { UserProfile } from "@/features/user/components/UserProfile";
 import { notFound } from "next/navigation";
-import { getUserById } from "@/features/user/db/getUser";
+import { getUser } from "@/features/user/db/getUser";
 import { ProblemListsCards } from "@/features/problemlist/components/ProblemListsCards";
 import { getUserProblemList } from "@/features/problemlist/db/getUserProblemLists";
 import { Separator } from "@/components/ui/separator";
@@ -10,7 +10,7 @@ import { fetchYukicoderUserUrl } from "@/features/user/utils/fetchYukicoderUserU
 
 export default async function UserPage({ params }: { params: Promise<{ id: string }> }) {
     const userId = (await params).id;
-    const user = await getUserById(userId);
+    const user = await getUser(userId);
 
     if (!user) {
         notFound();

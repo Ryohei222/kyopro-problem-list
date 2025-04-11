@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Github, ExternalLink, X, Globe, FileText } from "lucide-react";
 import { Prisma } from "@prisma/client";
-import { getUserById } from "@/features/user/db/getUser";
+import { getUser } from "@/features/user/db/getUser";
 import { formatDate } from "@/utils/formatDate";
 import { Separator } from "@/components/ui/separator";
 
@@ -12,7 +12,7 @@ export function UserProfile({
     user,
     yukicoderUrl,
 }: {
-    user: NonNullable<Prisma.PromiseReturnType<typeof getUserById>>;
+    user: NonNullable<Prisma.PromiseReturnType<typeof getUser>>;
     yukicoderUrl: string;
 }) {
     return (
@@ -204,9 +204,7 @@ export function UserProfile({
 }
 
 // ユーザーが何かしらのソーシャルリンクを持っているかチェックする関数
-function hasAnySocialLinks(
-    user: NonNullable<Prisma.PromiseReturnType<typeof getUserById>>,
-): boolean {
+function hasAnySocialLinks(user: NonNullable<Prisma.PromiseReturnType<typeof getUser>>): boolean {
     return Boolean(
         user.aojId ||
             user.atcoderId ||

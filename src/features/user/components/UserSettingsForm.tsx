@@ -25,7 +25,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Save, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { User } from "@prisma/client";
 import Image from "next/image";
 import { UserSettingInputField } from "./UserSettingsInputField";
 import {
@@ -33,8 +32,13 @@ import {
     UserSettingsFormSchemaType,
 } from "../types/UserSettingsFormSchema";
 import { updateUser } from "../db/updateUser";
+import { getUserSettings } from "../db/getUserSettings";
 
-export function UserSettingsForm({ user }: { user: User }) {
+export function UserSettingsForm({
+    user,
+}: {
+    user: NonNullable<Awaited<ReturnType<typeof getUserSettings>>>;
+}) {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
 

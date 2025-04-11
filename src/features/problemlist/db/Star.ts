@@ -2,28 +2,33 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/prisma";
+import { RequestedUserId } from "@/types/RequestedUserId";
+import { withAuthorization } from "@/utils/withAuthorization";
 
-export const createStar = async (problemListId: string, userId: string) => {
+const _createStar = async (requestedUserId: RequestedUserId, problemListId: string) => {
     const star = await prisma.star.create({
         data: {
             problemListId: problemListId,
-            userId: userId,
+            userId: requestedUserId,
         },
     });
     return star;
 };
 
-export const deleteStar = async (problemListId: string, userId: string) => {
+const _deleteStar = async (requestedUserId: RequestedUserId, problemListId: string) => {
     const star = await prisma.star.delete({
         where: {
             star_identifier: {
                 problemListId: problemListId,
-                userId: userId,
+                userId: requestedUserId,
             },
         },
     });
     return star;
 };
+
+export const createStar = withAuthorization(_createStar);
+export const deleteStar = withAuthorization(_deleteStar);
 
 export const getStar = async (problemListId: string, userId: string) => {
     const session = await auth();

@@ -20,9 +20,9 @@ export function ClientStarButton({
 
     function handleClick() {
         if (isStarred) {
-            deleteStar(problemList.id, userId);
+            deleteStar(problemList.id);
         } else {
-            createStar(problemList.id, userId);
+            createStar(problemList.id);
         }
         setIsStarred(!isStarred);
     }

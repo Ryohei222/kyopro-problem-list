@@ -2,7 +2,7 @@ import NextAuth, { NextAuthConfig } from "next-auth";
 import Github from "next-auth/providers/github";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/prisma";
-import { getUserById } from "@/features/user/db/getUser";
+import { getUser } from "@/features/user/db/getUser";
 
 const authConfig = {
     adapter: PrismaAdapter(prisma),
@@ -13,7 +13,7 @@ const authConfig = {
         },
         async session({ session, token }) {
             if (!token.sub) return session;
-            const existingUser = await getUserById(token.sub);
+            const existingUser = await getUser(token.sub);
             if (!existingUser) return session;
             session.user.id = existingUser.id;
             session.user.name = existingUser.name;
@@ -22,7 +22,7 @@ const authConfig = {
         },
         async jwt({ token }) {
             if (!token.sub) return token;
-            const existingUser = await getUserById(token.sub);
+            const existingUser = await getUser(token.sub);
             if (!existingUser) return token;
             token.name = existingUser.name;
             token.id = existingUser.id;

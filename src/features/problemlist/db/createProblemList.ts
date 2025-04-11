@@ -1,19 +1,22 @@
 "use server";
 
 import { prisma } from "@/prisma";
-import { auth } from "@/auth";
+import { withAuthorization } from "@/utils/withAuthorization";
+import { RequestedUserId } from "@/types/RequestedUserId";
 
-export const createProblemList = async (name: string, description: string) => {
-    const userId = await auth().then((session) => session?.user?.id);
-    if (!userId) {
-        throw new Error("Unauthorized");
-    }
+async function _createProblemList(
+    requestedUserId: RequestedUserId,
+    name: string,
+    description: string,
+) {
     const problemList = await prisma.problemList.create({
         data: {
             name,
             description,
-            authorId: userId,
+            authorId: requestedUserId,
         },
     });
     return problemList;
-};
+}
+
+export const createProblemList = withAuthorization(_createProblemList);

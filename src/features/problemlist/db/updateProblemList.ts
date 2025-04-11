@@ -1,10 +1,11 @@
 "use server";
 
-import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 import { createProblemKey } from "@/types/Problem";
 import { Resource } from "@prisma/client";
 import { getProblemList } from "./getProblemList";
+import { RequestedUserId } from "@/types/RequestedUserId";
+import { withAuthorization } from "@/utils/withAuthorization";
 
 export type UpdateProblemListProps = {
     id: string;
@@ -21,98 +22,82 @@ export type UpdateProblemListProps = {
     }[];
 };
 
-export async function updateProblemList(updateProblemListProps: UpdateProblemListProps) {
-    try {
-        const session = await auth();
-        const userId = session?.user?.id;
-        const {
-            id: problemListId,
+async function _updateProblemList(
+    requestedUserId: RequestedUserId,
+    updateProblemListProps: UpdateProblemListProps,
+) {
+    const {
+        id: problemListId,
+        name,
+        description,
+        isPublic,
+        problemListRecords,
+    } = updateProblemListProps;
+
+    const existingProblemList = await getProblemList(problemListId);
+
+    if (!existingProblemList) {
+        return { success: false, error: "Problem list not found" };
+    }
+    if (existingProblemList.author.id !== requestedUserId) {
+        return { success: false, error: "You are not the author of this problem list" };
+    }
+
+    const updatedProblemSet = await prisma.problemList.update({
+        where: { id: problemListId },
+        data: {
             name,
             description,
             isPublic,
-            problemListRecords,
-        } = updateProblemListProps;
+        },
+    });
 
-        if (!userId) {
-            return { success: false, error: "Unauthorized" };
-        }
-
-        console.log(updateProblemListProps);
-
-        const existingProblemList = await getProblemList(problemListId);
-
-        if (!existingProblemList) {
-            return { success: false, error: "Problem list not found" };
-        }
-        if (existingProblemList.author.id !== userId) {
-            return { success: false, error: "You are not the author of this problem list" };
-        }
-
-        const updatedProblemSet = await prisma.problemList.update({
-            where: { id: problemListId },
-            data: {
-                name,
-                description,
-                isPublic,
+    const newProblemIds = await prisma.problem.findMany({
+        where: {
+            problemId: {
+                in: problemListRecords.map((record) => record.problemId),
             },
-        });
+        },
+    });
 
-        const newProblemIds = await prisma.problem.findMany({
-            where: {
-                problemId: {
-                    in: problemListRecords.map((record) => record.problemId),
-                },
-            },
-        });
+    await prisma.problemListRecord.deleteMany({
+        where: {
+            problemListId,
+        },
+    });
 
-        await prisma.problemListRecord.deleteMany({
-            where: {
-                problemListId,
-            },
-        });
+    const problemMap = new Map<string, number>(
+        newProblemIds.map((problem) => {
+            return [createProblemKey(problem), problem.id];
+        }),
+    );
 
-        console.log("New problem IDs:", newProblemIds);
-
-        const problemMap = new Map<string, number>(
-            newProblemIds.map((problem) => {
-                return [createProblemKey(problem), problem.id];
+    const problemsToCreate = problemListRecords.flatMap((problemData) => {
+        const innerId = problemMap.get(
+            createProblemKey({
+                ...problemData,
             }),
         );
-
-        console.log("Problem map:", problemMap);
-
-        const problemsToCreate = problemListRecords.flatMap((problemData) => {
-            const innerId = problemMap.get(
-                createProblemKey({
-                    ...problemData,
-                }),
-            );
-            if (!innerId) {
-                return [];
-            }
-            return {
-                problemListId,
-                problemId: innerId,
-                memo: problemData.memo,
-                hint: problemData.hint,
-                order: problemData.order,
-            };
-        });
-
-        console.log("Problems to create:", problemsToCreate);
-
-        await prisma.problemListRecord.createMany({
-            data: problemsToCreate,
-        });
+        if (!innerId) {
+            return [];
+        }
         return {
-            success: true,
-            problemListId: updatedProblemSet.id,
+            problemListId,
+            problemId: innerId,
+            memo: problemData.memo,
+            hint: problemData.hint,
+            order: problemData.order,
         };
-    } catch (error) {
-        console.error("Error updating problem list:", error);
-        return {
-            success: false,
-            error: "Failed to update problem set",
-        };
-    }
+    });
+
+    await prisma.problemListRecord.createMany({
+        data: problemsToCreate,
+    });
+
+    return {
+        success: true,
+        problemListId: updatedProblemSet.id,
+    };
 }
+
+export const updateProblemList = withAuthorization(_updateProblemList);
