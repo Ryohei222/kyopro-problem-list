@@ -1,39 +1,34 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import ProblemTableRow from "./ProblemListRecord";
-import { ProblemListRecordResponse } from "../types/ProblemLists";
-import { createProblemKey, ProblemKey } from "@/types/Problem";
-import {
-    useAtcoderSubmissions,
-    useAojSubmissions,
-    useYukicoderSubmissions,
-    useCodeforcesSubmissions,
-} from "@/hooks/useSubmissions";
 import { User } from "@prisma/client";
+import { ProblemListRecordResponse } from "../types/ProblemLists";
+import { useEffect, useState } from "react";
+import {
+    useAojSubmissions,
+    useAtcoderSubmissions,
+    useCodeforcesSubmissions,
+    useYukicoderSubmissions,
+} from "@/hooks/useSubmissions";
+import { createProblemKey, ProblemKey } from "@/types/Problem";
 
-type SortField = "order" | "resource";
-type SortDirection = "asc" | "desc";
+import { ProblemList } from "./ProblemList";
+import { getUser } from "@/features/user/db/getUser";
 
-export function ProblemListRecordTable({
-    problemListRecords,
-    user,
-}: {
+type ProblemListWithIdsFormProps = {
     problemListRecords: ProblemListRecordResponse[];
-    user: User | null;
-}) {
-    const [sortField, setSortField] = useState<SortField>("order");
-    const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+    user: Awaited<ReturnType<typeof getUser>> | null;
+};
 
+export function ProblemListWithIdsForm({ problemListRecords, user }: ProblemListWithIdsFormProps) {
     const [userIds, setUserIds] = useState({
         atcoder: user?.atcoderId || "",
         aoj: user?.aojId || "",
         yukicoder: user?.yukicoderId || "",
         codeforces: user?.codeforcesId || "",
     });
+
     const [acProblems, setAcProblems] = useState<Set<ProblemKey>>(new Set());
+
     const { submissions: aojSubmissions, trigger: aojTrigger } = useAojSubmissions(userIds.aoj);
 
     const { submissions: atcoderSubmissions, trigger: atcoderTrigger } = useAtcoderSubmissions(
@@ -51,10 +46,6 @@ export function ProblemListRecordTable({
         yukicoderTrigger(userIds.yukicoder);
     };
 
-    for (const problem in problemListRecords) {
-        console.log(createProblemKey(problemListRecords[problem].problem));
-    }
-
     useEffect(() => {
         const submissions = [
             aojSubmissions || [],
@@ -67,38 +58,6 @@ export function ProblemListRecordTable({
         );
         setAcProblems(acSet);
     }, [atcoderSubmissions, aojSubmissions, yukicoderSubmissions, codeforcesSubmissions]);
-
-    const handleSort = (field: SortField) => {
-        if (sortField === field) {
-            setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-        } else {
-            setSortField(field);
-            setSortDirection("asc");
-        }
-    };
-
-    const sortedRecords = [...problemListRecords].sort((a, b) => {
-        if (sortField === "resource") {
-            const resourceA = a.problem.resource.toLowerCase();
-            const resourceB = b.problem.resource.toLowerCase();
-            return sortDirection === "asc"
-                ? resourceA.localeCompare(resourceB)
-                : resourceB.localeCompare(resourceA);
-        } else {
-            return sortDirection === "asc"
-                ? a[sortField] - b[sortField]
-                : b[sortField] - a[sortField];
-        }
-    });
-
-    const SortIcon = ({ field }: { field: SortField }) => {
-        if (sortField !== field) return null;
-        return sortDirection === "asc" ? (
-            <ChevronUp className="h-4 w-4 ml-1" />
-        ) : (
-            <ChevronDown className="h-4 w-4 ml-1" />
-        );
-    };
 
     return (
         <div className="space-y-4">
@@ -172,56 +131,12 @@ export function ProblemListRecordTable({
                     Check Submissions
                 </button>
             </div>
-            <div className="rounded-md border bg-white">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead
-                                className="w-[5%] cursor-pointer"
-                                onClick={() => handleSort("order")}
-                            >
-                                <div className="flex items-center">
-                                    No.
-                                    <SortIcon field="order" />
-                                </div>
-                            </TableHead>
-                            <TableHead
-                                className="w-[5%] cursor-pointer"
-                                onClick={() => handleSort("resource")}
-                            >
-                                <div className="flex items-center">
-                                    サイト
-                                    <SortIcon field="resource" />
-                                </div>
-                            </TableHead>
-                            <TableHead className="w-[20%]">
-                                <div className="flex items-center">問題名</div>
-                            </TableHead>
-                            <TableHead className="w-[10%]">
-                                <div className="flex items-center">Difficulty</div>
-                            </TableHead>
-                            <TableHead className="w-[30%]">
-                                <div className="flex items-center">メモ</div>
-                            </TableHead>
-                            <TableHead className="w-[30%]">
-                                <div className="flex items-center">ヒント</div>
-                            </TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {sortedRecords.map((problemListRecord) => (
-                            <ProblemTableRow
-                                key={createProblemKey(problemListRecord.problem)}
-                                problemListRecord={problemListRecord}
-                                isSolved={acProblems.has(
-                                    createProblemKey(problemListRecord.problem),
-                                )}
-                                shouldDisplayDifficulty={true}
-                            />
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
+            <ProblemList
+                problemListRecords={problemListRecords.map((problemListRecord) => ({
+                    ...problemListRecord,
+                    isSolved: acProblems.has(createProblemKey(problemListRecord.problem)),
+                }))}
+            />
         </div>
     );
 }

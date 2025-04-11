@@ -6,19 +6,22 @@ import Image from "next/image";
 import getResourceName from "@/utils/getResourceName";
 import { getProblemDifficultyColor } from "@/utils/getProblemDifficultyColor";
 
-export default function ProblemListRecord({
-    problemListRecord,
-    isSolved,
-    shouldDisplayDifficulty,
-}: {
-    problemListRecord: ProblemListRecordResponse;
+type ProblemListRecordWithSolvedFlag = ProblemListRecordResponse & {
     isSolved: boolean;
-    shouldDisplayDifficulty: boolean;
-}) {
-    const [showHint, setShowHint] = useState(false);
-    const { problem, memo, hint, order } = problemListRecord;
+};
 
-    // コンテストサイトに合わせたロゴと背景色を取得
+type ProblemListItemProps = {
+    problemListRecord: ProblemListRecordWithSolvedFlag;
+    shouldDisplayDifficulty: boolean;
+};
+
+export default function ProblemListItem({
+    problemListRecord,
+    shouldDisplayDifficulty,
+}: ProblemListItemProps) {
+    const [showHint, setShowHint] = useState(false);
+    const { problem, memo, hint, order, isSolved } = problemListRecord;
+
     const { logoSrc, logoAlt, bgColorClass } = getSiteLogo(problem.resource);
 
     return (
