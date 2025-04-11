@@ -12,17 +12,22 @@ const maxAge = 24 * 60 * 60 * 1000;
 
 const gcStorageHandler = {
     ...timestampStorageHandler,
-    revive: (key: string, storeObject: any) =>
-        storeObject.ts > Date.now() - maxAge
+    revive: (key: string, storeObject: any) => {
+        return Date.now() < storeObject.ts + maxAge
             ? timestampStorageHandler.revive(key, storeObject)
-            : undefined,
-    replace: (key: string, value: any) =>
-        !key.startsWith("/submissions") ? timestampStorageHandler.replace(key, value) : undefined,
+            : undefined;
+    },
+    // /submissions/[contest]
+    replace: (key: string, storeObject: any) => {
+        key.startsWith("/submissions")
+            ? undefined
+            : timestampStorageHandler.replace(key, storeObject);
+    },
 };
 
 export const SWRProvider = ({ children }: { children: React.ReactNode }) => {
     const cacheProvider = useCacheProvider({
-        dbName: "cp-problem-set",
+        dbName: "kyopro-problem-list",
         storeName: "swr-cache",
         storageHandler: gcStorageHandler,
     });

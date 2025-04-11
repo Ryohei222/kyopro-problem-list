@@ -1,3 +1,5 @@
+"use client";
+
 import { CommonSubmission } from "@/types/Submission";
 import useSWRMutation from "swr/mutation";
 import { getSubmissions } from "@/features/externalapi/getSubmissions";
@@ -11,9 +13,6 @@ function wrapGetContestSubmissions(
         const { data, error, trigger, isMutating } = useSWRMutation(
             `/submissions/${contest}`,
             (url: string, { arg }: { arg: string }) => getSubmissions(arg),
-            {
-                populateCache: true,
-            },
         );
         return {
             submissions: data,
