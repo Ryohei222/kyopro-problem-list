@@ -16,55 +16,42 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Save, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 import { createProblemList } from "../db/createProblemList";
-
-// フォームのバリデーションスキーマ
-const formSchema = z.object({
-    name: z
-        .string()
-        .min(3, { message: "リスト名は3文字以上である必要があります" })
-        .max(50, { message: "リスト名は50文字以内である必要があります" }),
-    description: z
-        .string()
-        .min(10, { message: "概要は10文字以上である必要があります" })
-        .max(500, { message: "概要は500文字以内である必要があります" }),
-    isPublic: z.boolean().default(true),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import {
+    CreateProblemListFormSchema,
+    CreateProblemListFormSchemaType,
+} from "../types/CreateProblemListFormSchema";
 
 export function CreateProblemListForm() {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // フォームの初期値
-    const defaultValues: Partial<FormValues> = {
+    const defaultValues: CreateProblemListFormSchemaType = {
         name: "",
         description: "",
         isPublic: true,
     };
 
-    // フォームの設定
-    const form = useForm<FormValues>({
+    const form = useForm<CreateProblemListFormSchemaType>({
+        resolver: zodResolver(CreateProblemListFormSchema),
         defaultValues,
         mode: "onChange",
     });
 
-    // フォーム送信処理
-    const onSubmit = async (data: FormValues) => {
+    const onSubmit = async (data: CreateProblemListFormSchemaType) => {
+        console.log("Form submitted:", data);
         setIsSubmitting(true);
-
         try {
-            const response = await createProblemList(data.name, data.description);
-
-            setTimeout(() => {
-                router.push(`/problemlist/show/${response.id}`);
-            }, 1000);
+            const response = await createProblemList(data);
+            if (response === "format error") {
+                return;
+            }
+            router.push(`/problemlist/show/${response.id}`);
         } catch (error) {
             console.error("エラー:", error);
         } finally {
@@ -97,6 +84,7 @@ export function CreateProblemListForm() {
                                         <Input
                                             placeholder="例: 初心者向けグラフアルゴリズム集"
                                             {...field}
+                                            value={field.value || ""}
                                         />
                                     </FormControl>
                                     <FormDescription>
@@ -118,6 +106,7 @@ export function CreateProblemListForm() {
                                             placeholder="この問題リストの内容や目的について説明してください"
                                             className="min-h-[120px]"
                                             {...field}
+                                            value={field.value || ""}
                                         />
                                     </FormControl>
                                     <FormDescription>
@@ -155,7 +144,7 @@ export function CreateProblemListForm() {
                     </CardContent>
 
                     <CardFooter className="flex justify-between border-t p-6">
-                        <Button type="button" variant="outline" onClick={() => router.push("/")}>
+                        <Button type="button" variant="outline" onClick={() => router.back()}>
                             キャンセル
                         </Button>
                         <Button
