@@ -1,11 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { formatDate } from "@/utils/formatDate";
-import { Calendar, Share2, Edit } from "lucide-react";
+import { Calendar, Share2, Edit, Delete } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ProblemListStarButton } from "./ProblemListStarButton";
 import { ProblemListResponse } from "../types/ProblemLists";
 import Image from "next/image";
+import { deleteProblemList } from "../db/deleteProblemList";
+import { ProblemListDeleteButton } from "./ProblemListDeleteButton";
 
 type ProblemListCardHeaderProps = {
     problemList: NonNullable<ProblemListResponse>;
@@ -65,6 +67,7 @@ export async function ProblemListCardHeader({
                                 <Edit className="h-4 w-4 mr-1" />
                                 <span>編集</span>
                             </a>
+                            <ProblemListDeleteButton problemList={problemList} />
                         </>
                     )}
                 </div>

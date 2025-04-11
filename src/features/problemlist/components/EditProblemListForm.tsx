@@ -26,7 +26,7 @@ import ProblemSetIsPublicInput from "./ProblemSetIsPublicInput";
 import AddProblemForm from "./AddProblem";
 import { updateProblemList } from "../db/updateProblemList";
 import { ProblemListRecordResponse, ProblemListResponse } from "../types/ProblemLists";
-import { CommonProblem, createProblemKey, createProblemKeyProps } from "@/types/Problem";
+import { createProblemKey, createProblemKeyProps } from "@/types/Problem";
 
 export default function EditProblemListForm({
     problemList,
@@ -184,7 +184,7 @@ export default function EditProblemListForm({
                                                 <TableHead>コンテストID</TableHead>
                                                 <TableHead>メモ</TableHead>
                                                 <TableHead>ヒント</TableHead>
-                                                <TableHead className="w-[100px]"></TableHead>
+                                                <TableHead className="w-[60px]"></TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
@@ -213,7 +213,7 @@ export default function EditProblemListForm({
                                                             id={record.problem.problemId}
                                                         >
                                                             <TableCell>
-                                                                <div className="flex items-center gap-2">
+                                                                <div className="flex items-center gap-2 max-w-[0px]">
                                                                     <div className="cursor-move">
                                                                         <GripVertical className="h-4 w-4 text-gray-400" />
                                                                     </div>
