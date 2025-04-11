@@ -19,9 +19,7 @@ export default async function EditProblemSetPage({
     return (
         <div className="space-y-6">
             <BackButton />
-            <div className="max-w-3xl mx-auto">
-                <EditProblemListForm problemList={problemList} />
-            </div>
+            <EditProblemListForm problemList={problemList} />
         </div>
     );
 }
