@@ -24,13 +24,6 @@ export async function getStarredProblemLists(userId: string) {
             createdAt: true,
             updatedAt: true,
         },
-        where: {
-            stars: {
-                every: {
-                    userId: userId,
-                },
-            },
-        },
     });
     const filteredProblemLists = problemLists.filter((problemList) => {
         return (

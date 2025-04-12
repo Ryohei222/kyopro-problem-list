@@ -1,4 +1,3 @@
-import getUserIdFromSession from "@/utils/getUserIdFromSession";
 import { getStarredProblemLists } from "../db/getStaredProblemSets";
 import { ProblemListsPresenter } from "./ProblemListsPresenter";
 
