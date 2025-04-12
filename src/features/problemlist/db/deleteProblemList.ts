@@ -16,6 +16,19 @@ async function _deleteProblemList(requestedUserId: RequestedUserId, problemListI
     if (problemList.authorId !== requestedUserId) {
         return "You are not authorized to delete this problem list";
     }
+
+    await prisma.problemListRecord.deleteMany({
+        where: {
+            problemListId: problemListId,
+        },
+    });
+
+    await prisma.star.deleteMany({
+        where: {
+            problemListId: problemListId,
+        },
+    });
+
     const deletedProblemList = await prisma.problemList.delete({
         where: {
             id: problemListId,
