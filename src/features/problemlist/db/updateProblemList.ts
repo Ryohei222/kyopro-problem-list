@@ -2,37 +2,20 @@
 
 import { prisma } from "@/prisma";
 import { createProblemKey } from "@/types/Problem";
-import { Resource } from "@prisma/client";
 import { getProblemList } from "./getProblemList";
 import { RequestedUserId } from "@/types/RequestedUserId";
 import { withAuthorization } from "@/utils/withAuthorization";
+import { ProblemListSchema, ProblemListSchemaType } from "../types/ProblemListSchema";
 
-export type UpdateProblemListProps = {
-    id: string;
-    name: string;
-    description: string;
-    isPublic: boolean;
-    problemListRecords: {
-        resource: Resource;
-        contestId: string;
-        problemId: string;
-        memo: string;
-        hint: string;
-        order: number;
-    }[];
-};
+async function _updateProblemList(requestedUserId: RequestedUserId, props: ProblemListSchemaType) {
+    const result = ProblemListSchema.safeParse(props);
 
-async function _updateProblemList(
-    requestedUserId: RequestedUserId,
-    updateProblemListProps: UpdateProblemListProps,
-) {
-    const {
-        id: problemListId,
-        name,
-        description,
-        isPublic,
-        problemListRecords,
-    } = updateProblemListProps;
+    if (!result.success) {
+        console.error("Validation error:", result.error.format());
+        return { success: false, error: "format error" };
+    }
+
+    const { id: problemListId, name, description, isPublic, problemListRecords } = result.data;
 
     const existingProblemList = await getProblemList(problemListId);
 

@@ -23,27 +23,27 @@ import Link from "next/link";
 
 import { createProblemList } from "../db/createProblemList";
 import {
-    CreateProblemListFormSchema,
-    CreateProblemListFormSchemaType,
-} from "../types/CreateProblemListFormSchema";
+    ProblemListMetadataSchema,
+    ProblemListMetadataSchemaType,
+} from "../types/ProblemListMetadataSchema";
 
 export function CreateProblemListForm() {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const defaultValues: CreateProblemListFormSchemaType = {
+    const defaultValues: ProblemListMetadataSchemaType = {
         name: "",
         description: "",
         isPublic: true,
     };
 
-    const form = useForm<CreateProblemListFormSchemaType>({
-        resolver: zodResolver(CreateProblemListFormSchema),
+    const form = useForm<ProblemListMetadataSchemaType>({
+        resolver: zodResolver(ProblemListMetadataSchema),
         defaultValues,
         mode: "onChange",
     });
 
-    const onSubmit = async (data: CreateProblemListFormSchemaType) => {
+    const onSubmit = async (data: ProblemListMetadataSchemaType) => {
         console.log("Form submitted:", data);
         setIsSubmitting(true);
         try {

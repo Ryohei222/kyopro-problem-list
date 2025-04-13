@@ -78,9 +78,7 @@ export default function EditProblemListForm({
         e.preventDefault();
         setIsSubmitting(true);
         setError(null);
-
         try {
-            // 問題の順序を再計算（1から連番）
             const sortedProblems = [...problems].sort((a, b) => a.order - b.order);
             const reorderedProblems = sortedProblems.map((p, index) => ({
                 ...p,
