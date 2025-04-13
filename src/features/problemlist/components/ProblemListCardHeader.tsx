@@ -21,7 +21,7 @@ export async function ProblemListCardHeader({
     isAuthor,
 }: ProblemListCardHeaderProps) {
     return (
-        <CardHeader className="pb-4">
+        <CardHeader className="pt-4">
             <div className="flex justify-between items-start">
                 <div>
                     <CardTitle className="text-2xl font-bold">{problemList.name}</CardTitle>
@@ -40,7 +40,7 @@ export async function ProblemListCardHeader({
                         </Badge>
                     </CardDescription>
                 </div>
-                <div className="flex space-x-2">
+                <div className="flex space-x-2 mt-4">
                     <ShareButton problemList={problemList} />
                     {isLogined && <ProblemListStarButton problemList={problemList} />}
                     {isAuthor && (
