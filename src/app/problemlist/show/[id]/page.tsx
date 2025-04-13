@@ -8,7 +8,11 @@ import { ProblemListCardHeader } from "@/features/problemlist/components/Problem
 import { Metadata } from "next";
 import buildTwitterMetadata from "@/utils/buildTwitterMetaData";
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ id: string }>;
+}): Promise<Metadata> {
     const { id } = await params;
     const problemList = await getProblemList(id);
     const title = problemList?.name || "問題リストが見つかりません";
