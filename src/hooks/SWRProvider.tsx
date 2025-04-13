@@ -8,20 +8,21 @@ import { timestampStorageHandler } from "@piotr-cz/swr-idb-cache";
 
 // https://github.com/piotr-cz/swr-idb-cache
 
-const maxAge = 24 * 60 * 60 * 1000;
+const problemsMaxAge = 60 * 60 * 1000;
+const submissionMaxAge = 3 * 60 * 1000;
 
 const gcStorageHandler = {
     ...timestampStorageHandler,
     revive: (key: string, storeObject: any) => {
-        return Date.now() < storeObject.ts + maxAge
+        const timeFromPreviousRequest = Date.now() - storeObject.ts;
+        if (key.startsWith("/submissions")) {
+            return timeFromPreviousRequest < submissionMaxAge
+                ? timestampStorageHandler.revive(key, storeObject)
+                : undefined;
+        }
+        return timeFromPreviousRequest < problemsMaxAge
             ? timestampStorageHandler.revive(key, storeObject)
             : undefined;
-    },
-    // /submissions/[contest]
-    replace: (key: string, storeObject: any) => {
-        key.startsWith("/submissions")
-            ? undefined
-            : timestampStorageHandler.replace(key, storeObject);
     },
 };
 
