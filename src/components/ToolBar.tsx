@@ -9,19 +9,19 @@ export async function ToolBar() {
     const session = await auth();
     const isLoggedIn = !!session?.user;
     return (
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-            <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+        <header className="sticky top-0 z-10 bg-white border-b border-gray-200">
+            <div className="container mx-auto flex items-center justify-between px-4">
                 <div className="flex items-center space-x-4">
                     <Link href="/" className="flex items-center space-x-2">
-                        <span className="font-bold text-xl text-green-600">
+                        <span className="hidden md:inline text-xl font-bold text-green-600 truncate">
                             Kyopro Problem List
                         </span>
                     </Link>
-                    <nav className="hidden md:flex items-center space-x-4">
+                    <nav className="items-center space-x-2 md:flex">
                         <Button variant="ghost" size="sm" asChild>
                             <Link href="/" className="flex items-center space-x-1">
                                 <Home className="h-4 w-4" />
-                                <span>すべての問題リスト</span>
+                                <span className="hidden sm:inline">すべての問題リスト</span>
                             </Link>
                         </Button>
                         {isLoggedIn && (
@@ -29,7 +29,7 @@ export async function ToolBar() {
                                 <Button variant="ghost" size="sm" asChild>
                                     <Link href="/starred" className="flex items-center space-x-1">
                                         <Star className="h-4 w-4" />
-                                        <span>お気に入り</span>
+                                        <span className="hidden sm:inline">お気に入り</span>
                                     </Link>
                                 </Button>
                                 <Button variant="ghost" size="sm" asChild>
@@ -38,13 +38,13 @@ export async function ToolBar() {
                                         className="flex items-center space-x-1"
                                     >
                                         <Plus className="h-4 w-4" />
-                                        <span>新規作成</span>
+                                        <span className="hidden sm:inline">新規作成</span>
                                     </Link>
                                 </Button>
                                 <Button variant="ghost" size="sm" asChild>
                                     <Link href="/settings" className="flex items-center space-x-1">
                                         <Settings className="h-4 w-4" />
-                                        <span>設定</span>
+                                        <span className="hidden sm:inline">設定</span>
                                     </Link>
                                 </Button>
                             </>

@@ -22,10 +22,10 @@ export async function ProblemListCardHeader({
 }: ProblemListCardHeaderProps) {
     return (
         <CardHeader className="pt-4">
-            <div className="flex justify-between items-start">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
                 <div>
                     <CardTitle className="text-2xl font-bold">{problemList.name}</CardTitle>
-                    <CardDescription className="flex items-center mt-2 space-x-4">
+                    <CardDescription className="flex flex-wrap items-center mt-2 space-x-4">
                         <CardUserInfo
                             id={problemList.author.id}
                             name={problemList.author.name}
@@ -33,14 +33,16 @@ export async function ProblemListCardHeader({
                         />
                         <span className="flex items-center">
                             <Calendar className="h-4 w-4 mr-1" />
-                            {formatDate(problemList.createdAt)}
+                            <span className="hidden sm:inline">
+                                {formatDate(problemList.createdAt)}
+                            </span>
                         </span>
                         <Badge variant={problemList.isPublic ? "default" : "outline"}>
                             {problemList.isPublic ? "公開" : "非公開"}
                         </Badge>
                     </CardDescription>
                 </div>
-                <div className="flex space-x-2 mt-4">
+                <div className="flex space-x-2 mt-4 md:mt-0">
                     <ShareButton problemList={problemList} />
                     {isLogined && <ProblemListStarButton problemList={problemList} />}
                     {isAuthor && (
