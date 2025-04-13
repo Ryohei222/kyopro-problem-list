@@ -96,7 +96,7 @@ export function ProblemList(props: ProblemListProps) {
                         <ProblemListItem
                             key={createProblemKey(problemListRecord.problem)}
                             problemListRecord={problemListRecord}
-                            shouldDisplayDifficulty={true}
+                            showDifficulty={true}
                         />
                     ))}
                 </TableBody>
