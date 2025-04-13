@@ -19,7 +19,9 @@ export default async function StarredProblemListsPage(): Promise<ReactNode> {
     }
     return (
         <div className="space-y-6">
-            <h1 className="text-3xl font-bold mb-6">お気に入りの問題リスト一覧</h1>
+            <h1 className="text-3xl font-extrabold mb-8 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+                お気に入りの問題リスト
+            </h1>
             <StarredProblemListsContainer userId={userId} />
         </div>
     );

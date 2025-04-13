@@ -24,12 +24,6 @@ export default async function SettingPage() {
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
             <div className="space-y-8">
-                <div>
-                    <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                        アカウント設定
-                    </h1>
-                    <p className="text-gray-500">プロフィール情報やアカウント設定を管理できます</p>
-                </div>
                 <UserSettingsForm user={user} />
                 <Card>
                     <CardHeader>
