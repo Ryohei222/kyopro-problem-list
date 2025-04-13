@@ -1,4 +1,5 @@
 import { signIn } from "@/auth";
+import { Button } from "./ui/button";
 
 export default function LoginButton() {
     return (
@@ -8,12 +9,12 @@ export default function LoginButton() {
                 await signIn("github");
             }}
         >
-            <button
+            <Button
                 type="submit"
                 className="my-5 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
             >
                 Sign in with GitHub
-            </button>
+            </Button>
         </form>
     );
 }

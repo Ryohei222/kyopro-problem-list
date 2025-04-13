@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Home, Plus, Star, Settings } from "lucide-react";
+import { Home, Plus, Star, Settings, HelpCircle } from "lucide-react";
 import LoginButton from "./LoginButton";
 import MyPageButton from "./MyPageButton";
 import { auth } from "@/auth";
@@ -13,7 +13,7 @@ export async function ToolBar() {
             <div className="container mx-auto flex items-center justify-between px-4">
                 <div className="flex items-center space-x-4">
                     <Link href="/" className="flex items-center space-x-2">
-                        <span className="hidden md:inline text-xl font-bold text-green-600 truncate">
+                        <span className="hidden lg:inline text-xl font-bold text-green-600 truncate">
                             Kyopro Problem List
                         </span>
                     </Link>
@@ -21,7 +21,7 @@ export async function ToolBar() {
                         <Button variant="ghost" size="sm" asChild>
                             <Link href="/" className="flex items-center space-x-1">
                                 <Home className="h-4 w-4" />
-                                <span className="hidden sm:inline">すべての問題リスト</span>
+                                <span className="hidden md:inline">すべての問題リスト</span>
                             </Link>
                         </Button>
                         {isLoggedIn && (
@@ -29,7 +29,7 @@ export async function ToolBar() {
                                 <Button variant="ghost" size="sm" asChild>
                                     <Link href="/starred" className="flex items-center space-x-1">
                                         <Star className="h-4 w-4" />
-                                        <span className="hidden sm:inline">お気に入り</span>
+                                        <span className="hidden md:inline">お気に入り</span>
                                     </Link>
                                 </Button>
                                 <Button variant="ghost" size="sm" asChild>
@@ -38,20 +38,21 @@ export async function ToolBar() {
                                         className="flex items-center space-x-1"
                                     >
                                         <Plus className="h-4 w-4" />
-                                        <span className="hidden sm:inline">新規作成</span>
+                                        <span className="hidden md:inline">新規作成</span>
                                     </Link>
                                 </Button>
                                 <Button variant="ghost" size="sm" asChild>
                                     <Link href="/settings" className="flex items-center space-x-1">
                                         <Settings className="h-4 w-4" />
-                                        <span className="hidden sm:inline">設定</span>
+                                        <span className="hidden md:inline">設定</span>
                                     </Link>
                                 </Button>
                             </>
                         )}
+                        <HelpButton />
                     </nav>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex ">
                     {isLoggedIn ? (
                         <MyPageButton userId={session.user?.id || ""} />
                     ) : (
@@ -60,5 +61,16 @@ export async function ToolBar() {
                 </div>
             </div>
         </header>
+    );
+}
+
+function HelpButton() {
+    return (
+        <Button variant="ghost" size="sm" asChild>
+            <Link href="/help" className="flex items-center space-x-1">
+                <HelpCircle className="h-4 w-4" />
+                <span className="hidden md:inline">ヘルプ</span>
+            </Link>
+        </Button>
     );
 }
