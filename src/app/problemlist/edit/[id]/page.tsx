@@ -1,4 +1,3 @@
-import { BackButton } from "@/features/problemlist/components/BackButton";
 import { notFound } from "next/navigation";
 import { ReactElement } from "react";
 import EditProblemListForm from "@/features/problemlist/components/EditProblemListForm";
@@ -18,7 +17,6 @@ export default async function EditProblemSetPage({
 
     return (
         <div className="space-y-6">
-            <BackButton />
             <EditProblemListForm problemList={problemList} />
         </div>
     );

@@ -12,8 +12,7 @@ export const metadata: Metadata = {
 
 export default function CreateProblemSetPage() {
     return (
-        <div className="max-w-2xl mx-auto">
-            <h1 className="text-3xl font-bold mb-6">新しい問題リストを作成</h1>
+        <div className="max-w-2xl mx-auto space-y-6">
             <CreateProblemListForm />
         </div>
     );

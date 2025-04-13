@@ -1,4 +1,3 @@
-import { BackButton } from "@/features/problemlist/components/BackButton";
 import { getProblemList } from "@/features/problemlist/db/getProblemList";
 import { auth } from "@/auth";
 import { getUser } from "@/features/user/db/getUser";
@@ -43,8 +42,7 @@ export default async function ProblemListShowPage({ params }: { params: Promise<
 
     return (
         <div className="space-y-6">
-            <BackButton />
-            <Card>
+            <Card className="p-4 pb-10">
                 <ProblemListCardHeader
                     problemList={problemList}
                     isLogined={!!currentUser}
