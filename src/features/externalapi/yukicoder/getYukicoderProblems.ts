@@ -2,7 +2,7 @@ import { Resource } from "@prisma/client";
 import { fetchApi } from "../fetchApi";
 import { YUKICODER_API_URL } from "./constant";
 import { YukicoderProblemsApiSchema } from "./ProblemsSchema";
-import { CommonProblem } from "@/types/Problem";
+import { CommonProblem } from "@/types/CommonProblem";
 
 export async function getYukicoderProblems(): Promise<CommonProblem[]> {
     return fetchApi(`${YUKICODER_API_URL}/problems`, YukicoderProblemsApiSchema).then((data) => {

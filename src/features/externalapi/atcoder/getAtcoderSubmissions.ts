@@ -1,4 +1,4 @@
-import { CommonSubmission } from "@/types/Submission";
+import { CommonSubmission } from "@/types/CommonSubmission";
 import { Resource } from "@prisma/client";
 import { openDB, DBSchema } from "idb";
 import { z } from "zod";

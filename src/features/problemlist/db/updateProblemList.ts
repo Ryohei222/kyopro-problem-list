@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/prisma";
-import { createProblemKey } from "@/types/Problem";
+import { createProblemKey } from "@/types/CommonProblem";
 import { getProblemList } from "./getProblemList";
 import { RequestedUserId } from "@/types/RequestedUserId";
 import { withAuthorization } from "@/utils/withAuthorization";

@@ -1,4 +1,4 @@
-import { CommonProblem } from "@/types/Problem";
+import { CommonProblem } from "@/types/CommonProblem";
 import { Resource } from "@prisma/client";
 import { getAojProblems } from "./aoj/getAojProblems";
 import { getAtcoderProblems } from "./atcoder/getAtcoderProblems";

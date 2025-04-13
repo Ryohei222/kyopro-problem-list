@@ -1,7 +1,7 @@
 "use client";
 
 import { TableHeader, TableRow, TableHead, TableBody, Table } from "@/components/ui/table";
-import { createProblemKey } from "@/types/Problem";
+import { createProblemKey } from "@/types/CommonProblem";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { ProblemListRecordResponse } from "../types/ProblemLists";

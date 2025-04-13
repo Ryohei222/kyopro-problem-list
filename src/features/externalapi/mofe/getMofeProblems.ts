@@ -2,7 +2,7 @@ import { Resource } from "@prisma/client";
 import { fetchApi } from "../fetchApi";
 import { MOFE_API_URL } from "./constant";
 import { MofeContestApiSchema, MofeContestsApiSchema } from "./ContestsSchema";
-import { CommonProblem } from "@/types/Problem";
+import { CommonProblem } from "@/types/CommonProblem";
 
 export async function getMofeProblems(): Promise<CommonProblem[]> {
     const contests = await fetchApi(`${MOFE_API_URL}/contests`, MofeContestsApiSchema);

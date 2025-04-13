@@ -1,5 +1,5 @@
 import { CodeforcesSubmissionsApiSchema } from "./SubmissionsSchema";
-import { CommonSubmission } from "@/types/Submission";
+import { CommonSubmission } from "@/types/CommonSubmission";
 import { Resource } from "@prisma/client";
 import { fetchApi } from "../fetchApi";
 import { CODEFORCES_API_URL } from "./constant";

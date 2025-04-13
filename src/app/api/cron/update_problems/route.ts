@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import updateProblems from "@/db/updateProblems";
 import { getProblems } from "@/features/externalapi/getProblems";
 import { getMofeProblems } from "@/features/externalapi/mofe/getMofeProblems";
-import { CreatedProblem } from "@/types/Problem";
+import { CreatedProblem } from "@/types/CommonProblem";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     const authHeader = req.headers.get("authorization");

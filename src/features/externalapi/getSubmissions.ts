@@ -4,7 +4,7 @@ import { getAojSubmissions } from "./aoj/getAojSubmissions";
 import { getAtcoderSubmissions } from "./atcoder/getAtcoderSubmissions";
 import { getCodeforcesSubmissions } from "./codeforces/getCodeforcesSubmissions";
 import { getYukicoderSubmissions } from "./yukicoder/getYukicoderSubmissions";
-import { CommonSubmission } from "@/types/Submission";
+import { CommonSubmission } from "@/types/CommonSubmission";
 
 export async function getSubmissions(
     resource: Resource,

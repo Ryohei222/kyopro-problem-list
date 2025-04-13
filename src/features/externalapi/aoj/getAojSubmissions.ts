@@ -1,5 +1,5 @@
 import { AojSubmissionsApiSchema } from "./SubmissionsSchema";
-import { CommonSubmission } from "@/types/Submission";
+import { CommonSubmission } from "@/types/CommonSubmission";
 import { Resource } from "@prisma/client";
 import { fetchApi } from "../fetchApi";
 import { AOJ_API_URL } from "./constant";

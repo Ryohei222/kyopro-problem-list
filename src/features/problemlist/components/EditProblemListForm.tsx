@@ -26,7 +26,7 @@ import ProblemSetIsPublicInput from "./ProblemSetIsPublicInput";
 import AddProblemForm from "./AddProblem";
 import { updateProblemList } from "../db/updateProblemList";
 import { ProblemListRecordResponse, ProblemListResponse } from "../types/ProblemLists";
-import { createProblemKey, createProblemKeyProps } from "@/types/Problem";
+import { createProblemKey, createProblemKeyProps } from "@/types/CommonProblem";
 
 export default function EditProblemListForm({
     problemList,

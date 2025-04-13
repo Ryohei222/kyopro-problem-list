@@ -2,7 +2,7 @@ import { Resource } from "@prisma/client";
 import { fetchApi } from "../fetchApi";
 import { CODEFORCES_API_URL } from "./constant";
 import { CodeforcesProblemsApiSchema } from "./ProblemsSchema";
-import { CommonProblem } from "@/types/Problem";
+import { CommonProblem } from "@/types/CommonProblem";
 import { getCodeforcesContests } from "./getCodeforcesContests";
 
 export async function getCodeforcesProblems(): Promise<CommonProblem[]> {

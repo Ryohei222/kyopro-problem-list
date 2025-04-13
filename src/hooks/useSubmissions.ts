@@ -1,6 +1,6 @@
 "use client";
 
-import { CommonSubmission } from "@/types/Submission";
+import { CommonSubmission } from "@/types/CommonSubmission";
 import useSWRMutation from "swr/mutation";
 import { getSubmissions } from "@/features/externalapi/getSubmissions";
 import { Resource } from "@prisma/client";

@@ -8,9 +8,9 @@ import { Plus } from "lucide-react";
 import React, { useState } from "react";
 import useProblems from "@/hooks/useProblems";
 import extractProblemFromUrl from "@/utils/extractProblemFromUrl";
-import { CommonProblem } from "@/types/Problem";
+import { CommonProblem } from "@/types/CommonProblem";
 import { ProblemListRecordResponse } from "../types/ProblemLists";
-import { createProblemKey } from "@/types/Problem";
+import { createProblemKey } from "@/types/CommonProblem";
 
 function searchProblemFromUrl(url: string, problems: CommonProblem[]): CommonProblem | null {
     const extractedProblem = extractProblemFromUrl(url);

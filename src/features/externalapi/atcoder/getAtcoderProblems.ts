@@ -2,7 +2,7 @@ import { Resource } from "@prisma/client";
 import { fetchApi } from "../fetchApi";
 import { ATCODER_API_URL } from "./constants";
 import { AtcoderProblemsApiSchema } from "./ProblemsSchema";
-import { CommonProblem } from "@/types/Problem";
+import { CommonProblem } from "@/types/CommonProblem";
 import { getAtcoderProblemDifficulties } from "./getAtcoderProblemDifficulties";
 import { getAtcoderContests } from "./getAtcoderContests";
 

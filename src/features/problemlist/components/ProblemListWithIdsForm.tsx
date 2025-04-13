@@ -9,7 +9,7 @@ import {
     useCodeforcesSubmissions,
     useYukicoderSubmissions,
 } from "@/hooks/useSubmissions";
-import { createProblemKey, ProblemKey } from "@/types/Problem";
+import { createProblemKey, ProblemKey } from "@/types/CommonProblem";
 
 import { ProblemList } from "./ProblemList";
 import { getUser } from "@/features/user/db/getUser";
