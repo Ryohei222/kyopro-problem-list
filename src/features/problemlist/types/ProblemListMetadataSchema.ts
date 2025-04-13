@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const CreateProblemListFormSchema = z.object({
+export const ProblemListMetadataSchema = z.object({
     name: z
         .string()
         .min(3, { message: "リスト名は3文字以上である必要があります" })
@@ -9,4 +9,4 @@ export const CreateProblemListFormSchema = z.object({
     isPublic: z.boolean(),
 });
 
-export type CreateProblemListFormSchemaType = z.infer<typeof CreateProblemListFormSchema>;
+export type ProblemListMetadataSchemaType = z.infer<typeof ProblemListMetadataSchema>;
