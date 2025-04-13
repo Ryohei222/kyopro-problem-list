@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import {
     Form,
     FormControl,
@@ -18,8 +18,7 @@ import {
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Save, ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { Save } from "lucide-react";
 
 import { createProblemList } from "../db/createProblemList";
 import {
@@ -61,17 +60,12 @@ export function CreateProblemListForm() {
 
     return (
         <Card className="bg-white">
+            <CardHeader>
+                <CardTitle className="text-2xl font-bold">新しい問題リストを作成</CardTitle>
+            </CardHeader>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <CardContent className="space-y-6 p-4">
-                        <Link
-                            href="/"
-                            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-4"
-                        >
-                            <ArrowLeft className="mr-1 h-4 w-4" />
-                            問題リスト一覧に戻る
-                        </Link>
-
                         <FormField
                             control={form.control}
                             name="name"
