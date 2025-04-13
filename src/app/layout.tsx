@@ -3,6 +3,8 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { ToolBar } from "@/components/ToolBar";
 import { SWRProvider } from "@/hooks/SWRProvider";
+import type { Metadata } from "next";
+import buildTwitterMetadata from "@/utils/buildTwitterMetaData";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -13,6 +15,16 @@ const geistMono = Geist_Mono({
     variable: "--font-geist-mono",
     subsets: ["latin"],
 });
+
+export const metadata: Metadata = {
+    title: {
+        template: "%s | Kyopro Problem List",
+        default: "Kyopro Problem List", // a default is required when creating a template
+    },
+    twitter: buildTwitterMetadata({
+        description: "Manage your kyopro problem lists.",
+    }),
+};
 
 export default async function RootLayout({
     children,

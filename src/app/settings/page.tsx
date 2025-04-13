@@ -3,6 +3,16 @@ import { UserSettingsForm } from "@/features/user/components/UserSettingsForm";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { formatDate } from "@/utils/formatDate";
 import { getUserSettings } from "@/features/user/db/getUserSettings";
+import { Metadata } from "next";
+import buildTwitterMetadata from "@/utils/buildTwitterMetaData";
+
+export const metadata: Metadata = {
+    title: "設定",
+    twitter: buildTwitterMetadata({
+        title: "設定",
+        description: "アカウント設定やプロフィール情報を管理できます",
+    }),
+};
 
 export default async function SettingPage() {
     const user = await getUserSettings();

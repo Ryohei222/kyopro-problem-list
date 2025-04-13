@@ -5,6 +5,22 @@ import { getUser } from "@/features/user/db/getUser";
 import { ProblemListWithIdsForm } from "@/features/problemlist/components/ProblemListWithIdsForm";
 import { Card, CardContent } from "@/components/ui/card";
 import { ProblemListCardHeader } from "@/features/problemlist/components/ProblemListCardHeader";
+import { Metadata } from "next";
+import buildTwitterMetadata from "@/utils/buildTwitterMetaData";
+
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+    const { id } = await params;
+    const problemList = await getProblemList(id);
+    const title = problemList?.name || "問題リストが見つかりません";
+    const description = problemList?.description || "問題リストの説明が見つかりません";
+    return {
+        title: title,
+        twitter: buildTwitterMetadata({
+            title: title + ` by ${problemList?.author.name}`,
+            description: description,
+        }),
+    };
+}
 
 export default async function ProblemListShowPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;

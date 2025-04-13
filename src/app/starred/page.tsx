@@ -1,6 +1,16 @@
 import { ReactNode } from "react";
 import { StarredProblemListsContainer } from "@/features/problemlist/components/StarredProblemListContainer";
 import getUserIdFromSession from "@/utils/getUserIdFromSession";
+import { Metadata } from "next";
+import buildTwitterMetadata from "@/utils/buildTwitterMetaData";
+
+export const metadata: Metadata = {
+    title: "お気に入り",
+    twitter: buildTwitterMetadata({
+        title: "お気に入り",
+        description: "お気に入りの問題リストを確認できます",
+    }),
+};
 
 export default async function StarredProblemListsPage(): Promise<ReactNode> {
     const userId = await getUserIdFromSession();
