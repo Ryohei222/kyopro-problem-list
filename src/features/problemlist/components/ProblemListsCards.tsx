@@ -7,6 +7,7 @@ import { Star, Search, Calendar, User } from "lucide-react";
 import { formatDate } from "@/utils/formatDate";
 import { ProblemListsResponse } from "../types/ProblemLists";
 import Image from "next/image";
+import { CardUserInfo } from "@/components/CardUserInfo";
 
 type SortField = "name" | "author" | "stars" | "createdAt";
 type SortDirection = "asc" | "desc";
@@ -132,21 +133,11 @@ export function ProblemListsCards({ problemLists }: { problemLists: ProblemLists
                             </CardHeader>
                             <CardContent>
                                 <div className="flex flex-wrap gap-4 text-sm text-gray-600 items-center">
-                                    <div className="flex items-center gap-2">
-                                        <Image
-                                            src={list.author.image}
-                                            alt={list.name}
-                                            width={100}
-                                            height={100}
-                                            className="h-8 w-8 rounded-full border border-gray-300 shadow-sm"
-                                        />
-                                        <a
-                                            href={`/user/${list.author.id}`}
-                                            className="text-blue-600 hover:underline"
-                                        >
-                                            {list.author.name}
-                                        </a>
-                                    </div>
+                                    <CardUserInfo
+                                        id={list.id}
+                                        name={list.author.name}
+                                        image={list.author.image}
+                                    />
                                     <div className="flex items-center gap-1">
                                         <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
                                         <span className="font-medium text-gray-800">

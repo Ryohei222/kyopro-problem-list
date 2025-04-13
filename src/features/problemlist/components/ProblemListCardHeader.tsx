@@ -1,13 +1,13 @@
-import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { formatDate } from "@/utils/formatDate";
-import { Calendar, Share2, Edit, Delete } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ProblemListStarButton } from "./ProblemListStarButton";
 import { ProblemListResponse } from "../types/ProblemLists";
-import Image from "next/image";
-import { deleteProblemList } from "../db/deleteProblemList";
-import { ProblemListDeleteButton } from "./ProblemListDeleteButton";
+import { EditButton } from "./EditButton";
+import { DeleteButton } from "./DeleteButton";
+import { ShareButton } from "./ShareButton";
+import { CardUserInfo } from "@/components/CardUserInfo";
 
 type ProblemListCardHeaderProps = {
     problemList: NonNullable<ProblemListResponse>;
@@ -26,21 +26,11 @@ export async function ProblemListCardHeader({
                 <div>
                     <CardTitle className="text-2xl font-bold">{problemList.name}</CardTitle>
                     <CardDescription className="flex items-center mt-2 space-x-4">
-                        <span className="flex items-center gap-2">
-                            <Image
-                                src={problemList.author.image}
-                                alt={problemList.name}
-                                width={100}
-                                height={100}
-                                className="h-8 w-8 rounded-full border border-gray-300 shadow-sm"
-                            />
-                            <a
-                                href={`/user/${problemList.author.id}`}
-                                className="text-blue-600 hover:underline"
-                            >
-                                {problemList.author.name}
-                            </a>
-                        </span>
+                        <CardUserInfo
+                            id={problemList.id}
+                            name={problemList.author.name}
+                            image={problemList.author.image}
+                        />
                         <span className="flex items-center">
                             <Calendar className="h-4 w-4 mr-1" />
                             {formatDate(problemList.createdAt)}
@@ -51,23 +41,12 @@ export async function ProblemListCardHeader({
                     </CardDescription>
                 </div>
                 <div className="flex space-x-2">
+                    <ShareButton problemList={problemList} />
                     {isLogined && <ProblemListStarButton problemList={problemList} />}
-
-                    <Button variant="outline" size="sm">
-                        <Share2 className="h-4 w-4 mr-1" />
-                        <span>共有</span>
-                    </Button>
-
                     {isAuthor && (
                         <>
-                            <a
-                                href={`/problemlist/edit/${problemList.id}`}
-                                className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
-                            >
-                                <Edit className="h-4 w-4 mr-1" />
-                                <span>編集</span>
-                            </a>
-                            <ProblemListDeleteButton problemList={problemList} />
+                            <EditButton problemList={problemList} />
+                            <DeleteButton problemList={problemList} />
                         </>
                     )}
                 </div>
