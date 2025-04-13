@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Star, Search, Calendar, User } from "lucide-react";
 import { formatDate } from "@/utils/formatDate";
 import { ProblemListsResponse } from "../types/ProblemLists";
-import Image from "next/image";
 import { CardUserInfo } from "@/components/CardUserInfo";
 
 type SortField = "name" | "author" | "stars" | "createdAt";
@@ -134,7 +133,7 @@ export function ProblemListsCards({ problemLists }: { problemLists: ProblemLists
                             <CardContent>
                                 <div className="flex flex-wrap gap-4 text-sm text-gray-600 items-center">
                                     <CardUserInfo
-                                        id={list.id}
+                                        id={list.author.id}
                                         name={list.author.name}
                                         image={list.author.image}
                                     />
