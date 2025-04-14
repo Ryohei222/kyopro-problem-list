@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { getUser } from "@/features/user/db/getUser";
 import { formatDate } from "@/utils/formatDate";
@@ -11,7 +11,7 @@ import {
 	FileText,
 	Github,
 	Globe,
-	X,
+	Twitter,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -194,7 +194,7 @@ export function UserProfile({
 												rel="noopener noreferrer"
 												className="inline-flex items-center text-sm hover:text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-full transition-colors"
 											>
-												<X className="h-4 w-4 mr-1.5 text-blue-500" />
+												<Twitter className="h-4 w-4 mr-1.5 text-blue-500" />
 												<span className="ml-0.5">{user.xId}</span>
 												<ExternalLink className="h-3 w-3 ml-1.5 opacity-70" />
 											</a>

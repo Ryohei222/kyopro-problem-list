@@ -6,6 +6,7 @@ import useProblems from "@/hooks/useProblems";
 import type { CommonProblem } from "@/types/CommonProblem";
 import { createProblemKey } from "@/types/CommonProblem";
 import extractProblemFromUrl from "@/utils/extractProblemFromUrl";
+import getResourceName from "@/utils/getResourceName";
 import type { Resource } from "@prisma/client";
 import { Label } from "@radix-ui/react-label";
 import { Plus } from "lucide-react";
@@ -196,9 +197,11 @@ export default function AddProblemForm({
 								{previewProblem.name}
 							</div>
 							<div>
-								<span className="font-semibold">出典:</span>
-								{previewProblem.resource} / {previewProblem.contestId} /{" "}
-								{previewProblem.problemId}
+								<span className="font-semibold">出典:</span>{" "}
+								{getResourceName(previewProblem.resource)}{" "}
+								{previewProblem.contestId !== "0"
+									? `${previewProblem.contestId} - ${previewProblem.problemId}`
+									: ""}
 							</div>
 						</div>
 					</div>
