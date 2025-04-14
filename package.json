@@ -6,7 +6,7 @@
 		"dev": "next dev --turbopack",
 		"build": "prisma generate && next build",
 		"start": "next start",
-		"format": "npx biome check --write .",
+		"format": "npx biome check --fix .",
 		"prisma:format": "prisma format",
 		"prisma:generate": "prisma generate",
 		"prisma:migrate": "prisma migrate dev",
