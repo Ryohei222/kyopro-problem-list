@@ -1,8 +1,8 @@
 {
-    "crons": [
-        {
-            "path": "/api/cron/update_problems",
-            "schedule": "0 14 * * *"
-        }
-    ]
+	"crons": [
+		{
+			"path": "/api/cron/update_problems",
+			"schedule": "0 14 * * *"
+		}
+	]
 }

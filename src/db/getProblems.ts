@@ -1,9 +1,9 @@
 import { prisma } from "@/prisma";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 export async function getProblems(): Promise<
-    Prisma.PromiseReturnType<typeof prisma.problem.findMany>
+	Prisma.PromiseReturnType<typeof prisma.problem.findMany>
 > {
-    const problems = await prisma.problem.findMany({});
-    return problems;
+	const problems = await prisma.problem.findMany({});
+	return problems;
 }

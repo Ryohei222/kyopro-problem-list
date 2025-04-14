@@ -1,15 +1,15 @@
-import { ReactNode } from "react";
 import { ProblemListsContainer } from "@/features/problemlist/components/ProblemListsContainer";
-import { Metadata } from "next";
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
-    title: "Kyopro Problem List",
+	title: "Kyopro Problem List",
 };
 
 export default async function HomePage(): Promise<ReactNode> {
-    return (
-        <div className="space-y-6">
-            <ProblemListsContainer />
-        </div>
-    );
+	return (
+		<div className="space-y-6">
+			<ProblemListsContainer />
+		</div>
+	);
 }
