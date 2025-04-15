@@ -67,13 +67,11 @@ export function CreateProblemListForm() {
 	return (
 		<Card className="bg-white">
 			<CardHeader>
-				<CardTitle className="text-2xl font-bold">
-					新しい問題リストを作成
-				</CardTitle>
+				<CardTitle>新しい問題リストを作成</CardTitle>
 			</CardHeader>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
-					<CardContent className="space-y-6 p-4">
+					<CardContent className="space-y-6 mb-6">
 						<FormField
 							control={form.control}
 							name="name"
