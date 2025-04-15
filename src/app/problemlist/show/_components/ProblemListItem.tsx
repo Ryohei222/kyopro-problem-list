@@ -31,7 +31,9 @@ export default function ProblemListItem({
 			<ResourceIconCell resource={problem.resource} />
 			<ProblemNamesCell problem={problem} />
 			{showDifficulty && <DifficultyCell problem={problem} />}
-			<TableCell className="text">{memo}</TableCell>
+			<TableCell className="text break-words whitespace-pre-wrap max-w-xs">
+				{memo}
+			</TableCell>
 			<HintCell hint={hint} showHint={showHint} setShowHint={setShowHint} />
 		</TableRow>
 	);
@@ -109,7 +111,7 @@ function HintCell({
 	return (
 		<TableCell>
 			<div
-				className="relative group"
+				className="relative group break-words whitespace-pre-wrap max-w-xs"
 				onMouseEnter={() => setShowHint(true)}
 				onMouseLeave={() => setShowHint(false)}
 			>
@@ -119,7 +121,7 @@ function HintCell({
 							{!showHint && "カーソルを合わせてヒントを表示"}
 						</div>
 						{showHint && (
-							<div className="bg-yellow-50 p-2 rounded shadow-sm border border-yellow-200">
+							<div className="bg-yellow-50 p-2 rounded shadow-sm border border-yellow-200 break-words whitespace-pre-wrap max-w-xs">
 								{hint}
 							</div>
 						)}
