@@ -4,20 +4,20 @@ import type { ProblemListResponse } from "@/features/problemlist/types/ProblemLi
 import { ClientStarButton } from "./ClientStarButton";
 
 export async function ProblemListStarButton({
-  problemList,
+	problemList,
 }: {
-  problemList: NonNullable<ProblemListResponse>;
+	problemList: NonNullable<ProblemListResponse>;
 }) {
-  const userId = (await auth())?.user?.id;
-  const isStarred = userId && (await getStar(problemList.id, userId));
-  if (!userId || !problemList) {
-    return <></>;
-  }
-  return (
-    <ClientStarButton
-      userId={userId}
-      problemList={problemList}
-      defaultStarFlag={!!isStarred}
-    />
-  );
+	const userId = (await auth())?.user?.id;
+	const isStarred = userId && (await getStar(problemList.id, userId));
+	if (!userId || !problemList) {
+		return <></>;
+	}
+	return (
+		<ClientStarButton
+			userId={userId}
+			problemList={problemList}
+			defaultStarFlag={!!isStarred}
+		/>
+	);
 }

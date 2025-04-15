@@ -6,17 +6,17 @@ import type { ProblemListResponse } from "../../../../features/problemlist/types
 import { CardHeaderButton } from "./CardHeaderButton";
 
 type DeleteButtonProps = {
-  problemList: NonNullable<ProblemListResponse>;
+	problemList: NonNullable<ProblemListResponse>;
 };
 
 export function DeleteButton(props: DeleteButtonProps) {
-  const router = useRouter();
-  return (
-    <CardHeaderButton
-      label="削除"
-      lucideIcon={Trash2}
-      variant="destructive"
-      onClick={() => router.push(`/problemlist/delete/${props.problemList.id}`)}
-    />
-  );
+	const router = useRouter();
+	return (
+		<CardHeaderButton
+			label="削除"
+			lucideIcon={Trash2}
+			variant="destructive"
+			onClick={() => router.push(`/problemlist/delete/${props.problemList.id}`)}
+		/>
+	);
 }

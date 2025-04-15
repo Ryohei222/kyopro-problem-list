@@ -7,20 +7,20 @@ import { useRouter } from "next/navigation";
 import { deleteProblemList } from "../../../../features/problemlist/db/deleteProblemList";
 
 export function ProblemListDeleteButton({
-  problemList,
+	problemList,
 }: {
-  problemList: NonNullable<ProblemListResponse>;
+	problemList: NonNullable<ProblemListResponse>;
 }) {
-  const router = useRouter();
-  const handleDelete = async () => {
-    const result = await deleteProblemList(problemList.id);
-    router.push("/");
-  };
+	const router = useRouter();
+	const handleDelete = async () => {
+		const result = await deleteProblemList(problemList.id);
+		router.push("/");
+	};
 
-  return (
-    <Button variant="destructive" size="sm" onClick={handleDelete}>
-      <Trash2 className="h-4 w-4 mr-1" />
-      <span>削除</span>
-    </Button>
-  );
+	return (
+		<Button variant="destructive" size="sm" onClick={handleDelete}>
+			<Trash2 className="h-4 w-4 mr-1" />
+			<span>削除</span>
+		</Button>
+	);
 }
