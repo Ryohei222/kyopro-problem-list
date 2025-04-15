@@ -4,7 +4,7 @@ export const UserSettingsFormSchema = z.object({
 	name: z
 		.string()
 		.min(1, { message: "名前は1文字以上である必要があります" })
-		.max(50, { message: "名前は50文字以下である必要があります" }),
+		.max(16, { message: "名前は16文字以下である必要があります" }),
 	bio: z
 		.string()
 		.max(500, { message: "自己紹介は500文字以内である必要があります" }),
