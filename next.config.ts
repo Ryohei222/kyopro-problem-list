@@ -5,9 +5,6 @@ const nextConfig: NextConfig = {
 };
 
 module.exports = {
-	eslint: {
-		dirs: ["src"], // 本番ビルド（next build）時には'pages'と'utils'ディレクトリのみでESLintを実行する
-	},
 	images: {
 		remotePatterns: [
 			{
@@ -17,6 +14,7 @@ module.exports = {
 				pathname: "/**",
 			},
 		],
+		minimumCacheTTL: 2678400, // 31 days
 	},
 };
 
