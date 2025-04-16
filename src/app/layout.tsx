@@ -3,6 +3,7 @@ import "./globals.css";
 import { ToolBar } from "@/components/ToolBar";
 import { SWRProvider } from "@/hooks/SWRProvider";
 import buildTwitterMetadata from "@/utils/buildTwitterMetaData";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
 
@@ -45,6 +46,10 @@ export default async function RootLayout({
 					</body>
 				</SessionProvider>
 			</SWRProvider>
+			{process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID &&
+				process.env.NODE_ENV === "production" && (
+					<GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
+				)}
 		</html>
 	);
 }
