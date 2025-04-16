@@ -2,7 +2,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@radix-ui/react-label";
 import type React from "react";
 
-export default function ProblemSetDescriptionInput({
+export default function ProblemListDescriptionInput({
 	description,
 	handleDescriptionChange,
 }: {

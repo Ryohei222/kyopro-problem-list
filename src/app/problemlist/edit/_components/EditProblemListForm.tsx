@@ -40,9 +40,9 @@ import type {
 } from "../../../../features/problemlist/types/ProblemLists";
 import DraggableRow from "../../show/_components/DraggableRow";
 import AddProblemForm from "./AddProblem";
-import ProblemSetDescriptionInput from "./ProblemSetDescriptionInput";
-import ProblemSetIsPublicInput from "./ProblemSetIsPublicInput";
-import ProblemSetNameInput from "./ProblemSetNameInput";
+import ProblemListDescriptionInput from "./ProblemListDescriptionInput";
+import ProblemListIsPublicInput from "./ProblemListIsPublicInput";
+import ProblemListNameInput from "./ProblemListNameInput";
 
 export default function EditProblemListForm({
 	problemList,
@@ -217,17 +217,17 @@ export default function EditProblemListForm({
 						</div>
 					)}
 
-					<ProblemSetNameInput
+					<ProblemListNameInput
 						name={name}
 						handleNameChange={(e) => setName(e.target.value)}
 					/>
 
-					<ProblemSetDescriptionInput
+					<ProblemListDescriptionInput
 						description={description}
 						handleDescriptionChange={(e) => setDescription(e.target.value)}
 					/>
 
-					<ProblemSetIsPublicInput
+					<ProblemListIsPublicInput
 						isPublic={isPublic}
 						handleIsPublicChange={(checked) => setIsPublic(checked === true)}
 					/>
