@@ -28,7 +28,7 @@ function ContestLink(url: string, text: string, note?: string) {
 	);
 }
 
-export default function HelpPage() {
+export default function AboutPage() {
 	const onlineJudeges = [
 		{
 			name: "Aizu Online Judge",
@@ -53,12 +53,12 @@ export default function HelpPage() {
 		},
 	];
 	return (
-		<div className="container mx-auto px-4 py-8">
+		<div className="container max-w-4xl mx-auto px-4 py-8">
 			<Card>
 				<CardHeader>
 					<CardTitle>
 						<h1 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-							Help (WIP)
+							About (WIP)
 						</h1>
 					</CardTitle>
 				</CardHeader>
@@ -98,6 +98,20 @@ export default function HelpPage() {
 							までご連絡ください。
 						</p>
 					</div>
+					<Header2 text="プライバシー・アクセス解析について" />
+					<p>
+						このWebアプリでは、サービス改善のため Google Analytics
+						を利用しています。 Google Analytics はトラフィックデータ収集のために
+						Cookie を使用する場合があります。
+						収集されるデータは匿名であり、個人を特定するものではありません。
+						<br />
+						詳細は Google の{" "}
+						<Link
+							url="https://policies.google.com/technologies/partner-sites?hl=ja"
+							text="ポリシー"
+						/>{" "}
+						をご参照ください。
+					</p>
 					<Header2 text="ライセンス表記" />
 					<p>
 						<Link
