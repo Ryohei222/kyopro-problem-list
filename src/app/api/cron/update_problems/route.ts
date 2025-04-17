@@ -5,6 +5,8 @@ import type { CreatedProblem } from "@/types/CommonProblem";
 import { Resource } from "@prisma/client";
 import { type NextRequest, NextResponse } from "next/server";
 
+export const maxDuration = 60; // seconds
+
 export async function GET(req: NextRequest): Promise<NextResponse> {
 	const authHeader = req.headers.get("authorization");
 	if (
