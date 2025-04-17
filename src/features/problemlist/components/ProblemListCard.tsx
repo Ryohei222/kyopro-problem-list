@@ -14,7 +14,7 @@ export function ProblemListCard({
 	list,
 }: { list: ProblemListsResponse[number] }) {
 	return (
-		<Card className="hover:shadow-md transition-shadow duration-200">
+		<Card className="flex flex-col hover:shadow-md transition-shadow duration-200">
 			<CardHeader>
 				<CardTitle>
 					<a
@@ -28,7 +28,7 @@ export function ProblemListCard({
 					{list.description}
 				</CardDescription>
 			</CardHeader>
-			<CardContent className="relative bottom-0 left-0">
+			<CardContent className="mt-auto">
 				<div className="flex gap-4 text-sm text-gray-600 ">
 					<CardUserInfo
 						id={list.author.id}
