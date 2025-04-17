@@ -112,7 +112,7 @@ export function ProblemListsCards({
 					<p>検索条件に一致する問題リストが見つかりませんでした。</p>
 				</div>
 			) : (
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+				<div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
 					{filteredLists.map((list) => (
 						<ProblemListCard key={list.id} list={list} />
 					))}

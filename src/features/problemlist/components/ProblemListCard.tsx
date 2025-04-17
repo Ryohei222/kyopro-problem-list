@@ -28,8 +28,8 @@ export function ProblemListCard({
 					{list.description}
 				</CardDescription>
 			</CardHeader>
-			<CardContent>
-				<div className="flex flex-wrap gap-4 text-sm text-gray-600 items-center">
+			<CardContent className="relative bottom-0 left-0">
+				<div className="flex gap-4 text-sm text-gray-600 ">
 					<CardUserInfo
 						id={list.author.id}
 						name={list.author.name}

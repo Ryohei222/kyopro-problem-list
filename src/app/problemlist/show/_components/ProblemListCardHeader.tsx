@@ -27,7 +27,7 @@ export async function ProblemListCardHeader({
 					<CardTitle className="text-2xl font-bold">
 						{problemList.name}
 					</CardTitle>
-					<CardDescription className="flex flex-wrap items-center mt-2 space-x-4">
+					<CardDescription className="flex flex-wrap items-center mt-6 space-x-4">
 						<CardUserInfo
 							id={problemList.author.id}
 							name={problemList.author.name}

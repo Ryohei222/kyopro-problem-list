@@ -111,7 +111,7 @@ function HintCell({
 	return (
 		<TableCell>
 			<div
-				className="relative group break-words whitespace-pre-wrap max-w-xs"
+				className="relative group break-words whitespace-pre-wrap"
 				onMouseEnter={() => setShowHint(true)}
 				onMouseLeave={() => setShowHint(false)}
 			>
@@ -121,7 +121,7 @@ function HintCell({
 							{!showHint && "カーソルを合わせてヒントを表示"}
 						</div>
 						{showHint && (
-							<div className="bg-yellow-50 p-2 rounded shadow-sm border border-yellow-200 break-words whitespace-pre-wrap max-w-xs">
+							<div className="bg-yellow-50 p-2 rounded shadow-sm border border-yellow-200 break-words whitespace-pre-wrap">
 								{hint}
 							</div>
 						)}

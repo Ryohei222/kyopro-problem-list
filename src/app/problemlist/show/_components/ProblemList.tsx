@@ -113,18 +113,18 @@ export function ProblemList(props: ProblemListProps) {
 								<SortIcon field="resource" />
 							</div>
 						</TableHead>
-						<TableHead className="w-[20%]">
+						<TableHead className="w-96">
 							<div className="flex items-center">問題名</div>
 						</TableHead>
 						{showDifficulty && (
-							<TableHead className="w-[10%] min-w-[80px]">
+							<TableHead className="w-[10%]">
 								<div className="flex items-center">Difficulty</div>
 							</TableHead>
 						)}
-						<TableHead className="min-w-[120px] max-w-[300px] w-auto">
+						<TableHead className="w-xl">
 							<div className="flex items-center">メモ</div>
 						</TableHead>
-						<TableHead className="min-w-[120px] max-w-[300px] w-auto">
+						<TableHead className="w-xl">
 							<div className="flex items-center">ヒント</div>
 						</TableHead>
 					</TableRow>
