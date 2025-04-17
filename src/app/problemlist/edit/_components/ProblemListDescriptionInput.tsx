@@ -18,7 +18,6 @@ export default function ProblemListDescriptionInput({
 				onChange={handleDescriptionChange}
 				placeholder="この問題リストの内容や目的について説明してください"
 				className="min-h-[120px]"
-				required
 			/>
 		</div>
 	);
