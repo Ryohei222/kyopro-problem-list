@@ -87,6 +87,15 @@ export default function AboutPage() {
 						</ul>
 					</div>
 					<div>
+						<Header2 text="問題リストの作成" />
+						<p className="mb-6">
+							問題リストを作成するためには、GitHub
+							アカウントでユーザー登録を行う必要があります。
+							<br />
+							登録している場合、ツールバーにある「新規作成」ボタンをクリックすることで、問題リストを作成できます。
+						</p>
+					</div>
+					<div>
 						<Header2 text="連絡先" />
 						<p>
 							質問やバグ報告・要望などはお気軽に作者の X (
