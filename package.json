@@ -20,6 +20,7 @@
 		"@next/third-parties": "^15.3.0",
 		"@piotr-cz/swr-idb-cache": "^1.1.2",
 		"@prisma/client": "^6.6.0",
+		"@radix-ui/react-alert-dialog": "^1.1.7",
 		"@radix-ui/react-checkbox": "^1.1.5",
 		"@radix-ui/react-dialog": "^1.1.7",
 		"@radix-ui/react-label": "^2.1.3",
