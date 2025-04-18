@@ -1,4 +1,4 @@
-import EditProblemListForm from "@/features/problemlist/components/EditProblemListForm";
+import EditProblemListForm from "@/app/problemlist/edit/_components/EditProblemListForm";
 import { getProblemList } from "@/features/problemlist/db/getProblemList";
 import { notFound } from "next/navigation";
 import type { ReactElement } from "react";

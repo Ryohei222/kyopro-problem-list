@@ -26,12 +26,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import type { getUserSettings } from "../db/getUserSettings";
-import { updateUser } from "../db/updateUser";
+import type { getUserSettings } from "../../../features/user/db/getUserSettings";
+import { updateUser } from "../../../features/user/db/updateUser";
 import {
 	UserSettingsFormSchema,
 	type UserSettingsFormSchemaType,
-} from "../types/UserSettingsFormSchema";
+} from "../../../features/user/types/UserSettingsFormSchema";
 import { UserSettingInputField } from "./UserSettingsInputField";
 
 export function UserSettingsForm({

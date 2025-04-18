@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import type React from "react";
 
-export default function ProblemSetNameInput({
+export default function ProblemListNameInput({
 	name,
 	handleNameChange,
 }: {

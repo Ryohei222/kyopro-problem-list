@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
-import { HelpCircle, Home, Plus, Settings, Star } from "lucide-react";
+import { HelpCircle, Home, Info, Plus, Settings, Star } from "lucide-react";
 import Link from "next/link";
 import LoginButton from "./LoginButton";
 import MyPageButton from "./MyPageButton";
@@ -52,7 +52,7 @@ export async function ToolBar() {
 								</Button>
 							</>
 						)}
-						<HelpButton />
+						<AboutButton />
 					</nav>
 				</div>
 				<div className="flex ">
@@ -67,12 +67,12 @@ export async function ToolBar() {
 	);
 }
 
-function HelpButton() {
+function AboutButton() {
 	return (
 		<Button variant="ghost" size="sm" asChild>
-			<Link href="/help" className="flex items-center space-x-1">
-				<HelpCircle className="h-4 w-4" />
-				<span className="hidden md:inline">ヘルプ</span>
+			<Link href="/about" className="flex items-center space-x-1">
+				<Info className="h-4 w-4" />
+				<span className="hidden md:inline">About</span>
 			</Link>
 		</Button>
 	);

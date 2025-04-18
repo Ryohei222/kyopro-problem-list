@@ -1,3 +1,4 @@
+import { UserSettingsForm } from "@/app/settings/_components/UserSettingsForm";
 import {
 	Card,
 	CardContent,
@@ -5,7 +6,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { UserSettingsForm } from "@/features/user/components/UserSettingsForm";
 import { getUserSettings } from "@/features/user/db/getUserSettings";
 import buildTwitterMetadata from "@/utils/buildTwitterMetaData";
 import { formatDate } from "@/utils/formatDate";

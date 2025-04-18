@@ -25,20 +25,24 @@ import { type FormEvent, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
+import { ProblemListItemSchema } from "@/features/problemlist/types/ProblemListItemSchema";
+import { ProblemListMetadataSchema } from "@/features/problemlist/types/ProblemListMetadataSchema";
 import {
 	createProblemKey,
 	type createProblemKeyProps,
 } from "@/types/CommonProblem";
-import { updateProblemList } from "../db/updateProblemList";
+import getResourceName from "@/utils/getResourceName";
+import { set } from "zod";
+import { updateProblemList } from "../../../../features/problemlist/db/updateProblemList";
 import type {
 	ProblemListRecordResponse,
 	ProblemListResponse,
-} from "../types/ProblemLists";
+} from "../../../../features/problemlist/types/ProblemLists";
+import DraggableRow from "../../show/_components/DraggableRow";
 import AddProblemForm from "./AddProblem";
-import DraggableRow from "./DraggableRow";
-import ProblemSetDescriptionInput from "./ProblemSetDescriptionInput";
-import ProblemSetIsPublicInput from "./ProblemSetIsPublicInput";
-import ProblemSetNameInput from "./ProblemSetNameInput";
+import ProblemListDescriptionInput from "./ProblemListDescriptionInput";
+import ProblemListIsPublicInput from "./ProblemListIsPublicInput";
+import ProblemListNameInput from "./ProblemListNameInput";
 
 export default function EditProblemListForm({
 	problemList,
@@ -53,6 +57,7 @@ export default function EditProblemListForm({
 	const [problems, setProblems] = useState<ProblemListRecordResponse[]>(
 		problemList.problemListRecords,
 	);
+	const [showAddProblemForm, setShowAddProblemForm] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const { problems: allProblems } = useProblems();
 
@@ -93,11 +98,58 @@ export default function EditProblemListForm({
 		setIsSubmitting(true);
 		setError(null);
 		try {
+			// メタデータバリデーション
+			const metaResult = ProblemListMetadataSchema.safeParse({
+				name,
+				description,
+				isPublic,
+			});
+			if (!metaResult.success) {
+				const fieldErrors = metaResult.error.format();
+				const messages = Object.values(fieldErrors)
+					.map((v) =>
+						v && typeof v === "object" && "_errors" in v
+							? v._errors.join(" ")
+							: "",
+					)
+					.filter(Boolean)
+					.join("\n");
+				setError(`リスト名または概要にエラーがあります:\n${messages}`);
+				setIsSubmitting(false);
+				return;
+			}
+
 			const sortedProblems = [...problems].sort((a, b) => a.order - b.order);
 			const reorderedProblems = sortedProblems.map((p, index) => ({
 				...p,
 				order: index + 1,
 			}));
+
+			// 問題リスト項目バリデーション
+			for (const [i, record] of reorderedProblems.entries()) {
+				const result = ProblemListItemSchema.safeParse({
+					resource: record.problem.resource,
+					contestId: record.problem.contestId,
+					problemId: record.problem.problemId,
+					memo: record.memo,
+					hint: record.hint,
+					order: record.order,
+				});
+				if (!result.success) {
+					const fieldErrors = result.error.format();
+					const messages = Object.values(fieldErrors)
+						.map((v) =>
+							v && typeof v === "object" && "_errors" in v
+								? v._errors.join(" ")
+								: "",
+						)
+						.filter(Boolean)
+						.join("\n");
+					setError(`No.${i + 1} の項目にエラーがあります:\n${messages}`);
+					setIsSubmitting(false);
+					return;
+				}
+			}
 
 			const response = await updateProblemList({
 				id: problemList.id,
@@ -128,6 +180,7 @@ export default function EditProblemListForm({
 			);
 		} finally {
 			setIsSubmitting(false);
+			setShowAddProblemForm(true);
 		}
 	};
 
@@ -164,29 +217,31 @@ export default function EditProblemListForm({
 						</div>
 					)}
 
-					<ProblemSetNameInput
+					<ProblemListNameInput
 						name={name}
 						handleNameChange={(e) => setName(e.target.value)}
 					/>
 
-					<ProblemSetDescriptionInput
+					<ProblemListDescriptionInput
 						description={description}
 						handleDescriptionChange={(e) => setDescription(e.target.value)}
 					/>
 
-					<ProblemSetIsPublicInput
+					<ProblemListIsPublicInput
 						isPublic={isPublic}
 						handleIsPublicChange={(checked) => setIsPublic(checked === true)}
 					/>
 
-					<div className="space-y-6 mt-8">
+					{showAddProblemForm && (
 						<div className="flex justify-between items-center">
 							<AddProblemForm
 								onAddProblem={handleAddProblem}
 								existingProblems={problems}
 							/>
 						</div>
+					)}
 
+					<div className="space-y-6 mt-8">
 						{problems.length > 0 ? (
 							<DndProvider backend={HTML5Backend}>
 								<div className="rounded-md border bg-white">
@@ -195,7 +250,7 @@ export default function EditProblemListForm({
 											<TableRow>
 												<TableHead />
 												<TableHead>問題名</TableHead>
-												<TableHead>コンテストID</TableHead>
+												<TableHead>出典</TableHead>
 												<TableHead>メモ</TableHead>
 												<TableHead>ヒント</TableHead>
 												<TableHead className="w-[60px]" />
@@ -267,8 +322,9 @@ export default function EditProblemListForm({
 															<TableCell>
 																{problemDetail ? (
 																	<span className="text-sm">
-																		{problemDetail.resource} /{" "}
-																		{problemDetail.contestId}
+																		{getResourceName(problemDetail.resource)}{" "}
+																		{problemDetail.contestId !== "0" &&
+																			` - ${problemDetail.contestId}`}
 																	</span>
 																) : (
 																	<span className="text-gray-400">-</span>
@@ -359,6 +415,7 @@ export default function EditProblemListForm({
 					type="submit"
 					disabled={isSubmitting}
 					className="flex items-center gap-1"
+					onClick={() => setShowAddProblemForm(false)}
 				>
 					<Save className="h-4 w-4" />
 					{isSubmitting ? "保存中..." : "問題リストを更新"}

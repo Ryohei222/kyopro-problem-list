@@ -1,7 +1,7 @@
+import { ProblemListCardHeader } from "@/app/problemlist/show/_components/ProblemListCardHeader";
+import { ProblemListWithIdsForm } from "@/app/problemlist/show/_components/ProblemListWithIdsForm";
 import { auth } from "@/auth";
 import { Card, CardContent } from "@/components/ui/card";
-import { ProblemListCardHeader } from "@/features/problemlist/components/ProblemListCardHeader";
-import { ProblemListWithIdsForm } from "@/features/problemlist/components/ProblemListWithIdsForm";
 import { getProblemList } from "@/features/problemlist/db/getProblemList";
 import { getUser } from "@/features/user/db/getUser";
 import buildTwitterMetadata from "@/utils/buildTwitterMetaData";
@@ -28,7 +28,9 @@ export async function generateMetadata({
 
 export default async function ProblemListShowPage({
 	params,
-}: { params: Promise<{ id: string }> }) {
+}: {
+	params: Promise<{ id: string }>;
+}) {
 	const { id } = await params;
 
 	if (!id) {

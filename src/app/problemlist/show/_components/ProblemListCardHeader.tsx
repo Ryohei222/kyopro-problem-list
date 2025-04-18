@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/utils/formatDate";
 import { Calendar } from "lucide-react";
-import type { ProblemListResponse } from "../types/ProblemLists";
+import type { ProblemListResponse } from "../../../../features/problemlist/types/ProblemLists";
 import { DeleteButton } from "./DeleteButton";
 import { EditButton } from "./EditButton";
 import { ProblemListStarButton } from "./ProblemListStarButton";
@@ -27,7 +27,7 @@ export async function ProblemListCardHeader({
 					<CardTitle className="text-2xl font-bold">
 						{problemList.name}
 					</CardTitle>
-					<CardDescription className="flex flex-wrap items-center mt-2 space-x-4">
+					<CardDescription className="flex flex-wrap items-center mt-6 space-x-4">
 						<CardUserInfo
 							id={problemList.author.id}
 							name={problemList.author.name}

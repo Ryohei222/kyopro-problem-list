@@ -2,7 +2,7 @@
 
 import { Edit } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type { ProblemListResponse } from "../types/ProblemLists";
+import type { ProblemListResponse } from "../../../../features/problemlist/types/ProblemLists";
 import { CardHeaderButton } from "./CardHeaderButton";
 
 type EditButtonProps = {

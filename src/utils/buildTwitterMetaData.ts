@@ -16,5 +16,12 @@ export default function buildTwitterMetadata(
 		card: "summary",
 		title: titleWithPrefix,
 		description,
+		images: [
+			{
+				url: "/ogp/thumbnail.png",
+				width: 1200,
+				height: 1200,
+			},
+		],
 	};
 }

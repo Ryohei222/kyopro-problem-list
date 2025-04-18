@@ -1,18 +1,10 @@
 "use client";
 
-import { CardUserInfo } from "@/components/CardUserInfo";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { formatDate } from "@/utils/formatDate";
-import { Calendar, Search, Star, User } from "lucide-react";
+import { Search } from "lucide-react";
 import { useState } from "react";
 import type { ProblemListsResponse } from "../types/ProblemLists";
+import { ProblemListCard } from "./ProblemListCard";
 
 type SortField = "name" | "author" | "stars" | "createdAt";
 type SortDirection = "asc" | "desc";
@@ -120,50 +112,9 @@ export function ProblemListsCards({
 					<p>検索条件に一致する問題リストが見つかりませんでした。</p>
 				</div>
 			) : (
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+				<div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
 					{filteredLists.map((list) => (
-						<Card
-							key={list.id}
-							className="hover:shadow-md transition-shadow duration-200"
-						>
-							<CardHeader>
-								<CardTitle>
-									<a
-										href={`/problemlist/show/${list.id}`}
-										className="text-blue-600 hover:underline"
-									>
-										{list.name}
-									</a>
-								</CardTitle>
-								<CardDescription className="line-clamp-2 mt-2">
-									{list.description}
-								</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<div className="flex flex-wrap gap-4 text-sm text-gray-600 items-center">
-									<CardUserInfo
-										id={list.author.id}
-										name={list.author.name}
-										image={list.author.image}
-									/>
-									<div className="flex items-center gap-1">
-										<Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-										<span className="font-medium text-gray-800">
-											{list._count.stars}
-										</span>
-									</div>
-									<div className="flex items-center gap-1">
-										<Calendar className="h-4 w-4 text-gray-500" />
-										<span className="text-gray-700">
-											{formatDate(list.createdAt)}
-										</span>
-									</div>
-									{!list.isPublic && (
-										<span className="text-red-500 font-semibold">非公開</span>
-									)}
-								</div>
-							</CardContent>
-						</Card>
+						<ProblemListCard key={list.id} list={list} />
 					))}
 				</div>
 			)}

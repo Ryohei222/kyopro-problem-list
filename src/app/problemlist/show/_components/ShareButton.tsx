@@ -2,7 +2,7 @@
 
 import { openTweetPage } from "@/utils/openTweetPage";
 import { Share2 } from "lucide-react";
-import type { ProblemListResponse } from "../types/ProblemLists";
+import type { ProblemListResponse } from "../../../../features/problemlist/types/ProblemLists";
 import { CardHeaderButton } from "./CardHeaderButton";
 
 type ShareButtonProps = {

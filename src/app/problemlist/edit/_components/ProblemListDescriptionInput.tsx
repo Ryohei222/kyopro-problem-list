@@ -2,7 +2,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@radix-ui/react-label";
 import type React from "react";
 
-export default function ProblemSetDescriptionInput({
+export default function ProblemListDescriptionInput({
 	description,
 	handleDescriptionChange,
 }: {
@@ -18,7 +18,6 @@ export default function ProblemSetDescriptionInput({
 				onChange={handleDescriptionChange}
 				placeholder="この問題リストの内容や目的について説明してください"
 				className="min-h-[120px]"
-				required
 			/>
 		</div>
 	);

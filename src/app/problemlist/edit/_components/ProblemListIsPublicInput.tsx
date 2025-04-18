@@ -2,7 +2,7 @@ import { Checkbox, type CheckedState } from "@radix-ui/react-checkbox";
 import { Label } from "@radix-ui/react-label";
 import React from "react";
 
-export default function ProblemSetIsPublicInput({
+export default function ProblemListIsPublicInput({
 	isPublic,
 	handleIsPublicChange,
 }: {

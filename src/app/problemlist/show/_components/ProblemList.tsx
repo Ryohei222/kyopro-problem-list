@@ -1,5 +1,6 @@
 "use client";
 
+import { Switch } from "@/components/ui/switch";
 import {
 	Table,
 	TableBody,
@@ -10,7 +11,7 @@ import {
 import { createProblemKey } from "@/types/CommonProblem";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
-import type { ProblemListRecordResponse } from "../types/ProblemLists";
+import type { ProblemListRecordResponse } from "../../../../features/problemlist/types/ProblemLists";
 import ProblemListItem from "./ProblemListItem";
 
 type ProblemListRecordWithSolvedFlag = ProblemListRecordResponse & {
@@ -27,6 +28,8 @@ type SortDirection = "asc" | "desc";
 export function ProblemList(props: ProblemListProps) {
 	const [sortField, setSortField] = useState<SortField>("order");
 	const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+	const [showDifficulty, setShowDifficulty] = useState(false);
+	const [showSolved, setShowSolved] = useState(true);
 
 	const SortIcon = ({ field }: { field: SortField }) => {
 		if (sortField !== field) return null;
@@ -59,8 +62,36 @@ export function ProblemList(props: ProblemListProps) {
 			: b[sortField] - a[sortField];
 	});
 
+	const filteredRecords = showSolved
+		? sortedRecords
+		: sortedRecords.filter((record) => !record.isSolved);
+
 	return (
 		<div className="rounded-md border bg-white">
+			<div className="flex items-center gap-4 p-2">
+				<label
+					className="flex items-center gap-2 text-sm"
+					htmlFor="show-difficulty-switch"
+				>
+					<Switch
+						checked={showDifficulty}
+						onCheckedChange={() => setShowDifficulty((v) => !v)}
+						id="show-difficulty-switch"
+					/>
+					<span>難易度(Difficulty)を表示</span>
+				</label>
+				<label
+					className="flex items-center gap-2 text-sm"
+					htmlFor="show-solved-switch"
+				>
+					<Switch
+						checked={showSolved}
+						onCheckedChange={() => setShowSolved((v) => !v)}
+						id="show-solved-switch"
+					/>
+					<span>解いた問題も表示</span>
+				</label>
+			</div>
 			<Table>
 				<TableHeader>
 					<TableRow>
@@ -82,26 +113,28 @@ export function ProblemList(props: ProblemListProps) {
 								<SortIcon field="resource" />
 							</div>
 						</TableHead>
-						<TableHead className="w-[20%]">
+						<TableHead className="w-96">
 							<div className="flex items-center">問題名</div>
 						</TableHead>
-						<TableHead className="w-[10%]">
-							<div className="flex items-center">Difficulty</div>
-						</TableHead>
-						<TableHead className="w-[30%]">
+						{showDifficulty && (
+							<TableHead className="w-[10%]">
+								<div className="flex items-center">Difficulty</div>
+							</TableHead>
+						)}
+						<TableHead className="w-xl">
 							<div className="flex items-center">メモ</div>
 						</TableHead>
-						<TableHead className="w-[30%]">
+						<TableHead className="w-xl">
 							<div className="flex items-center">ヒント</div>
 						</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{sortedRecords.map((problemListRecord) => (
+					{filteredRecords.map((problemListRecord) => (
 						<ProblemListItem
 							key={createProblemKey(problemListRecord.problem)}
 							problemListRecord={problemListRecord}
-							showDifficulty={true}
+							showDifficulty={showDifficulty}
 						/>
 					))}
 				</TableBody>

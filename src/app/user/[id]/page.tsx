@@ -1,8 +1,8 @@
+import { UserProfile } from "@/app/user/_components/UserProfile";
 import { auth } from "@/auth";
 import { Separator } from "@/components/ui/separator";
 import { ProblemListsCards } from "@/features/problemlist/components/ProblemListsCards";
 import { getUserProblemList } from "@/features/problemlist/db/getUserProblemLists";
-import { UserProfile } from "@/features/user/components/UserProfile";
 import { getUser } from "@/features/user/db/getUser";
 import { fetchYukicoderUserUrl } from "@/features/user/utils/fetchYukicoderUserUrl";
 import { Book } from "lucide-react";
@@ -10,7 +10,9 @@ import { notFound } from "next/navigation";
 
 export default async function UserPage({
 	params,
-}: { params: Promise<{ id: string }> }) {
+}: {
+	params: Promise<{ id: string }>;
+}) {
 	const userId = (await params).id;
 	const user = await getUser(userId);
 

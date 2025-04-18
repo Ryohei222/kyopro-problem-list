@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import type { ProblemListResponse } from "@/features/problemlist/types/ProblemLists";
 import { Delete, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { deleteProblemList } from "../db/deleteProblemList";
+import { deleteProblemList } from "../../../../features/problemlist/db/deleteProblemList";
 
 export function ProblemListDeleteButton({
 	problemList,

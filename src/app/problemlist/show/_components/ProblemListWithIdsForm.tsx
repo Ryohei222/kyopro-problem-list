@@ -9,7 +9,7 @@ import {
 import { type ProblemKey, createProblemKey } from "@/types/CommonProblem";
 import { User } from "@prisma/client";
 import { useEffect, useState } from "react";
-import type { ProblemListRecordResponse } from "../types/ProblemLists";
+import type { ProblemListRecordResponse } from "../../../../features/problemlist/types/ProblemLists";
 
 import type { getUser } from "@/features/user/db/getUser";
 import { ProblemList } from "./ProblemList";

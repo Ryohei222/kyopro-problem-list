@@ -1,4 +1,4 @@
-import { CreateProblemListForm } from "@/features/problemlist/components/CreateProblemListForm";
+import { CreateProblemListForm } from "@/app/problemlist/create/_components/CreateProblemListForm";
 import buildTwitterMetadata from "@/utils/buildTwitterMetaData";
 import type { Metadata } from "next";
 

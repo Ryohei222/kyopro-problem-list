@@ -12,7 +12,7 @@ import { Label } from "@radix-ui/react-label";
 import { Plus } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
-import type { ProblemListRecordResponse } from "../types/ProblemLists";
+import type { ProblemListRecordResponse } from "../../../../features/problemlist/types/ProblemLists";
 
 function searchProblemFromUrl(
 	url: string,
