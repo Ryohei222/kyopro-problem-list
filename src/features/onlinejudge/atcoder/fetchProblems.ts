@@ -1,12 +1,23 @@
+import z from "zod";
 import { fetchApi } from "../utils/fetchApi";
-import { AtcoderProblem, AtcoderProblemsApiSchema } from "./Problem";
+import { AtcoderProblem } from "./Problem";
 import { ATCODER_API_URL } from "./constants";
-import { getAtcoderContests } from "./getContests";
-import { getAtcoderProblemDifficulties } from "./getDifficulties";
+import { fetchAtcoderContests } from "./fetchContests";
+import { fetchAtcoderProblemDifficulties } from "./fetchDifficulties";
 
-export async function getAtcoderProblems(): Promise<AtcoderProblem[]> {
-	const difficultiesPromise = getAtcoderProblemDifficulties();
-	const contestsPromise = getAtcoderContests().then((contests) => {
+const AtcoderProblemSchema = z.object({
+	id: z.string(),
+	contest_id: z.string(),
+	problem_index: z.string(),
+	name: z.string(),
+	title: z.string(),
+});
+
+const AtcoderProblemsApiSchema = z.array(AtcoderProblemSchema);
+
+export async function fetchAtcoderProblems(): Promise<AtcoderProblem[]> {
+	const difficultiesPromise = fetchAtcoderProblemDifficulties();
+	const contestsPromise = fetchAtcoderContests().then((contests) => {
 		const contestsMap = new Map<string, string>();
 		for (const contest of contests) {
 			contestsMap.set(contest.id, contest.title);

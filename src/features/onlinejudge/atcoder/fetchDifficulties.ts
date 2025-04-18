@@ -18,7 +18,7 @@ const AtcoderDifficultyApiSchema = z.record(
 	AtcoderDifficultySchema,
 );
 
-export async function getAtcoderProblemDifficulties(): Promise<
+export async function fetchAtcoderProblemDifficulties(): Promise<
 	Map<string, number>
 > {
 	return fetchApi(

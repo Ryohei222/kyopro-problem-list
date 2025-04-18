@@ -1,33 +1,34 @@
 import { createProblemKey } from "@/types/CommonProblem";
 import { Resource } from "@prisma/client";
-import { z } from "zod";
 import type { CommonContest } from "../interfaces/CommonContest";
 import type { CommonProblem } from "../interfaces/CommonProblem";
 import type { GetDifficulty } from "../interfaces/GetDifficulty";
 
-const AtcoderProblemSchema = z.object({
-	id: z.string(),
-	contest_id: z.string(),
-	problem_index: z.string(),
-	name: z.string(),
-	title: z.string(),
-});
-
-type AtcoderProblemType = z.infer<typeof AtcoderProblemSchema>;
-export const AtcoderProblemsApiSchema = z.array(AtcoderProblemSchema);
-
 export class AtcoderProblem
-	implements AtcoderProblemType, CommonProblem, CommonContest, GetDifficulty
+	implements CommonProblem, CommonContest, GetDifficulty
 {
+	resource: Resource;
+	contestId: string;
+	problemId: string;
+	name: string;
+	contestName: string;
+	difficulty?: number | undefined;
 	constructor(
-		public readonly id: string,
-		public readonly contest_id: string,
-		public readonly problem_index: string,
-		public readonly name: string,
-		public readonly title: string,
-		public readonly contest_title: string,
-		public readonly difficulty?: number,
-	) {}
+		id: string,
+		contest_id: string,
+		problem_index: string,
+		name: string,
+		title: string,
+		contest_title: string,
+		difficulty?: number,
+	) {
+		this.resource = Resource.ATCODER;
+		this.contestId = contest_id;
+		this.problemId = id;
+		this.name = title;
+		this.contestName = contest_title;
+		this.difficulty = difficulty;
+	}
 
 	getResource() {
 		return Resource.ATCODER;
@@ -35,21 +36,21 @@ export class AtcoderProblem
 	getProblemKey() {
 		return createProblemKey({
 			resource: this.getResource(),
-			contestId: this.contest_id,
-			problemId: this.problem_index,
+			contestId: this.contestId,
+			problemId: this.problemId,
 		});
 	}
 	getTitle() {
-		return this.title;
+		return this.name;
 	}
 	getUrl() {
-		return `https://atcoder.jp/contests/${this.contest_id}/tasks/${this.problem_index}`;
+		return `https://atcoder.jp/contests/${this.contestId}/tasks/${this.problemId}`;
 	}
 	getContestTitle() {
-		return this.contest_title;
+		return this.contestName;
 	}
 	getContestUrl() {
-		return `https://atcoder.jp/contests/${this.contest_id}`;
+		return `https://atcoder.jp/contests/${this.contestId}`;
 	}
 	getDifficulty() {
 		return 0;

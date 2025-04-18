@@ -1,16 +1,27 @@
 import type { CommonSubmission } from "@/types/CommonSubmission";
 import { Resource } from "@prisma/client";
 import { type DBSchema, openDB } from "idb";
-import type { z } from "zod";
+import z from "zod";
 
 import { fetchApi } from "../../externalapi/fetchApi";
-import {
-	type AtcoderSubmissionSchema,
-	AtcoderSubmissionsApiSchema,
-} from "./SubmissionsSchema";
 import { ATCODER_API_URL } from "./constants";
 
-export type AtcoderSubmission = z.infer<typeof AtcoderSubmissionSchema>;
+const AtcoderSubmissionSchema = z.object({
+	contest_id: z.string(),
+	problem_id: z.string(),
+	epoch_second: z.number(),
+	execution_time: z.number().nullable(),
+	id: z.number(),
+	language: z.string(),
+	length: z.number(),
+	point: z.number(),
+	result: z.string(),
+	user_id: z.string(),
+});
+
+const AtcoderSubmissionsApiSchema = z.array(AtcoderSubmissionSchema);
+
+type AtcoderSubmission = z.infer<typeof AtcoderSubmissionSchema>;
 
 interface AtcoderSubmissionDB extends DBSchema {
 	submissions: {
@@ -53,7 +64,7 @@ async function fetchAtcoderSubmissionsFromSecond(
 	);
 }
 
-export async function getAtcoderSubmissions(
+export async function fetchAtcoderSubmissions(
 	user_id: string,
 ): Promise<CommonSubmission[]> {
 	if (!user_id) return [];

@@ -13,7 +13,7 @@ const AtcoderContestSchema = z.object({
 
 const AtcoderContestsApiSchema = z.array(AtcoderContestSchema);
 
-export async function getAtcoderContests() {
+export async function fetchAtcoderContests() {
 	return fetchApi(
 		`${ATCODER_API_URL}/resources/contests.json`,
 		AtcoderContestsApiSchema,
