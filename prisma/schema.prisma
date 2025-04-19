@@ -93,7 +93,7 @@ enum Resource {
 model Problem {
   id                 Int                 @id @default(autoincrement())
   resource           Resource            @default(ATCODER)
-  contestId          String
+  contestId          String?
   problemId          String
   name               String
   contestName        String?
