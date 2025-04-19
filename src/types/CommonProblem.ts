@@ -2,15 +2,6 @@ import type { prisma } from "@/prisma";
 import type { Resource } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
 
-type CommonProblem = {
-	resource: Resource;
-	contestId: string;
-	problemId: string;
-	name: string;
-	difficulty: number | null;
-	contestName: string | null;
-};
-
 const problemKeyBrand = Symbol();
 
 export type ProblemKey = string & { [problemKeyBrand]: unknown };
@@ -29,4 +20,9 @@ type CreatedProblem = NonNullable<
 	Prisma.PromiseReturnType<typeof prisma.problem.findFirst>
 >;
 
-export type { CommonProblem, CreatedProblem };
+export interface CommonProblem {
+	readonly resource: Resource;
+	Title(): string;
+	Url(): string;
+	ProblemKey(): ProblemKey;
+}

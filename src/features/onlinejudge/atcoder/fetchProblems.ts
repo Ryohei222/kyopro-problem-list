@@ -47,9 +47,7 @@ export async function fetchAtcoderProblems(): Promise<AtcoderProblem[]> {
 			return new AtcoderProblem(
 				problem.id,
 				problem.contest_id,
-				problem.problem_index,
 				problem.name,
-				problem.title,
 				contests.get(problem.contest_id) ?? "",
 				difficulty !== undefined
 					? correctAtcoderDifficulty(difficulty)

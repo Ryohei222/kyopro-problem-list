@@ -1,6 +1,6 @@
 import { Resource } from "@prisma/client";
+import type { CommonSubmission } from "../../../types/CommonSubmission";
 import { YukicoderSubmissionsApiSchema } from "../../externalapi/yukicoder/SubmissionsSchema";
-import type { CommonSubmission } from "../interfaces/CommonSubmission";
 import { fetchApi } from "../utils/fetchApi";
 import { YUKICODER_API_URL } from "./constants";
 

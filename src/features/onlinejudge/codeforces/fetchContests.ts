@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { fetchApi } from "../utils/fetchApi";
+import { CODEFORCES_API_URL } from "./constants";
 
 const CodeforcesContestSchema = z.object({
 	id: z.number(),
@@ -16,4 +18,11 @@ const CodeforcesContestsAPISchema = z.object({
 	result: z.array(CodeforcesContestSchema),
 });
 
-export { CodeforcesContestsAPISchema };
+export async function fetchCodeforcesContests() {
+	return fetchApi(
+		`${CODEFORCES_API_URL}/contest.list`,
+		CodeforcesContestsAPISchema,
+	).then((data) => {
+		return data.result;
+	});
+}

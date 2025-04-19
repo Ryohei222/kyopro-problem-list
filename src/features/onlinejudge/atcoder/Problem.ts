@@ -1,58 +1,40 @@
 import { createProblemKey } from "@/types/CommonProblem";
 import { Resource } from "@prisma/client";
-import type { CommonContest } from "../interfaces/CommonContest";
-import type { CommonProblem } from "../interfaces/CommonProblem";
-import type { GetDifficulty } from "../interfaces/GetDifficulty";
+import type { CommonContest } from "../../../types/CommonContest";
+import type { CommonProblem } from "../../../types/CommonProblem";
+import type { GetDifficulty } from "../../../types/GetDifficulty";
 
 export class AtcoderProblem
 	implements CommonProblem, CommonContest, GetDifficulty
 {
-	resource: Resource;
-	contestId: string;
-	problemId: string;
-	name: string;
-	contestName: string;
-	difficulty?: number | undefined;
+	resource: Resource = Resource.ATCODER;
 	constructor(
-		id: string,
-		contest_id: string,
-		problem_index: string,
-		name: string,
-		title: string,
-		contest_title: string,
-		difficulty?: number,
-	) {
-		this.resource = Resource.ATCODER;
-		this.contestId = contest_id;
-		this.problemId = id;
-		this.name = name;
-		this.contestName = contest_title;
-		this.difficulty = difficulty;
-	}
-
-	getResource() {
-		return Resource.ATCODER;
-	}
-	getProblemKey() {
+		private readonly id: string,
+		private readonly contestId: string,
+		private readonly name: string,
+		private readonly contestName: string,
+		private readonly difficulty?: number | undefined,
+	) {}
+	ProblemKey() {
 		return createProblemKey({
-			resource: this.getResource(),
+			resource: this.resource,
 			contestId: this.contestId,
-			problemId: this.problemId,
+			problemId: this.id,
 		});
 	}
-	getTitle() {
+	Title() {
 		return this.name;
 	}
-	getUrl() {
-		return `https://atcoder.jp/contests/${this.contestId}/tasks/${this.problemId}`;
+	Url() {
+		return `https://atcoder.jp/contests/${this.contestId}/tasks/${this.id}`;
 	}
-	getContestTitle() {
+	ContestTitle() {
 		return this.contestName;
 	}
-	getContestUrl() {
+	ContestUrl() {
 		return `https://atcoder.jp/contests/${this.contestId}`;
 	}
-	getDifficulty() {
-		return 0;
+	Difficulty() {
+		return this.difficulty;
 	}
 }

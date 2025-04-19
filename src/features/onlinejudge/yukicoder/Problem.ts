@@ -1,34 +1,29 @@
 import { createProblemKey } from "@/types/CommonProblem";
 import { Resource } from "@prisma/client";
-import type { CommonProblem } from "../interfaces/CommonProblem";
+import type { CommonProblem } from "../../../types/CommonProblem";
 
 export class YukicoderProblem implements CommonProblem {
-	resource = Resource.YUKICODER;
-	problemId: string;
-	name: string;
+	public readonly resource = Resource.YUKICODER;
+	constructor(
+		private No: number,
+		private ProblemId: number,
+		private _Title: string,
+		private Level: number,
+	) {}
 
-	constructor(problemId: string, name: string) {
-		this.problemId = problemId;
-		this.name = name;
-	}
-
-	getResource() {
-		return this.resource;
-	}
-
-	getProblemKey() {
+	ProblemKey() {
 		return createProblemKey({
-			resource: this.getResource(),
+			resource: this.resource,
 			contestId: "0",
-			problemId: this.problemId,
+			problemId: this.No.toString(),
 		});
 	}
 
-	getTitle() {
-		return this.name;
+	Title() {
+		return this._Title;
 	}
 
-	getUrl() {
-		return `https://yukicoder.me/problems/no/${this.problemId}`;
+	Url() {
+		return `https://yukicoder.me/problems/no/${this.No}`;
 	}
 }

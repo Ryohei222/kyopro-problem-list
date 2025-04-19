@@ -92,13 +92,79 @@ enum Resource {
 
 model Problem {
   id                 Int                 @id @default(autoincrement())
-  resource           Resource            @default(ATCODER)
-  contestId          String?
-  problemId          String
-  name               String
-  contestName        String?
-  difficulty         Int?
   problemListRecords ProblemListRecord[]
+  AojProblem         AojProblem?
+  AtcoderProblem     AtcoderProblem?
+  CodeforcesProblem  CodeforcesProblem?
+  MofeProblem        MofeProblem?
+  YukicoderProblem   YukicoderProblem?
+}
+
+model AojProblem {
+  id              String   @id
+  name            String
+  maxScore        Int
+  problem         Problem  @relation(fields: [commonProblemId], references: [id])
+  commonProblemId Int      @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model AtcoderProblem {
+  id              String
+  contestId       String
+  name            String
+  contestName     String
+  difficulty      Int?
+  problem         Problem  @relation(fields: [commonProblemId], references: [id])
+  commonProblemId Int      @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([id, contestId], name: "atcoder_problem_identifier")
+}
+
+model CodeforcesProblem {
+  contestId       Int
+  contestName     String
+  index           String
+  name            String
+  points          Int?
+  rating          Int?
+  problem         Problem  @relation(fields: [commonProblemId], references: [id])
+  commonProblemId Int      @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([contestId, index], name: "codeforces_problem_identifier")
+}
+
+model MofeProblem {
+  slug            String
+  name            String
+  positon         String
+  difficulty      String
+  points          Int
+  contestSlug     String
+  contestName     String
+  problem         Problem  @relation(fields: [commonProblemId], references: [id])
+  commonProblemId Int      @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([slug, contestSlug], name: "mofe_problem_identifier")
+}
+
+model YukicoderProblem {
+  No        Int    @id
+  ProblemId Int
+  Title     String
+  Level     Float
+
+  problem         Problem  @relation(fields: [commonProblemId], references: [id])
+  commonProblemId Int      @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model ProblemList {

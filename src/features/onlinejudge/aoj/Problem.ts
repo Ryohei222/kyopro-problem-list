@@ -1,34 +1,29 @@
 import { createProblemKey } from "@/types/CommonProblem";
 import { Resource } from "@prisma/client";
-import type { CommonProblem } from "../interfaces/CommonProblem";
+import type { CommonProblem } from "../../../types/CommonProblem";
 
 export class AojProblem implements CommonProblem {
-	resource = Resource.AOJ;
-	problemId: string;
-	name: string;
+	public readonly resource = Resource.AOJ;
 
-	constructor(problemId: string, name: string) {
-		this.problemId = problemId;
-		this.name = name;
-	}
+	constructor(
+		private readonly name: string,
+		private readonly id: string,
+		private readonly maxScore: number,
+	) {}
 
-	getResource() {
-		return this.resource;
-	}
-
-	getProblemKey() {
+	ProblemKey() {
 		return createProblemKey({
-			resource: this.getResource(),
+			resource: this.resource,
 			contestId: "0",
-			problemId: this.problemId,
+			problemId: this.id,
 		});
 	}
 
-	getTitle() {
+	Title() {
 		return this.name;
 	}
 
-	getUrl() {
-		return `https://onlinejudge.u-aizu.ac.jp/problems/${this.problemId}`;
+	Url() {
+		return `https://onlinejudge.u-aizu.ac.jp/problems/${this.id}`;
 	}
 }

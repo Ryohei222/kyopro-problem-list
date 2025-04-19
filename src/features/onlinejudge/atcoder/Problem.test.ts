@@ -4,30 +4,31 @@ import { AtcoderProblem } from "./Problem";
 const problem = new AtcoderProblem(
 	"abc123_a",
 	"abc123",
-	"A",
 	"Five Antennas",
-	"A - Five Antennas",
 	"AtCoder Beginner Contest 123",
 	31,
 );
 
 describe("AtcoderProblem", () => {
-	test("getTitle", () => {
-		expect(problem.getTitle()).toBe("Five Antennas");
+	test("Title", () => {
+		expect(problem.Title()).toBe("Five Antennas");
 	});
-	test("getUrl", async () => {
-		expect(problem.getUrl()).toBe(
+	test("Url", async () => {
+		expect(problem.Url()).toBe(
 			"https://atcoder.jp/contests/abc123/tasks/abc123_a",
 		);
-		const response = await fetch(problem.getUrl());
+		const response = await fetch(problem.Url());
 		expect(response.status).toBe(200);
 	});
-	test("getContestTitle", () => {
-		expect(problem.getContestTitle()).toBe("AtCoder Beginner Contest 123");
+	test("Difficulty", () => {
+		expect(problem.Difficulty()).toBe(31);
 	});
-	test("getContestUrl", async () => {
-		expect(problem.getContestUrl()).toBe("https://atcoder.jp/contests/abc123");
-		const response = await fetch(problem.getContestUrl());
+	test("ContestTitle", () => {
+		expect(problem.ContestTitle()).toBe("AtCoder Beginner Contest 123");
+	});
+	test("ContestUrl", async () => {
+		expect(problem.ContestUrl()).toBe("https://atcoder.jp/contests/abc123");
+		const response = await fetch(problem.ContestUrl());
 		expect(response.status).toBe(200);
 	});
 });

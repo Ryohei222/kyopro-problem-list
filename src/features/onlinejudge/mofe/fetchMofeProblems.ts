@@ -1,9 +1,8 @@
-import { Resource } from "@prisma/client";
-import type { CommonProblem } from "../interfaces/CommonProblem";
 import { fetchApi } from "../utils/fetchApi";
 import { MOFE_API_URL } from "./constant";
 
 import { z } from "zod";
+import { MofeProblem } from "./Problem";
 
 const MofeContestSchema = z.object({
 	slug: z.string(),
@@ -63,26 +62,24 @@ async function fetchMofePastContests() {
 	return contests.past;
 }
 
-export async function fetchMofeProblems(): Promise<CommonProblem[]> {
+export async function fetchMofeProblems(): Promise<MofeProblem[]> {
 	const contests = await fetchMofePastContests();
-	const problems = [];
+	const problems: MofeProblem[] = [];
 	for (const contest of contests) {
 		const contestDetail = await fetchApi(
 			`${MOFE_API_URL}/contests/${contest.slug}`,
 			MofeContestApiSchema,
 		);
 		problems.push(
-			...contestDetail.tasks
-				.filter((problem) => !!problem)
-				.map((problem) => ({
-					name: problem.name,
-					contestId: contest.slug,
-					problemId: problem.slug,
-					resource: Resource.MOFE,
-					contestName: contest.name,
-					difficulty: null,
-				}))
-				.filter((problem) => problem.problemId !== ""),
+			...contestDetail.tasks.map(
+				(problem) =>
+					new MofeProblem(
+						problem.slug,
+						contest.slug,
+						problem.name,
+						contest.name,
+					),
+			),
 		);
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 	}

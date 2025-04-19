@@ -1,18 +1,50 @@
-import { CodeforcesProblemsApiSchema } from "../../externalapi/codeforces/ProblemsSchema";
-import { getCodeforcesContests } from "../../externalapi/codeforces/getCodeforcesContests";
-import type { CommonProblem } from "../interfaces/CommonProblem";
 import { fetchApi } from "../utils/fetchApi";
 import { CodeforcesProblem } from "./Problem";
 import { CODEFORCES_API_URL } from "./constants";
 
-export async function fetchCodeforcesProblems(): Promise<CommonProblem[]> {
-	const contests = await getCodeforcesContests();
+import { z } from "zod";
+import { fetchCodeforcesContests } from "./fetchContests";
+
+const CodeforcesProblemSchema = z.object({
+	contestId: z.number(),
+	index: z.string(),
+	name: z.string(),
+	type: z.string(),
+	points: z.number().optional(),
+	rating: z.number().optional(),
+	tags: z.array(z.string()),
+});
+
+const CodeforcesProblemStatisticSchema = z.object({
+	contestId: z.number(),
+	index: z.string(),
+	solvedCount: z.number(),
+});
+
+export const CodeforcesProblemsApiSchema = z.object({
+	status: z.string(),
+	result: z.object({
+		problems: z.array(CodeforcesProblemSchema),
+		problemStatistics: z.array(CodeforcesProblemStatisticSchema),
+	}),
+});
+
+export async function fetchCodeforcesProblems(): Promise<CodeforcesProblem[]> {
+	const contests = await fetchCodeforcesContests();
 	const contestMap = new Map(contests.map((c) => [c.id, c.name]));
 	const data = await fetchApi(
 		`${CODEFORCES_API_URL}/problemset.problems`,
 		CodeforcesProblemsApiSchema,
 	);
 	return data.result.problems.map(
-		(p) => new CodeforcesProblem(p.contestId.toString(), p.index, p.name),
+		(p) =>
+			new CodeforcesProblem(
+				p.contestId,
+				p.name,
+				contestMap.get(p.contestId) ?? "",
+				p.index,
+				p.rating,
+				p.points,
+			),
 	);
 }

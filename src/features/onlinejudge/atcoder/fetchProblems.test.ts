@@ -16,9 +16,18 @@ describe("fetchAtcoderProblems", () => {
 	});
 	test("difficulty should be greater than or equal to 0 or undefined", () => {
 		for (const problem of problems) {
-			if (problem.difficulty !== undefined) {
-				expect(problem.difficulty).toBeGreaterThanOrEqual(0);
+			if (problem.Difficulty() !== undefined) {
+				expect(problem.Difficulty()).toBeGreaterThanOrEqual(0);
 			}
 		}
+	});
+	test("problem abc123_a exists", () => {
+		const problem = problems.find((p) => p.Url().includes("abc123_a"));
+		if (!problem) {
+			throw new Error("Problem abc123_a not found");
+		}
+		expect(problem.Title()).toBe("Five Antennas");
+		expect(problem.ContestTitle()).toBe("AtCoder Beginner Contest 123");
+		expect(problem.Difficulty()).toBe(31);
 	});
 });

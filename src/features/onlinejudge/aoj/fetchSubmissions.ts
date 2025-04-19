@@ -1,8 +1,28 @@
 import { Resource } from "@prisma/client";
-import { AojSubmissionsApiSchema } from "../../externalapi/aoj/SubmissionsSchema";
-import type { CommonSubmission } from "../interfaces/CommonSubmission";
+import type { CommonSubmission } from "../../../types/CommonSubmission";
 import { fetchApi } from "../utils/fetchApi";
 import { AOJ_API_URL } from "./constants";
+
+import { z } from "zod";
+
+const AojSubmissionSchema = z.object({
+	judgeId: z.number(),
+	userId: z.string(),
+	problemId: z.string(),
+	language: z.string(),
+	version: z.string(),
+	submissionDate: z.number(),
+	judgeDate: z.number(),
+	cpuTime: z.number(),
+	memory: z.number(),
+	codeSize: z.number(),
+	server: z.number(),
+	policy: z.string(),
+	rating: z.number(),
+	review: z.number(),
+});
+
+const AojSubmissionsApiSchema = z.array(AojSubmissionSchema);
 
 export async function fetchAojSubmissions(
 	userId: string,

@@ -1,36 +1,48 @@
 import { createProblemKey } from "@/types/CommonProblem";
 import { Resource } from "@prisma/client";
-import type { CommonProblem } from "../interfaces/CommonProblem";
+import type { CommonContest } from "../../../types/CommonContest";
+import type { CommonProblem } from "../../../types/CommonProblem";
+import type { GetDifficulty } from "../../../types/GetDifficulty";
 
-export class CodeforcesProblem implements CommonProblem {
-	resource = Resource.CODEFORCES;
-	contestId: string;
-	problemId: string;
-	name: string;
+export class CodeforcesProblem
+	implements CommonProblem, CommonContest, GetDifficulty
+{
+	constructor(
+		public readonly contestId: number,
+		public readonly name: string,
+		public readonly contestName: string,
+		public readonly index: string,
+		public readonly points: number | undefined,
+		public readonly rating: number | undefined,
+	) {}
 
-	constructor(contestId: string, problemId: string, name: string) {
-		this.contestId = contestId;
-		this.problemId = problemId;
-		this.name = name;
-	}
+	public readonly resource = Resource.CODEFORCES;
 
-	getResource() {
-		return this.resource;
-	}
-
-	getProblemKey() {
+	ProblemKey() {
 		return createProblemKey({
-			resource: this.getResource(),
-			contestId: this.contestId,
-			problemId: this.problemId,
+			resource: this.resource,
+			contestId: this.contestId.toString(),
+			problemId: this.index,
 		});
 	}
 
-	getTitle() {
+	Title() {
 		return this.name;
 	}
 
-	getUrl() {
-		return `https://codeforces.com/contest/${this.contestId}/problem/${this.problemId}`;
+	Url() {
+		return `https://codeforces.com/contest/${this.contestId}/problem/${this.index}`;
+	}
+
+	ContestTitle(): string {
+		return this.contestName;
+	}
+
+	ContestUrl(): string {
+		return `https://codeforces.com/contest/${this.contestId}`;
+	}
+
+	Difficulty(): number | undefined {
+		return this.rating;
 	}
 }
