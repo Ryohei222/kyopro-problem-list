@@ -120,3 +120,6 @@
 		@apply bg-background text-foreground;
 	}
 }
+html {
+	scrollbar-gutter: stable;
+}
