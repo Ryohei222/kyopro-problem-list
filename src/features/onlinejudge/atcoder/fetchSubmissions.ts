@@ -21,7 +21,7 @@ const AtcoderSubmissionSchema = z.object({
 
 const AtcoderSubmissionsApiSchema = z.array(AtcoderSubmissionSchema);
 
-type AtcoderSubmission = z.infer<typeof AtcoderSubmissionSchema>;
+export type AtcoderSubmission = z.infer<typeof AtcoderSubmissionSchema>;
 
 interface AtcoderSubmissionDB extends DBSchema {
 	submissions: {
@@ -43,7 +43,7 @@ async function fetchPartialAtcoderSubmissions(
 	);
 }
 
-async function fetchAtcoderSubmissionsFromSecond(
+export async function fetchAtcoderSubmissionsFromSecond(
 	user_id: string,
 	from_second: number,
 	submissions: AtcoderSubmission[] = [],
@@ -64,7 +64,7 @@ async function fetchAtcoderSubmissionsFromSecond(
 	);
 }
 
-export async function fetchAtcoderSubmissions(
+export async function fetchAtcoderSubmissionsWithCache(
 	user_id: string,
 ): Promise<CommonSubmission[]> {
 	if (!user_id) return [];

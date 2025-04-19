@@ -1,7 +1,7 @@
 import { fetchAojProblems } from "./aoj/fetchProblems";
 import { fetchAojSubmissions } from "./aoj/fetchSubmissions";
 import { fetchAtcoderProblems } from "./atcoder/fetchProblems";
-import { fetchAtcoderSubmissions } from "./atcoder/fetchSubmissions";
+import { fetchAtcoderSubmissionsWithCache } from "./atcoder/fetchSubmissions";
 import { fetchCodeforcesProblems } from "./codeforces/fetchProblems";
 import { fetchCodeforcesSubmissions } from "./codeforces/fetchSubmissions";
 import type { OnlineJudge } from "./interfaces/OnlineJudge";
@@ -10,7 +10,7 @@ import { fetchYukicoderSubmissions } from "./yukicoder/fetchSubmissions";
 
 export const Atcoder: OnlineJudge = {
 	fetchProblems: fetchAtcoderProblems,
-	fetchSubmissions: fetchAtcoderSubmissions,
+	fetchSubmissions: fetchAtcoderSubmissionsWithCache,
 };
 export const Aoj: OnlineJudge = {
 	fetchProblems: fetchAojProblems,
