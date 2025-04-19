@@ -15,6 +15,16 @@ const AtcoderProblemSchema = z.object({
 
 const AtcoderProblemsApiSchema = z.array(AtcoderProblemSchema);
 
+function correctAtcoderDifficulty(difficulty: number): number {
+	if (difficulty >= 400) {
+		return difficulty;
+	}
+	const correctedDifficulty = Math.floor(
+		400 / Math.exp((400 - difficulty) / 400) + 0.5,
+	);
+	return correctedDifficulty;
+}
+
 export async function fetchAtcoderProblems(): Promise<AtcoderProblem[]> {
 	const difficultiesPromise = fetchAtcoderProblemDifficulties();
 	const contestsPromise = fetchAtcoderContests().then((contests) => {
@@ -33,6 +43,7 @@ export async function fetchAtcoderProblems(): Promise<AtcoderProblem[]> {
 		AtcoderProblemsApiSchema,
 	).then((problems) => {
 		return problems.map((problem) => {
+			const difficulty = difficulties.get(problem.id);
 			return new AtcoderProblem(
 				problem.id,
 				problem.contest_id,
@@ -40,7 +51,9 @@ export async function fetchAtcoderProblems(): Promise<AtcoderProblem[]> {
 				problem.name,
 				problem.title,
 				contests.get(problem.contest_id) ?? "",
-				difficulties.get(problem.id),
+				difficulty !== undefined
+					? correctAtcoderDifficulty(difficulty)
+					: undefined,
 			);
 		});
 	});
