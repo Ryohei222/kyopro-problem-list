@@ -4,7 +4,6 @@ import type { CommonProblem } from "../interfaces/CommonProblem";
 
 export class AojProblem implements CommonProblem {
 	resource = Resource.AOJ;
-	contestId = "0";
 	problemId: string;
 	name: string;
 
@@ -20,7 +19,7 @@ export class AojProblem implements CommonProblem {
 	getProblemKey() {
 		return createProblemKey({
 			resource: this.getResource(),
-			contestId: this.contestId,
+			contestId: "0",
 			problemId: this.problemId,
 		});
 	}

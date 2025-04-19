@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { fetchAojProblems } from "../fetchProblems";
+import { fetchAojProblems } from "./fetchProblems";
 
 describe("fetchAojProblems", () => {
 	test("should fetch problems successfully", async () => {

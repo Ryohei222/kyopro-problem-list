@@ -15,7 +15,6 @@ export async function fetchAojSubmissions(
 	return submissions.map((submission) => ({
 		submissionId: submission.judgeId.toString(),
 		resource: Resource.AOJ,
-		contestId: "0",
 		problemId: submission.problemId,
 		verdict: "AC",
 		submittedAt: new Date(submission.submissionDate),

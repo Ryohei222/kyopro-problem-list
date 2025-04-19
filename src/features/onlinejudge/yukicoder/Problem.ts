@@ -4,7 +4,6 @@ import type { CommonProblem } from "../interfaces/CommonProblem";
 
 export class YukicoderProblem implements CommonProblem {
 	resource = Resource.YUKICODER;
-	contestId = "0";
 	problemId: string;
 	name: string;
 
@@ -20,7 +19,7 @@ export class YukicoderProblem implements CommonProblem {
 	getProblemKey() {
 		return createProblemKey({
 			resource: this.getResource(),
-			contestId: this.contestId,
+			contestId: "0",
 			problemId: this.problemId,
 		});
 	}

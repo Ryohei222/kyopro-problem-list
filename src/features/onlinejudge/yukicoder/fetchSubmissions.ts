@@ -15,7 +15,6 @@ export async function fetchYukicoderSubmissions(
 	return data.map((submission) => ({
 		submissionId: submission.No.toString(),
 		resource: Resource.YUKICODER,
-		contestId: "0",
 		problemId: submission.No.toString(),
 		verdict: "AC",
 		submittedAt: new Date(submission.Date),

@@ -3,7 +3,7 @@ import type { Resource } from "@prisma/client";
 
 export interface CommonProblem {
 	resource: Resource;
-	contestId: string;
+	contestId?: string;
 	problemId: string;
 	name: string;
 	getResource(): Resource;
