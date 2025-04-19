@@ -25,7 +25,7 @@ export class AtcoderProblem
 		this.resource = Resource.ATCODER;
 		this.contestId = contest_id;
 		this.problemId = id;
-		this.name = title;
+		this.name = name;
 		this.contestName = contest_title;
 		this.difficulty = difficulty;
 	}
