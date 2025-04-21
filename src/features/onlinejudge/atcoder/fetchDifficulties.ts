@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { fetchApi } from "../../externalapi/fetchApi";
+import { fetchApi } from "../utils/fetchApi";
 import { ATCODER_API_URL } from "./constants";
 
 const AtcoderDifficultySchema = z.object({

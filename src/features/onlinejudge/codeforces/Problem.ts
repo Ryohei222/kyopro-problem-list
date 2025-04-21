@@ -45,4 +45,15 @@ export class CodeforcesProblem
 	Difficulty(): number | undefined {
 		return this.rating;
 	}
+
+	Unpack() {
+		return {
+			contestId: this.contestId,
+			name: this.name,
+			contestName: this.contestName,
+			index: this.index,
+			points: this.points,
+			rating: this.rating,
+		};
+	}
 }

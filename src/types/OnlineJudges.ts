@@ -24,3 +24,10 @@ export const Yukicoder: OnlineJudge = {
 	fetchProblems: fetchYukicoderProblems,
 	fetchSubmissions: fetchYukicoderSubmissions,
 };
+
+export const OnlineJudges = {
+	Atcoder,
+	Aoj,
+	Codeforces,
+	Yukicoder,
+} as const;

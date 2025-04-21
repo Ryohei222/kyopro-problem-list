@@ -75,9 +75,12 @@ export async function fetchMofeProblems(): Promise<MofeProblem[]> {
 				(problem) =>
 					new MofeProblem(
 						problem.slug,
-						contest.slug,
 						problem.name,
-						contest.name,
+						problem.position,
+						problem.difficulty,
+						problem.points,
+						contestDetail.slug,
+						contestDetail.name,
 					),
 			),
 		);

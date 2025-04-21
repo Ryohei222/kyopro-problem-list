@@ -3,7 +3,7 @@ import { Resource } from "@prisma/client";
 import { type DBSchema, openDB } from "idb";
 import z from "zod";
 
-import { fetchApi } from "../../externalapi/fetchApi";
+import { fetchApi } from "../utils/fetchApi";
 import { ATCODER_API_URL } from "./constants";
 
 const AtcoderSubmissionSchema = z.object({

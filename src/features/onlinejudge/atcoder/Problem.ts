@@ -37,4 +37,13 @@ export class AtcoderProblem
 	Difficulty() {
 		return this.difficulty;
 	}
+	Unpack() {
+		return {
+			id: this.id,
+			contestId: this.contestId,
+			name: this.name,
+			contestName: this.contestName,
+			difficulty: this.difficulty,
+		};
+	}
 }

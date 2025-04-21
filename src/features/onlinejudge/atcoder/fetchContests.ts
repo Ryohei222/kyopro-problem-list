@@ -1,4 +1,4 @@
-import { fetchApi } from "../../externalapi/fetchApi";
+import { fetchApi } from "../utils/fetchApi";
 import { ATCODER_API_URL } from "./constants";
 
 import { z } from "zod";

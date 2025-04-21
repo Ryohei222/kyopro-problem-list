@@ -26,4 +26,12 @@ export class AojProblem implements CommonProblem {
 	Url() {
 		return `https://onlinejudge.u-aizu.ac.jp/problems/${this.id}`;
 	}
+
+	Unpack() {
+		return {
+			name: this.name,
+			id: this.id,
+			maxScore: this.maxScore,
+		};
+	}
 }

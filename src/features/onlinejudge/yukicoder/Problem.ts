@@ -26,4 +26,13 @@ export class YukicoderProblem implements CommonProblem {
 	Url() {
 		return `https://yukicoder.me/problems/no/${this.No}`;
 	}
+
+	Unpack() {
+		return {
+			No: this.No,
+			ProblemId: this.ProblemId,
+			Title: this._Title,
+			Level: this.Level,
+		};
+	}
 }
