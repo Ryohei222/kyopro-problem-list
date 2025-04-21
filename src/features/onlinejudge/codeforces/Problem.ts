@@ -8,10 +8,10 @@ export class CodeforcesProblem
 	implements CommonProblem, CommonContest, GetDifficulty
 {
 	constructor(
-		public readonly contestId: number,
-		public readonly name: string,
-		public readonly contestName: string,
 		public readonly index: string,
+		public readonly name: string,
+		public readonly contestId: number,
+		public readonly contestName: string,
 		public readonly points: number | undefined,
 		public readonly rating: number | undefined,
 	) {}
@@ -55,5 +55,13 @@ export class CodeforcesProblem
 			points: this.points,
 			rating: this.rating,
 		};
+	}
+
+	Stringify(): string {
+		return `${this.resource}-${this.contestId}-${this.index}-${this.name}`;
+	}
+
+	Equals(other: CommonProblem): boolean {
+		return this.Stringify() === other.Stringify();
 	}
 }

@@ -15,6 +15,7 @@ export class AtcoderProblem
 		private readonly contestName: string,
 		private readonly difficulty?: number | undefined,
 	) {}
+
 	ProblemKey() {
 		return createProblemKey({
 			resource: this.resource,
@@ -45,5 +46,13 @@ export class AtcoderProblem
 			contestName: this.contestName,
 			difficulty: this.difficulty,
 		};
+	}
+
+	Stringify(): string {
+		return `${this.resource}-${this.contestId}-${this.id}-${this.name}-${this.contestName}-${this.difficulty}`;
+	}
+
+	Equals(other: CommonProblem): boolean {
+		return this.Stringify() === other.Stringify();
 	}
 }

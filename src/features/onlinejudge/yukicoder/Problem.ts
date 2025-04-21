@@ -35,4 +35,12 @@ export class YukicoderProblem implements CommonProblem {
 			Level: this.Level,
 		};
 	}
+
+	Stringify(): string {
+		return `${this.resource}-${this.No}-${this._Title}-${this.Level}`;
+	}
+
+	Equals(other: CommonProblem): boolean {
+		return this.Stringify() === other.Stringify();
+	}
 }

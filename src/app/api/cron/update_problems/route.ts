@@ -1,5 +1,4 @@
-import { OnlineJudges } from "@/types/OnlineJudges";
-import { Resource } from "@prisma/client";
+import { OnlineJudgeProblemUpdaters } from "@/features/onlinejudge/OnlineJudges";
 import { type NextRequest, NextResponse } from "next/server";
 
 export const maxDuration = 60; // seconds
@@ -15,27 +14,17 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 		});
 	}
 
-	for (const oj of Object.values(OnlineJudges)) {
-		const problems = await oj.fetchProblems();
-		await oj.updateProblems(problems);
-	}
-
-	// const problems: CreatedProblem[] = [];
-
-	// for (const resource of Object.values(Resource)) {
-	// 	if (resource === Resource.MOFE) {
-	// 		continue;
-	// 	}
-	// 	const fetchedProblems = await getProblems(resource);
-	// 	const insertedProblems = await updateProblems(fetchedProblems);
-	// 	problems.push(...insertedProblems);
-	// }
-
-	// const fetchedMOFEProblems = await getMofeProblems();
-	// const result = await updateProblems(fetchedMOFEProblems);
+	const results = await Promise.all(
+		Object.values(OnlineJudgeProblemUpdaters).map((oj) =>
+			oj.fetchAndUpdateProblems(),
+		),
+	);
 
 	return NextResponse.json({
 		success: true,
-		createdProblems: [...problems, ...result],
+		results: results.map((result) => ({
+			newProblems: result.newProblems,
+			updatedProblems: result.updatedProblems,
+		})),
 	});
 }

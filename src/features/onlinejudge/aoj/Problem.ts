@@ -29,9 +29,17 @@ export class AojProblem implements CommonProblem {
 
 	Unpack() {
 		return {
-			name: this.name,
 			id: this.id,
+			name: this.name,
 			maxScore: this.maxScore,
 		};
+	}
+
+	Stringify(): string {
+		return `${this.resource}-${this.id}-${this.name}-${this.maxScore}`;
+	}
+
+	Equals(other: CommonProblem) {
+		return this.Stringify() === other.Stringify();
 	}
 }

@@ -1,16 +1,17 @@
 import { prisma } from "@/prisma";
-import { createProblemIds } from "../../db/createProblemIds";
+import type { ProblemWithCommonId } from "../../interfaces/ProblemWithCommonId";
 import type { AtcoderProblem } from "../Problem";
 
 export async function createAtcoderProblems(
-	problems: AtcoderProblem[],
-): Promise<AtcoderProblem[]> {
-	const newIds = await createProblemIds(problems.length);
-	await prisma.atcoderProblem.createMany({
-		data: problems.map((problem, index) => ({
-			commonProblemId: newIds[index],
-			...problem.Unpack(),
-		})),
+	newProblems: ProblemWithCommonId<AtcoderProblem>[],
+) {
+	await prisma.$transaction(async () => {
+		await prisma.atcoderProblem.createMany({
+			data: newProblems.map((problem) => ({
+				commonProblemId: problem.commonProblemId,
+				...problem.problem.Unpack(),
+			})),
+		});
+		return newProblems;
 	});
-	return problems;
 }

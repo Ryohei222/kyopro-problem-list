@@ -25,4 +25,6 @@ export interface CommonProblem {
 	Title(): string;
 	Url(): string;
 	ProblemKey(): ProblemKey;
+	Stringify(): string;
+	Equals(other: CommonProblem): boolean;
 }
