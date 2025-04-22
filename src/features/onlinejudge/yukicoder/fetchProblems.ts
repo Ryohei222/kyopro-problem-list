@@ -24,10 +24,12 @@ export async function fetchYukicoderProblems(): Promise<YukicoderProblem[]> {
 		YukicoderProblemsApiSchema,
 	);
 	return data
-		.map((p) =>
-			p?.No
-				? new YukicoderProblem(p.No, p.ProblemId, p.Title, p.Level)
-				: undefined,
-		)
+		.map((p) => {
+			if (p.No === null) return undefined;
+			return new YukicoderProblem({
+				...p,
+				No: p.No,
+			});
+		})
 		.filter((p) => p !== undefined);
 }

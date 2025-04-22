@@ -41,6 +41,7 @@ export abstract class ProblemUpdater<T extends CommonProblem>
 
 		return await prisma.$transaction(async () => {
 			const newProblemIds = await createProblemIds(newProblems.length);
+			console.log(newProblemIds);
 			await this.createProblems(
 				newProblems.map((problem, index) => ({
 					commonProblemId: newProblemIds[index],
@@ -48,6 +49,7 @@ export abstract class ProblemUpdater<T extends CommonProblem>
 				})),
 			);
 
+			console.log(problemsToUpdate);
 			await this.updateProblems(
 				problemsToUpdate.map((problem) => {
 					const existingProblem = existingProblemsMap.get(problem.ProblemKey());

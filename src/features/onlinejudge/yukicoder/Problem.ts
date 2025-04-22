@@ -4,12 +4,26 @@ import type { CommonProblem } from "../../../types/CommonProblem";
 
 export class YukicoderProblem implements CommonProblem {
 	public readonly resource = Resource.YUKICODER;
-	constructor(
-		private No: number,
-		private ProblemId: number,
-		private _Title: string,
-		private Level: number,
-	) {}
+	private No: number;
+	private ProblemId: number;
+	private _Title: string;
+	private Level: number;
+	constructor({
+		No,
+		ProblemId,
+		Title,
+		Level,
+	}: {
+		No: number;
+		ProblemId: number;
+		Title: string;
+		Level: number;
+	}) {
+		this.No = No;
+		this.ProblemId = ProblemId;
+		this._Title = Title;
+		this.Level = Level;
+	}
 
 	ProblemKey() {
 		return createProblemKey({

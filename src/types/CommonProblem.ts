@@ -1,3 +1,8 @@
+import type { AojProblem } from "@/features/onlinejudge/aoj/Problem";
+import type { AtcoderProblem } from "@/features/onlinejudge/atcoder/Problem";
+import type { CodeforcesProblem } from "@/features/onlinejudge/codeforces/Problem";
+import type { MofeProblem } from "@/features/onlinejudge/mofe/Problem";
+import type { YukicoderProblem } from "@/features/onlinejudge/yukicoder/Problem";
 import type { prisma } from "@/prisma";
 import type { Resource } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
@@ -28,3 +33,10 @@ export interface CommonProblem {
 	Stringify(): string;
 	Equals(other: CommonProblem): boolean;
 }
+
+export type OnlineJudgeProblem =
+	| AojProblem
+	| AtcoderProblem
+	| CodeforcesProblem
+	| MofeProblem
+	| YukicoderProblem;

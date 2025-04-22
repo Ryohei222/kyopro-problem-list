@@ -9,14 +9,11 @@ export async function readCodeforcesProblems(): Promise<
 	return dbProblems.map((problem) => {
 		return {
 			commonProblemId: problem.commonProblemId,
-			problem: new CodeforcesProblem(
-				problem.index,
-				problem.name,
-				problem.contestId,
-				problem.contestName,
-				problem.points ?? undefined,
-				problem.rating ?? undefined,
-			),
+			problem: new CodeforcesProblem({
+				...problem,
+				points: problem.points ?? undefined,
+				rating: problem.rating ?? undefined,
+			}),
 		};
 	});
 }

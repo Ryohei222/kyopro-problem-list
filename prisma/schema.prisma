@@ -142,7 +142,7 @@ model CodeforcesProblem {
 model MofeProblem {
   slug            String
   name            String
-  positon         String
+  position        String
   difficulty      String
   points          Int
   contestSlug     String

@@ -29,5 +29,5 @@ export async function fetchAojProblems(): Promise<AojProblem[]> {
 		`${AOJ_API_URL}/problems?size=100000`,
 		AojProblemsApiSchema,
 	);
-	return problems.map((p) => new AojProblem(p.name, p.id, p.maxScore));
+	return problems.map((p) => new AojProblem(p));
 }

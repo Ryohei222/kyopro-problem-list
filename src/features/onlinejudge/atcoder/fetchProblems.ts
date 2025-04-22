@@ -44,15 +44,16 @@ export async function fetchAtcoderProblems(): Promise<AtcoderProblem[]> {
 	).then((problems) => {
 		return problems.map((problem) => {
 			const difficulty = difficulties.get(problem.id);
-			return new AtcoderProblem(
-				problem.id,
-				problem.contest_id,
-				problem.name,
-				contests.get(problem.contest_id) ?? "",
-				difficulty !== undefined
-					? correctAtcoderDifficulty(difficulty)
-					: undefined,
-			);
+			return new AtcoderProblem({
+				contestName: contests.get(problem.contest_id) ?? "",
+				difficulty:
+					difficulty !== undefined
+						? correctAtcoderDifficulty(difficulty)
+						: undefined,
+				contestId: problem.contest_id,
+				id: problem.id,
+				name: problem.name,
+			});
 		});
 	});
 }

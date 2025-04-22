@@ -9,7 +9,7 @@ export async function readAojProblems(): Promise<
 	return dbProblems.map((problem) => {
 		return {
 			commonProblemId: problem.commonProblemId,
-			problem: new AojProblem(problem.name, problem.id, problem.maxScore),
+			problem: new AojProblem(problem),
 		};
 	});
 }

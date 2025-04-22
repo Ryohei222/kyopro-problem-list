@@ -2,22 +2,33 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import type { AojProblem } from "@/features/onlinejudge/aoj/Problem";
+import type { AtcoderProblem } from "@/features/onlinejudge/atcoder/Problem";
+import type { CodeforcesProblem } from "@/features/onlinejudge/codeforces/Problem";
+import type { MofeProblem } from "@/features/onlinejudge/mofe/Problem";
+import type { YukicoderProblem } from "@/features/onlinejudge/yukicoder/Problem";
 import useProblems from "@/hooks/useProblems";
-import type { CommonProblem } from "@/types/CommonProblem";
+import type { CommonProblem, OnlineJudgeProblem } from "@/types/CommonProblem";
 import { createProblemKey } from "@/types/CommonProblem";
 import extractProblemFromUrl from "@/utils/extractProblemFromUrl";
 import getResourceName from "@/utils/getResourceName";
-import type { Resource } from "@prisma/client";
 import { Label } from "@radix-ui/react-label";
 import { Plus } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import type { ProblemListRecordResponse } from "../../../../features/problemlist/types/ProblemLists";
 
+type Problem =
+	| AojProblem
+	| AtcoderProblem
+	| CodeforcesProblem
+	| MofeProblem
+	| YukicoderProblem;
+
 function searchProblemFromUrl(
 	url: string,
-	problems: CommonProblem[],
-): CommonProblem | null {
+	problems: OnlineJudgeProblem[],
+): OnlineJudgeProblem | null {
 	const extractedProblem = extractProblemFromUrl(url);
 	if (!extractedProblem) {
 		return null;
@@ -27,7 +38,7 @@ function searchProblemFromUrl(
 	}
 	const ret =
 		problems.find(
-			(p) => createProblemKey(p) === createProblemKey(extractedProblem),
+			(p) => p.ProblemKey() === createProblemKey(extractedProblem),
 		) || null;
 	return ret;
 }
@@ -61,12 +72,9 @@ export default function AddProblemForm({
 	const [error, setError] = useState<string | null>(null);
 	const [showForm, setShowForm] = useState(false);
 
-	const [previewProblem, setPreviewProblem] = useState<{
-		name: string;
-		resource: Resource;
-		contestId: string;
-		problemId: string;
-	} | null>(null);
+	const [previewProblem, setPreviewProblem] = useState<CommonProblem | null>(
+		null,
+	);
 
 	const resetForm = () => {
 		setUrl("");
@@ -95,7 +103,7 @@ export default function AddProblemForm({
 		}
 
 		const isDuplicate = existingProblems.some(
-			(p) => createProblemKey(p.problem) === createProblemKey(problem),
+			(p) => p.problem.ProblemKey() === problem.ProblemKey(),
 		);
 		if (isDuplicate) {
 			setPreviewProblem(null);
@@ -121,7 +129,7 @@ export default function AddProblemForm({
 
 		// 問題が既に追加されているか確認
 		const isDuplicate = existingProblems.some(
-			(p) => createProblemKey(p.problem) === createProblemKey(problem),
+			(p) => p.problem.ProblemKey() === problem.ProblemKey(),
 		);
 		if (isDuplicate) {
 			setError("この問題は既にリストに追加されています");
@@ -132,10 +140,7 @@ export default function AddProblemForm({
 		const newProblemOrder = existingProblems.length + 1;
 		// 問題を追加
 		onAddProblem({
-			problem: {
-				...problem,
-				difficulty: 0,
-			},
+			problem,
 			memo,
 			hint,
 			order: newProblemOrder,
@@ -194,14 +199,11 @@ export default function AddProblemForm({
 						<div className="text-sm">
 							<div>
 								<span className="font-semibold">タイトル:</span>{" "}
-								{previewProblem.name}
+								{previewProblem.Title()}
 							</div>
 							<div>
 								<span className="font-semibold">出典:</span>{" "}
-								{getResourceName(previewProblem.resource)}{" "}
-								{previewProblem.contestId !== "0"
-									? `${previewProblem.contestId} - ${previewProblem.problemId}`
-									: ""}
+								{getResourceName(previewProblem.resource)}
 							</div>
 						</div>
 					</div>

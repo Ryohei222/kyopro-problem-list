@@ -1,7 +1,8 @@
 import { TableCell, TableRow } from "@/components/ui/table";
-import { buildProblemUrl } from "@/utils/buildProblemUrl";
 import { getProblemDifficultyColor } from "@/utils/getProblemDifficultyColor";
 import getResourceName from "@/utils/getResourceName";
+import { hasContest } from "@/utils/hasContest";
+import { hasDifficulty } from "@/utils/hasDifficulty";
 import Image from "next/image";
 import { useState } from "react";
 import type { ProblemListRecordResponse } from "../../../../features/problemlist/types/ProblemLists";
@@ -63,21 +64,28 @@ function ProblemNamesCell({
 }) {
 	return (
 		<TableCell>
-			<a
-				href={buildProblemUrl(problem)}
-				target="_blank"
-				rel="noopener noreferrer"
-				className="flex items-center space-x-2"
-			>
-				<div>
-					<div className="font-medium">{problem.name}</div>
-					<div className="text-xs text-gray-500">
-						{problem.contestName
-							? problem.contestName
-							: getResourceName(problem.resource)}
+			<div className="flex items-center space-x-2">
+				<a href={problem.Url()} target="_blank" rel="noopener noreferrer">
+					<div>
+						<div className="font-medium">{problem.Title()}</div>
 					</div>
-				</div>
-			</a>
+				</a>
+				{hasContest(problem) ? (
+					<a
+						href={problem.ContestUrl()}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						<div className="text-xs text-gray-500">
+							{problem.ContestTitle()}
+						</div>
+					</a>
+				) : (
+					<div className="text-xs text-gray-500">
+						{getResourceName(problem.resource)}
+					</div>
+				)}
+			</div>
 		</TableCell>
 	);
 }
@@ -93,7 +101,7 @@ function DifficultyCell({
 				className="font-mono text-sm text-center"
 				style={{ color: getProblemDifficultyColor(problem) }}
 			>
-				{problem.difficulty ? problem.difficulty : "-"}
+				{hasDifficulty(problem) ? problem.Difficulty() : "-"}
 			</div>
 		</TableCell>
 	);

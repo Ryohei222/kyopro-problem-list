@@ -5,7 +5,7 @@ import type { CodeforcesProblem } from "../Problem";
 export async function updateCodeforcesProblems(
 	existingProblems: ProblemWithCommonId<CodeforcesProblem>[],
 ) {
-	await prisma.$transaction(
+	await Promise.all(
 		existingProblems.map((problem) => {
 			return prisma.codeforcesProblem.update({
 				data: {

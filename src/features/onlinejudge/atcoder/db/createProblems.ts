@@ -5,13 +5,10 @@ import type { AtcoderProblem } from "../Problem";
 export async function createAtcoderProblems(
 	newProblems: ProblemWithCommonId<AtcoderProblem>[],
 ) {
-	await prisma.$transaction(async () => {
-		await prisma.atcoderProblem.createMany({
-			data: newProblems.map((problem) => ({
-				commonProblemId: problem.commonProblemId,
-				...problem.problem.Unpack(),
-			})),
-		});
-		return newProblems;
+	await prisma.atcoderProblem.createMany({
+		data: newProblems.map((problem) => ({
+			commonProblemId: problem.commonProblemId,
+			...problem.problem.Unpack(),
+		})),
 	});
 }

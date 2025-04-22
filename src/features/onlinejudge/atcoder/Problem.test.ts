@@ -1,13 +1,13 @@
 import { describe, expect, test } from "vitest";
 import { AtcoderProblem } from "./Problem";
 
-const problem = new AtcoderProblem(
-	"abc123_a",
-	"abc123",
-	"Five Antennas",
-	"AtCoder Beginner Contest 123",
-	31,
-);
+const problem = new AtcoderProblem({
+	id: "abc123_a",
+	contestId: "abc123",
+	name: "Five Antennas",
+	contestName: "AtCoder Beginner Contest 123",
+	difficulty: 31,
+});
 
 describe("AtcoderProblem", () => {
 	test("Title", () => {

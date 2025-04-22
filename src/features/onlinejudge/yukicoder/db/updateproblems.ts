@@ -5,7 +5,7 @@ import type { YukicoderProblem } from "../Problem";
 export async function updateYukicoderProblems(
 	existingProblems: ProblemWithCommonId<YukicoderProblem>[],
 ) {
-	await prisma.$transaction(
+	await Promise.all(
 		existingProblems.map((problem) => {
 			return prisma.yukicoderProblem.update({
 				data: {

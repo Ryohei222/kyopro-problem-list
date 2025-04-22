@@ -5,13 +5,10 @@ import type { CodeforcesProblem } from "../Problem";
 export async function createCodeforcesProblems(
 	newProblems: ProblemWithCommonId<CodeforcesProblem>[],
 ) {
-	await prisma.$transaction(async () => {
-		await prisma.codeforcesProblem.createMany({
-			data: newProblems.map((problem) => ({
-				commonProblemId: problem.commonProblemId,
-				...problem.problem.Unpack(),
-			})),
-		});
-		return newProblems;
+	await prisma.codeforcesProblem.createMany({
+		data: newProblems.map((problem) => ({
+			commonProblemId: problem.commonProblemId,
+			...problem.problem.Unpack(),
+		})),
 	});
 }

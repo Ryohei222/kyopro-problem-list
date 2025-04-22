@@ -7,7 +7,6 @@ import {
 	useYukicoderSubmissions,
 } from "@/hooks/useSubmissions";
 import { type ProblemKey, createProblemKey } from "@/types/CommonProblem";
-import { User } from "@prisma/client";
 import { useEffect, useState } from "react";
 import type { ProblemListRecordResponse } from "../../../../features/problemlist/types/ProblemLists";
 
@@ -57,7 +56,12 @@ export function ProblemListWithIdsForm({
 			yukicoderSubmissions || [],
 		].flat();
 		const acSet = new Set<ProblemKey>(
-			submissions.map((submission) => createProblemKey(submission)),
+			submissions.map((submission) =>
+				createProblemKey({
+					...submission,
+					contestId: submission.contestId ?? "0",
+				}),
+			),
 		);
 		setAcProblems(acSet);
 	}, [
@@ -155,7 +159,7 @@ export function ProblemListWithIdsForm({
 			<ProblemList
 				problemListRecords={problemListRecords.map((problemListRecord) => ({
 					...problemListRecord,
-					isSolved: acProblems.has(createProblemKey(problemListRecord.problem)),
+					isSolved: acProblems.has(problemListRecord.problem.ProblemKey()),
 				}))}
 			/>
 		</div>

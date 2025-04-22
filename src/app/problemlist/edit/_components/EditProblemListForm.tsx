@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import useProblems from "@/hooks/useProblems";
-import { buildProblemUrl } from "@/utils/buildProblemUrl";
 import { ExternalLink, GripVertical, Save, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
@@ -32,7 +31,6 @@ import {
 	type createProblemKeyProps,
 } from "@/types/CommonProblem";
 import getResourceName from "@/utils/getResourceName";
-import { set } from "zod";
 import { updateProblemList } from "../../../../features/problemlist/db/updateProblemList";
 import type {
 	ProblemListRecordResponse,
@@ -87,7 +85,7 @@ export default function EditProblemListForm({
 	// 問題IDから問題の詳細情報を取得
 	const getProblemDetails = (problem: createProblemKeyProps) => {
 		const result = allProblems.find(
-			(p) => createProblemKey(p) === createProblemKey(problem),
+			(p) => p.ProblemKey() === createProblemKey(problem),
 		);
 		return result || null;
 	};

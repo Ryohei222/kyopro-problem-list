@@ -4,12 +4,19 @@ import type { CommonProblem } from "../../../types/CommonProblem";
 
 export class AojProblem implements CommonProblem {
 	public readonly resource = Resource.AOJ;
+	private readonly name: string;
+	private readonly id: string;
+	private readonly maxScore: number;
 
-	constructor(
-		private readonly name: string,
-		private readonly id: string,
-		private readonly maxScore: number,
-	) {}
+	constructor({
+		name,
+		id,
+		maxScore,
+	}: { name: string; id: string; maxScore: number }) {
+		this.name = name;
+		this.id = id;
+		this.maxScore = maxScore;
+	}
 
 	ProblemKey() {
 		return createProblemKey({

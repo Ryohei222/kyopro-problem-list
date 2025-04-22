@@ -1,16 +1,14 @@
 import { prisma } from "@/prisma";
-import { createProblemIds } from "../../db/createProblemIds";
+import type { ProblemWithCommonId } from "../../interfaces/ProblemWithCommonId";
 import type { MofeProblem } from "../Problem";
 
 export async function createMofeProblems(
-	problems: MofeProblem[],
-): Promise<MofeProblem[]> {
-	const ids = await createProblemIds(problems.length);
+	newProblems: ProblemWithCommonId<MofeProblem>[],
+) {
 	await prisma.mofeProblem.createMany({
-		data: problems.map((problem, index) => ({
-			commonProblemId: ids[index],
-			...problem.Unpack(),
+		data: newProblems.map((problem) => ({
+			commonProblemId: problem.commonProblemId,
+			...problem.problem.Unpack(),
 		})),
 	});
-	return problems;
 }

@@ -9,12 +9,7 @@ export async function readYukicoderProblems(): Promise<
 	return dbProblems.map((problem) => {
 		return {
 			commonProblemId: problem.commonProblemId,
-			problem: new YukicoderProblem(
-				problem.No,
-				problem.ProblemId,
-				problem.Title,
-				problem.Level,
-			),
+			problem: new YukicoderProblem(problem),
 		};
 	});
 }

@@ -38,13 +38,11 @@ export async function fetchCodeforcesProblems(): Promise<CodeforcesProblem[]> {
 	);
 	return data.result.problems.map(
 		(p) =>
-			new CodeforcesProblem(
-				p.index,
-				p.name,
-				p.contestId,
-				contestMap.get(p.contestId) ?? "",
-				p.points ?? undefined,
-				p.rating ?? undefined,
-			),
+			new CodeforcesProblem({
+				...p,
+				contestName: contestMap.get(p.contestId) ?? "",
+				points: p.points ?? undefined,
+				rating: p.rating ?? undefined,
+			}),
 	);
 }

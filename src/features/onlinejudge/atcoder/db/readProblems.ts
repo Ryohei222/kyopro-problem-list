@@ -8,12 +8,9 @@ export async function readAtcoderProblems(): Promise<
 	const entries = await prisma.atcoderProblem.findMany({});
 	return entries.map((entry) => ({
 		commonProblemId: entry.commonProblemId,
-		problem: new AtcoderProblem(
-			entry.id,
-			entry.contestId,
-			entry.name,
-			entry.contestName,
-			entry.difficulty ?? undefined,
-		),
+		problem: new AtcoderProblem({
+			...entry,
+			difficulty: entry.difficulty ?? undefined,
+		}),
 	}));
 }

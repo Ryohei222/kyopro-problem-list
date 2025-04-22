@@ -5,16 +5,10 @@ import type { YukicoderProblem } from "../Problem";
 export async function createYukicoderProblems(
 	existingProblems: ProblemWithCommonId<YukicoderProblem>[],
 ) {
-	await prisma.$transaction(
-		existingProblems.map((problem) => {
-			return prisma.yukicoderProblem.update({
-				data: {
-					...problem.problem.Unpack(),
-				},
-				where: {
-					commonProblemId: problem.commonProblemId,
-				},
-			});
-		}),
-	);
+	await prisma.yukicoderProblem.createMany({
+		data: existingProblems.map((problem) => ({
+			...problem.problem.Unpack(),
+			commonProblemId: problem.commonProblemId,
+		})),
+	});
 }

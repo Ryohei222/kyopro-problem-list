@@ -7,14 +7,34 @@ import type { GetDifficulty } from "../../../types/GetDifficulty";
 export class CodeforcesProblem
 	implements CommonProblem, CommonContest, GetDifficulty
 {
-	constructor(
-		public readonly index: string,
-		public readonly name: string,
-		public readonly contestId: number,
-		public readonly contestName: string,
-		public readonly points: number | undefined,
-		public readonly rating: number | undefined,
-	) {}
+	public readonly index: string;
+	public readonly name: string;
+	public readonly contestId: number;
+	public readonly contestName: string;
+	public readonly points: number | undefined;
+	public readonly rating: number | undefined;
+	constructor({
+		index,
+		name,
+		contestId,
+		contestName,
+		points,
+		rating,
+	}: {
+		index: string;
+		name: string;
+		contestId: number;
+		contestName: string;
+		points?: number | undefined;
+		rating?: number | undefined;
+	}) {
+		this.index = index;
+		this.name = name;
+		this.contestId = contestId;
+		this.contestName = contestName;
+		this.points = points;
+		this.rating = rating;
+	}
 
 	public readonly resource = Resource.CODEFORCES;
 

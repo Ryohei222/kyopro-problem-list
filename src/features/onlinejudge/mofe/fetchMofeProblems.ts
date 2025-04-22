@@ -73,15 +73,11 @@ export async function fetchMofeProblems(): Promise<MofeProblem[]> {
 		problems.push(
 			...contestDetail.tasks.map(
 				(problem) =>
-					new MofeProblem(
-						problem.slug,
-						problem.name,
-						problem.position,
-						problem.difficulty,
-						problem.points,
-						contestDetail.slug,
-						contestDetail.name,
-					),
+					new MofeProblem({
+						...problem,
+						contestSlug: contestDetail.slug,
+						contestName: contestDetail.name,
+					}),
 			),
 		);
 		await new Promise((resolve) => setTimeout(resolve, 1000));

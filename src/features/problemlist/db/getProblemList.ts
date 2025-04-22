@@ -1,4 +1,5 @@
 import { prisma } from "@/prisma";
+import { transformProblem } from "@/utils/transformProblem";
 
 export const getProblemList = async (problemListId: string) => {
 	const problemSet = await prisma.problemList.findUnique({
@@ -17,12 +18,14 @@ export const getProblemList = async (problemListId: string) => {
 				select: {
 					problem: {
 						select: {
-							resource: true,
-							contestId: true,
-							problemId: true,
-							name: true,
-							difficulty: true,
-							contestName: true,
+							id: true,
+						},
+						include: {
+							AojProblem: {},
+							AtcoderProblem: {},
+							CodeforcesProblem: {},
+							MofeProblem: {},
+							YukicoderProblem: {},
 						},
 					},
 					memo: true,
@@ -43,5 +46,17 @@ export const getProblemList = async (problemListId: string) => {
 			id: problemListId,
 		},
 	});
-	return problemSet;
+	if (!problemSet) {
+		return undefined;
+	}
+	const problemListRecords = problemSet.problemListRecords.map((record) => {
+		const problem = record.problem;
+		return {
+			problem: transformProblem(problem),
+			memo: record.memo,
+			hint: record.hint,
+			order: record.order,
+		};
+	});
+	return { ...problemSet, problemListRecords };
 };

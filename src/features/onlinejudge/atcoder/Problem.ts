@@ -8,13 +8,30 @@ export class AtcoderProblem
 	implements CommonProblem, CommonContest, GetDifficulty
 {
 	resource: Resource = Resource.ATCODER;
-	constructor(
-		private readonly id: string,
-		private readonly contestId: string,
-		private readonly name: string,
-		private readonly contestName: string,
-		private readonly difficulty?: number | undefined,
-	) {}
+	private readonly id: string;
+	private readonly contestId: string;
+	private readonly name: string;
+	private readonly contestName: string;
+	private readonly difficulty?: number | undefined;
+	constructor({
+		id,
+		contestId,
+		name,
+		contestName,
+		difficulty,
+	}: {
+		id: string;
+		contestId: string;
+		name: string;
+		contestName: string;
+		difficulty?: number | undefined;
+	}) {
+		this.id = id;
+		this.contestId = contestId;
+		this.name = name;
+		this.contestName = contestName;
+		this.difficulty = difficulty;
+	}
 
 	ProblemKey() {
 		return createProblemKey({
