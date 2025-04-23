@@ -1,8 +1,8 @@
-import { Resource } from "@prisma/client";
 import { z } from "zod";
-import type { CommonSubmission } from "../../../types/CommonSubmission";
 import { fetchApi } from "../utils/fetchApi";
 import { YUKICODER_API_URL } from "./constants";
+
+import { YukicoderSubmission } from "./Submission";
 
 const YukicoderSubmissionSchema = z.object({
 	No: z.number(),
@@ -20,17 +20,17 @@ const YukicoderSubmissionsApiSchema = z.array(YukicoderSubmissionSchema);
 
 export async function fetchYukicoderSubmissions(
 	userId: string,
-): Promise<CommonSubmission[]> {
+): Promise<YukicoderSubmission[]> {
 	if (!userId) return [];
 	const data = await fetchApi(
 		`${YUKICODER_API_URL}/solved/name/${userId}`,
 		YukicoderSubmissionsApiSchema,
 	);
-	return data.map((submission) => ({
-		submissionId: submission.No.toString(),
-		resource: Resource.YUKICODER,
-		problemId: submission.No.toString(),
-		verdict: "AC",
-		submittedAt: new Date(submission.Date),
-	}));
+	return data.map(
+		(submission) =>
+			new YukicoderSubmission({
+				...submission,
+				_Date: submission.Date,
+			}),
+	);
 }

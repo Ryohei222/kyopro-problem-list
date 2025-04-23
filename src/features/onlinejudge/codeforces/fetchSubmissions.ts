@@ -1,11 +1,10 @@
-import { Resource } from "@prisma/client";
-import type { CommonSubmission } from "../../../types/CommonSubmission";
 import { fetchApi } from "../utils/fetchApi";
+import { CodeforcesSubmission } from "./Submissons";
 import { CODEFORCES_API_URL } from "./constants";
 
 import { z } from "zod";
 
-export const CodeforcesProblemSchema = z.object({
+const CodeforcesProblemSchema = z.object({
 	contestId: z.number(),
 	index: z.string(),
 	name: z.string(),
@@ -15,7 +14,7 @@ export const CodeforcesProblemSchema = z.object({
 	tags: z.array(z.string()),
 });
 
-export const CodeforcesSubmissionSchema = z.object({
+const CodeforcesSubmissionSchema = z.object({
 	id: z.number(),
 	contestId: z.number(),
 	creationTimeSeconds: z.number(),
@@ -29,25 +28,24 @@ export const CodeforcesSubmissionSchema = z.object({
 	memoryConsumedBytes: z.number(),
 });
 
-export const CodeforcesSubmissionsApiSchema = z.object({
+const CodeforcesSubmissionsApiSchema = z.object({
 	status: z.string(),
 	result: z.array(CodeforcesSubmissionSchema),
 });
 
 export async function fetchCodeforcesSubmissions(
 	userId: string,
-): Promise<CommonSubmission[]> {
+): Promise<CodeforcesSubmission[]> {
 	if (!userId) return [];
 	const data = await fetchApi(
 		`${CODEFORCES_API_URL}/user.status?handle=${userId}&count=100000`,
 		CodeforcesSubmissionsApiSchema,
 	);
-	return data.result.map((submission) => ({
-		submissionId: submission.id.toString(),
-		resource: Resource.CODEFORCES,
-		contestId: submission.contestId.toString(),
-		problemId: submission.problem.index,
-		verdict: submission.verdict === "OK" ? "AC" : "WA",
-		submittedAt: new Date(submission.creationTimeSeconds * 1000),
-	}));
+	return data.result.map(
+		(submission) =>
+			new CodeforcesSubmission({
+				...submission.problem,
+				...submission,
+			}),
+	);
 }

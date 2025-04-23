@@ -1,9 +1,7 @@
-import { Resource } from "@prisma/client";
-import type { CommonSubmission } from "../../../types/CommonSubmission";
-import { fetchApi } from "../utils/fetchApi";
-import { AOJ_API_URL } from "./constants";
-
 import { z } from "zod";
+import { fetchApi } from "../utils/fetchApi";
+import { AojSubmission } from "./Submission";
+import { AOJ_API_URL } from "./constants";
 
 const AojSubmissionSchema = z.object({
 	judgeId: z.number(),
@@ -26,17 +24,11 @@ const AojSubmissionsApiSchema = z.array(AojSubmissionSchema);
 
 export async function fetchAojSubmissions(
 	userId: string,
-): Promise<CommonSubmission[]> {
+): Promise<AojSubmission[]> {
 	if (!userId) return [];
 	const submissions = await fetchApi(
 		`${AOJ_API_URL}/solutions/users/${userId}?size=100000`,
 		AojSubmissionsApiSchema,
 	);
-	return submissions.map((submission) => ({
-		submissionId: submission.judgeId.toString(),
-		resource: Resource.AOJ,
-		problemId: submission.problemId,
-		verdict: "AC",
-		submittedAt: new Date(submission.submissionDate),
-	}));
+	return submissions.map((submission) => new AojSubmission(submission));
 }

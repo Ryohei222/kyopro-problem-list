@@ -127,8 +127,7 @@ export default function EditProblemListForm({
 			for (const [i, record] of reorderedProblems.entries()) {
 				const result = ProblemListItemSchema.safeParse({
 					resource: record.problem.resource,
-					contestId: record.problem.contestId,
-					problemId: record.problem.problemId,
+					problem: record.problem,
 					memo: record.memo,
 					hint: record.hint,
 					order: record.order,
@@ -156,8 +155,7 @@ export default function EditProblemListForm({
 				isPublic,
 				problemListRecords: reorderedProblems.map((record) => ({
 					resource: record.problem.resource,
-					contestId: record.problem.contestId,
-					problemId: record.problem.problemId,
+					problem: record.problem,
 					memo: record.memo,
 					hint: record.hint,
 					order: record.order,
@@ -258,12 +256,8 @@ export default function EditProblemListForm({
 											{problems
 												.sort((a, b) => a.order - b.order)
 												.map((record, index) => {
-													const problemDetail = getProblemDetails(
-														record.problem,
-													);
-													const problemUrl = problemDetail
-														? buildProblemUrl({ ...problemDetail })
-														: "#";
+													const problem = record.problem;
+													const problemUrl = problem.Url();
 
 													const isMemoFocused =
 														focusedCell?.index === index &&
@@ -278,7 +272,7 @@ export default function EditProblemListForm({
 															key={index}
 															index={index}
 															moveRow={moveRow}
-															id={record.problem.problemId}
+															id={record.problem.ProblemKey()}
 														>
 															<TableCell>
 																<div className="flex items-center gap-2 max-w-[0px]">

@@ -1,17 +1,18 @@
 import { beforeAll, describe, expect, test } from "vitest";
-import {
-	type AtcoderSubmission,
-	fetchAtcoderSubmissionsFromSecond,
-} from "./fetchSubmissions";
+import { fetchAtcoderSubmissionsFromSecond } from "./fetchSubmissions";
+
+import { AtcoderSubmission } from "./Submission";
 
 let submissons: AtcoderSubmission[] = [];
 
 beforeAll(async () => {
-	submissons = await fetchAtcoderSubmissionsFromSecond("kobaryo222", 0);
+	submissons = (await fetchAtcoderSubmissionsFromSecond("kobaryo222", 0)).map(
+		(submission) => new AtcoderSubmission(submission),
+	);
 });
 
 describe("fetchAtcoderSubmissionsFromSecond", () => {
-	test("fetch submissions sucessfully", () => {
+	test("fetch submissions successfully", () => {
 		expect(submissons.length).toBeGreaterThan(0);
 	});
 });

@@ -1,9 +1,8 @@
-import type { CommonSubmission } from "@/types/CommonSubmission";
-import { Resource } from "@prisma/client";
 import { type DBSchema, openDB } from "idb";
 import z from "zod";
 
 import { fetchApi } from "../utils/fetchApi";
+import { AtcoderSubmission } from "./Submission";
 import { ATCODER_API_URL } from "./constants";
 
 const AtcoderSubmissionSchema = z.object({
@@ -21,12 +20,12 @@ const AtcoderSubmissionSchema = z.object({
 
 const AtcoderSubmissionsApiSchema = z.array(AtcoderSubmissionSchema);
 
-export type AtcoderSubmission = z.infer<typeof AtcoderSubmissionSchema>;
+type AtcoderSubmissionType = z.infer<typeof AtcoderSubmissionSchema>;
 
 interface AtcoderSubmissionDB extends DBSchema {
 	submissions: {
 		key: string;
-		value: AtcoderSubmission;
+		value: AtcoderSubmissionType;
 	};
 }
 
@@ -46,8 +45,8 @@ async function fetchPartialAtcoderSubmissions(
 export async function fetchAtcoderSubmissionsFromSecond(
 	user_id: string,
 	from_second: number,
-	submissions: AtcoderSubmission[] = [],
-): Promise<AtcoderSubmission[]> {
+	submissions: AtcoderSubmissionType[] = [],
+): Promise<AtcoderSubmissionType[]> {
 	const partialSubmissions = await fetchPartialAtcoderSubmissions(
 		user_id,
 		from_second,
@@ -66,7 +65,7 @@ export async function fetchAtcoderSubmissionsFromSecond(
 
 export async function fetchAtcoderSubmissionsWithCache(
 	user_id: string,
-): Promise<CommonSubmission[]> {
+): Promise<AtcoderSubmission[]> {
 	if (!user_id) return [];
 	const db = await openDB<AtcoderSubmissionDB>(
 		`atcoder-submissions-${user_id}`,
@@ -93,14 +92,7 @@ export async function fetchAtcoderSubmissionsWithCache(
 	}
 	return db.getAll("submissions").then((submissions) => {
 		return submissions.map((submission) => {
-			return {
-				submissionId: submission.id.toString(),
-				resource: Resource.ATCODER,
-				contestId: submission.contest_id,
-				problemId: submission.problem_id,
-				verdict: submission.result === "AC" ? "AC" : "WA",
-				submittedAt: new Date(submission.epoch_second * 1000),
-			} satisfies CommonSubmission;
+			return new AtcoderSubmission(submission);
 		});
 	});
 }
