@@ -1,17 +1,17 @@
 import { createProblemKey } from "@/types/CommonProblem";
-import { Resource } from "@prisma/client";
+import type { Resource } from "@prisma/client";
 import type { CommonContest } from "../../../types/CommonContest";
 import type { CommonProblem } from "../../../types/CommonProblem";
 
 export class MofeProblem implements CommonProblem, CommonContest {
-	public readonly resource: Resource = Resource.MOFE;
-	private slug: string;
-	private name: string;
-	private position: string;
-	private difficulty: string;
-	private points: number;
-	private contestSlug: string;
-	private contestName: string;
+	public readonly resource: Resource = "MOFE";
+	public readonly slug: string;
+	private readonly name: string;
+	private readonly position: string;
+	private readonly difficulty: string;
+	private readonly points: number;
+	public readonly contestSlug: string;
+	private readonly contestName: string;
 	constructor({
 		slug,
 		name,

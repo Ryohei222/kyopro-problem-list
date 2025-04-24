@@ -1,16 +1,16 @@
-import { Resource } from "@prisma/client";
+import type { Resource } from "@prisma/client";
 
 export default function getResourceName(resource: Resource): string {
 	switch (resource) {
-		case Resource.ATCODER:
+		case "ATCODER":
 			return "AtCoder";
-		case Resource.CODEFORCES:
+		case "CODEFORCES":
 			return "Codeforces";
-		case Resource.YUKICODER:
+		case "YUKICODER":
 			return "yukicoder";
-		case Resource.AOJ:
+		case "AOJ":
 			return "AOJ";
-		case Resource.MOFE:
+		case "MOFE":
 			return "MOFE";
 	}
 }

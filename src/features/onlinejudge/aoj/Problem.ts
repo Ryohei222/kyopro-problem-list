@@ -3,9 +3,9 @@ import { Resource } from "@prisma/client";
 import type { CommonProblem } from "../../../types/CommonProblem";
 
 export class AojProblem implements CommonProblem {
-	public readonly resource = Resource.AOJ;
+	public readonly resource = "AOJ";
 	private readonly name: string;
-	private readonly id: string;
+	public readonly id: string;
 	private readonly maxScore: number;
 
 	constructor({

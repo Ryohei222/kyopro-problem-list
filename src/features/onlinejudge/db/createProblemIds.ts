@@ -1,15 +1,24 @@
 import { prisma } from "@/prisma";
+import type { CommonProblem, ProblemKey } from "@/types/CommonProblem";
 
-export async function createProblemIds(count: number) {
+export async function createProblemIds(
+	problems: CommonProblem[],
+): Promise<Map<ProblemKey, number>> {
 	const existingProblems = await prisma.problem.findMany({});
 	const maxProblemId = Math.max(
 		...existingProblems.map((problem) => problem.id),
 		0,
 	);
-	const createdProblemIds = await prisma.problem.createManyAndReturn({
-		data: [...new Array(count).keys()].map((i) => ({
+	await prisma.problem.createManyAndReturn({
+		data: [...new Array(problems.length).keys()].map((i) => ({
 			id: maxProblemId + i + 1,
+			problemKey: problems[i].ProblemKey(),
 		})),
 	});
-	return createdProblemIds.map((problem) => problem.id);
+	return new Map<ProblemKey, number>(
+		[...new Array(problems.length).keys()].map((i) => [
+			problems[i].ProblemKey(),
+			maxProblemId + i + 1,
+		]),
+	);
 }

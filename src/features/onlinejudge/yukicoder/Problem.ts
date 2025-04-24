@@ -1,13 +1,12 @@
 import { createProblemKey } from "@/types/CommonProblem";
-import { Resource } from "@prisma/client";
 import type { CommonProblem } from "../../../types/CommonProblem";
 
 export class YukicoderProblem implements CommonProblem {
-	public readonly resource = Resource.YUKICODER;
-	private No: number;
-	private ProblemId: number;
-	private _Title: string;
-	private Level: number;
+	public readonly resource = "YUKICODER";
+	public readonly No: number;
+	private readonly ProblemId: number;
+	private readonly _Title: string;
+	private readonly Level: number;
 	constructor({
 		No,
 		ProblemId,

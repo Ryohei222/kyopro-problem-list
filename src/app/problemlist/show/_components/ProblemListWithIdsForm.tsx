@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import type { ProblemListRecordResponse } from "../../../../features/problemlist/types/ProblemLists";
 
 import type { getUser } from "@/features/user/db/getUser";
-import { Resource } from "@prisma/client";
 import { ProblemList } from "./ProblemList";
 
 type ProblemListWithIdsFormProps = {
@@ -28,15 +27,15 @@ export function ProblemListWithIdsForm({
 	const [acProblems, setAcProblems] = useState<Set<ProblemKey>>(new Set());
 
 	const { submissions: aojSubmissions, trigger: aojTrigger } = useSubmissions(
-		Resource.AOJ,
+		"AOJ",
 		userIds.aoj,
 	);
 	const { submissions: atcoderSubmissions, trigger: atcoderTrigger } =
-		useSubmissions(Resource.ATCODER, userIds.atcoder);
+		useSubmissions("ATCODER", userIds.atcoder);
 	const { submissions: codeforcesSubmissions, trigger: codeforcesTrigger } =
-		useSubmissions(Resource.CODEFORCES, userIds.codeforces);
+		useSubmissions("CODEFORCES", userIds.codeforces);
 	const { submissions: yukicoderSubmissions, trigger: yukicoderTrigger } =
-		useSubmissions(Resource.YUKICODER, userIds.yukicoder);
+		useSubmissions("YUKICODER", userIds.yukicoder);
 
 	const handleFetchSubmissions = async () => {
 		aojTrigger(userIds.aoj);

@@ -1,15 +1,18 @@
-import type { OnlineJudgeProblem } from "@/types/CommonProblem";
-import { ClientSideOnlineJudgeProblemFetchers } from "./OnlineJudges";
+import type { CommonProblem } from "@/types/CommonProblem";
+import { ClientSideOnlineJudgeApi } from "./OnlineJudges";
+import { fetchAtcoderProblems } from "./atcoder/fetchProblems";
 
 export async function fetchProblems() {
-	const problems: OnlineJudgeProblem[] = [];
-	await Promise.all(
-		Object.values(ClientSideOnlineJudgeProblemFetchers).map(
-			async (fetchProblems) =>
-				fetchProblems().then((fetchedProblems) => {
-					problems.push(...fetchedProblems);
-				}),
-		),
-	);
+	console.log("start fetching");
+	const problems: CommonProblem[] = await fetchAtcoderProblems();
+	console.log("fetched problems", problems);
+	// await Promise.all(
+	// 	Object.values(ClientSideOnlineJudgeApi).map(async (api) =>
+	// 		api.fetchProblems().then((fetchedProblems) => {
+	// 			console.log(fetchProblems);
+	// 			problems.push(...fetchedProblems);
+	// 		}),
+	// 	),
+	// );
 	return problems;
 }

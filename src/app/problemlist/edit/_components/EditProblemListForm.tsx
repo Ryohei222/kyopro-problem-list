@@ -31,6 +31,7 @@ import {
 	type createProblemKeyProps,
 } from "@/types/CommonProblem";
 import getResourceName from "@/utils/getResourceName";
+import { hasContest } from "@/utils/hasContest";
 import { updateProblemList } from "../../../../features/problemlist/db/updateProblemList";
 import type {
 	ProblemListRecordResponse,
@@ -295,14 +296,14 @@ export default function EditProblemListForm({
 																</div>
 															</TableCell>
 															<TableCell>
-																{problemDetail ? (
+																{problem ? (
 																	<a
 																		href={problemUrl}
 																		target="_blank"
 																		rel="noopener noreferrer"
 																		className="text-blue-600 hover:underline flex items-center gap-1"
 																	>
-																		{problemDetail.name}
+																		{problem.Title()}
 																		<ExternalLink className="h-3 w-3" />
 																	</a>
 																) : (
@@ -312,14 +313,16 @@ export default function EditProblemListForm({
 																)}
 															</TableCell>
 															<TableCell>
-																{problemDetail ? (
+																{hasContest(problem) ? (
 																	<span className="text-sm">
-																		{getResourceName(problemDetail.resource)}{" "}
-																		{problemDetail.contestId !== "0" &&
-																			` - ${problemDetail.contestId}`}
+																		{getResourceName(problem.resource)}
+																		{" - "}
+																		{problem.ContestTitle()}
 																	</span>
 																) : (
-																	<span className="text-gray-400">-</span>
+																	<span className="text-gray-400">
+																		{getResourceName(problem.resource)}
+																	</span>
 																)}
 															</TableCell>
 															<TableCell

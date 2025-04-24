@@ -1,5 +1,4 @@
 import { TableCell, TableRow } from "@/components/ui/table";
-import { getProblemDifficultyColor } from "@/utils/getProblemDifficultyColor";
 import getResourceName from "@/utils/getResourceName";
 import { hasContest } from "@/utils/hasContest";
 import { hasDifficulty } from "@/utils/hasDifficulty";
@@ -99,7 +98,9 @@ function DifficultyCell({
 		<TableCell>
 			<div
 				className="font-mono text-sm text-center"
-				style={{ color: getProblemDifficultyColor(problem) }}
+				style={{
+					color: hasDifficulty(problem) ? problem.DifficultyColor() : "#808080",
+				}}
 			>
 				{hasDifficulty(problem) ? problem.Difficulty() : "-"}
 			</div>

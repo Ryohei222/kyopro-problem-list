@@ -40,16 +40,20 @@ export abstract class ProblemUpdater<T extends CommonProblem>
 		});
 
 		return await prisma.$transaction(async () => {
-			const newProblemIds = await createProblemIds(newProblems.length);
-			console.log(newProblemIds);
+			const newProblemIds = await createProblemIds(newProblems);
 			await this.createProblems(
-				newProblems.map((problem, index) => ({
-					commonProblemId: newProblemIds[index],
-					problem: problem,
-				})),
+				newProblems
+					.map((problem) => {
+						const commonProblemId = newProblemIds.get(problem.ProblemKey());
+						if (commonProblemId === undefined) return undefined;
+						return {
+							commonProblemId: commonProblemId,
+							problem: problem,
+						};
+					})
+					.filter((problem) => problem !== undefined),
 			);
 
-			console.log(problemsToUpdate);
 			await this.updateProblems(
 				problemsToUpdate.map((problem) => {
 					const existingProblem = existingProblemsMap.get(problem.ProblemKey());

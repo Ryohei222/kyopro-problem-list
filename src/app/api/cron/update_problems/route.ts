@@ -14,17 +14,20 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 		});
 	}
 
-	const results = await Promise.all(
-		Object.values(OnlineJudgeProblemUpdaters).map((oj) =>
-			oj.fetchAndUpdateProblems(),
-		),
-	);
+	let updated = 0;
+	let created = 0;
+
+	for (const oj of Object.values(OnlineJudgeProblemUpdaters)) {
+		const result = await oj.fetchAndUpdateProblems();
+		updated += result.updatedProblems;
+		created += result.newProblems;
+	}
 
 	return NextResponse.json({
 		success: true,
-		results: results.map((result) => ({
-			newProblems: result.newProblems,
-			updatedProblems: result.updatedProblems,
-		})),
+		results: {
+			newProblems: created,
+			updatedProblems: updated,
+		},
 	});
 }

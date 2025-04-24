@@ -8,11 +8,11 @@ export class CodeforcesProblem
 	implements CommonProblem, CommonContest, GetDifficulty
 {
 	public readonly index: string;
-	public readonly name: string;
+	private readonly name: string;
 	public readonly contestId: number;
-	public readonly contestName: string;
-	public readonly points: number | undefined;
-	public readonly rating: number | undefined;
+	private readonly contestName: string;
+	private readonly points: number | undefined;
+	private readonly rating: number | undefined;
 	constructor({
 		index,
 		name,
@@ -36,7 +36,7 @@ export class CodeforcesProblem
 		this.rating = rating;
 	}
 
-	public readonly resource = Resource.CODEFORCES;
+	public readonly resource = "CODEFORCES";
 
 	ProblemKey() {
 		return createProblemKey({
@@ -64,6 +64,15 @@ export class CodeforcesProblem
 
 	Difficulty(): number | undefined {
 		return this.rating;
+	}
+	DifficultyColor(): string {
+		if (!this.rating || this.rating < 1200) return "#808080";
+		if (this.rating < 1400) return "#008000";
+		if (this.rating < 1600) return "#03A89E";
+		if (this.rating < 1900) return "#0000FF";
+		if (this.rating < 2100) return "#AA00AA";
+		if (this.rating < 2400) return "#FF8C00";
+		return "#FF0000";
 	}
 
 	Unpack() {

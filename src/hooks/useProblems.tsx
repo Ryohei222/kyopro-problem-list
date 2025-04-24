@@ -6,5 +6,5 @@ import useSWR from "swr";
 export default function useProblems() {
 	const { data, error, isLoading } = useSWR("/problems", fetchProblems);
 
-	return { problems: data || [], isLoading, error };
+	return { problems: data, isLoading, error };
 }

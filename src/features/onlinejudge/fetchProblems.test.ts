@@ -1,8 +1,8 @@
-import type { OnlineJudgeProblem } from "@/types/CommonProblem";
+import type { CommonProblem } from "@/types/CommonProblem";
 import { beforeAll, describe, expect, test } from "vitest";
 import { fetchProblems } from "./fetchProblems";
 
-const problems: OnlineJudgeProblem[] = [];
+const problems: CommonProblem[] = [];
 
 beforeAll(async () => {
 	problems.push(...(await fetchProblems()));

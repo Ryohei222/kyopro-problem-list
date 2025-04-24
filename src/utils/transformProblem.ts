@@ -4,6 +4,7 @@ import { CodeforcesProblem } from "@/features/onlinejudge/codeforces/Problem";
 import { MofeProblem } from "@/features/onlinejudge/mofe/Problem";
 import { YukicoderProblem } from "@/features/onlinejudge/yukicoder/Problem";
 import { prisma } from "@/prisma";
+import type { CommonProblem } from "@/types/CommonProblem";
 
 async function getProblem() {
 	return prisma.problemListRecord.findFirst({
@@ -24,7 +25,7 @@ async function getProblem() {
 
 type PropsType = NonNullable<Awaited<ReturnType<typeof getProblem>>>["problem"];
 
-export function transformProblem(problem: PropsType) {
+export function transformProblem(problem: PropsType): CommonProblem {
 	if (problem.AojProblem) {
 		return new AojProblem(problem.AojProblem);
 	}

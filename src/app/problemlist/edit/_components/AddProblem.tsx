@@ -27,8 +27,8 @@ type Problem =
 
 function searchProblemFromUrl(
 	url: string,
-	problems: OnlineJudgeProblem[],
-): OnlineJudgeProblem | null {
+	problems: CommonProblem[],
+): CommonProblem | null {
 	const extractedProblem = extractProblemFromUrl(url);
 	if (!extractedProblem) {
 		return null;
@@ -65,7 +65,7 @@ export default function AddProblemForm({
 	onAddProblem: (problem: ProblemListRecordResponse) => void;
 	existingProblems: ProblemListRecordResponse[];
 }) {
-	const { problems } = useProblems();
+	const { problems, isLoading: isProblemsLoading } = useProblems();
 	const [url, setUrl] = useState("");
 	const [memo, setMemo] = useState("");
 	const [hint, setHint] = useState("");
@@ -94,6 +94,12 @@ export default function AddProblemForm({
 			return;
 		}
 
+		if (!problems) {
+			setPreviewProblem(null);
+			setError("問題のリストが読み込まれていません");
+			return;
+		}
+
 		const problem = searchProblemFromUrl(newUrl, problems);
 
 		if (!problem) {
@@ -119,6 +125,12 @@ export default function AddProblemForm({
 		e.preventDefault();
 		e.stopPropagation(); // 親フォームへのイベントの伝播を防止
 		setError(null);
+
+		if (!problems) {
+			setPreviewProblem(null);
+			setError("問題のリストが読み込まれていません");
+			return;
+		}
 
 		// URLから問題を検索
 		const problem = searchProblemFromUrl(url, problems);
@@ -167,89 +179,95 @@ export default function AddProblemForm({
 	}
 
 	return (
-		<Card className="p-4 border rounded-md shadow-sm w-full">
-			<div className="space-y-4">
-				<h4 className="font-medium">新しい問題を追加</h4>
+		<>
+			{isProblemsLoading ? (
+				<span>Loading...</span>
+			) : (
+				<Card className="p-4 border rounded-md shadow-sm w-full">
+					<div className="space-y-4">
+						<h4 className="font-medium">新しい問題を追加</h4>
 
-				{error && (
-					<div className="p-2 bg-red-50 border border-red-200 text-red-700 text-sm rounded-md">
-						<ProblemUrlErrorHelpComponent />
-						<p className="mt-2">{error}</p>
-					</div>
-				)}
-
-				<div className="space-y-2">
-					<Label htmlFor="url">問題URL</Label>
-					<Input
-						id="url"
-						value={url}
-						onChange={handleUrlChange}
-						placeholder="https://atcoder.jp/contests/abc123/tasks/abc123_a"
-						required
-					/>
-					<p className="text-xs text-gray-500">
-						AOJ / AtCoder / Codeforces / MOFE / yukicoder
-						の問題URLを入力してください
-					</p>
-				</div>
-
-				{previewProblem && (
-					<div className="p-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-md space-y-2">
-						<h5 className="font-medium">追加する問題:</h5>
-						<div className="text-sm">
-							<div>
-								<span className="font-semibold">タイトル:</span>{" "}
-								{previewProblem.Title()}
+						{error && (
+							<div className="p-2 bg-red-50 border border-red-200 text-red-700 text-sm rounded-md">
+								<ProblemUrlErrorHelpComponent />
+								<p className="mt-2">{error}</p>
 							</div>
-							<div>
-								<span className="font-semibold">出典:</span>{" "}
-								{getResourceName(previewProblem.resource)}
+						)}
+
+						<div className="space-y-2">
+							<Label htmlFor="url">問題URL</Label>
+							<Input
+								id="url"
+								value={url}
+								onChange={handleUrlChange}
+								placeholder="https://atcoder.jp/contests/abc123/tasks/abc123_a"
+								required
+							/>
+							<p className="text-xs text-gray-500">
+								AOJ / AtCoder / Codeforces / MOFE / yukicoder
+								の問題URLを入力してください
+							</p>
+						</div>
+
+						{previewProblem && (
+							<div className="p-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-md space-y-2">
+								<h5 className="font-medium">追加する問題:</h5>
+								<div className="text-sm">
+									<div>
+										<span className="font-semibold">タイトル:</span>{" "}
+										{previewProblem.Title()}
+									</div>
+									<div>
+										<span className="font-semibold">出典:</span>{" "}
+										{getResourceName(previewProblem.resource)}
+									</div>
+								</div>
 							</div>
+						)}
+
+						<div className="space-y-2">
+							<Label htmlFor="memo">メモ</Label>
+							<Textarea
+								id="memo"
+								value={memo}
+								onChange={(e) => setMemo(e.target.value)}
+								className="min-h-[120px]"
+								placeholder="問題に関するメモ"
+							/>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="hint">ヒント</Label>
+							<Textarea
+								id="hint"
+								value={hint}
+								onChange={(e) => setHint(e.target.value)}
+								className="min-h-[120px]"
+								placeholder="解法のヒント"
+							/>
+						</div>
+
+						<div className="flex justify-end gap-2 pt-2">
+							<Button
+								type="button"
+								variant="outline"
+								size="sm"
+								onClick={() => setShowForm(false)}
+							>
+								キャンセル
+							</Button>
+							<Button
+								type="button"
+								size="sm"
+								onClick={handleSubmit}
+								disabled={!previewProblem}
+							>
+								追加
+							</Button>
 						</div>
 					</div>
-				)}
-
-				<div className="space-y-2">
-					<Label htmlFor="memo">メモ</Label>
-					<Textarea
-						id="memo"
-						value={memo}
-						onChange={(e) => setMemo(e.target.value)}
-						className="min-h-[120px]"
-						placeholder="問題に関するメモ"
-					/>
-				</div>
-
-				<div className="space-y-2">
-					<Label htmlFor="hint">ヒント</Label>
-					<Textarea
-						id="hint"
-						value={hint}
-						onChange={(e) => setHint(e.target.value)}
-						className="min-h-[120px]"
-						placeholder="解法のヒント"
-					/>
-				</div>
-
-				<div className="flex justify-end gap-2 pt-2">
-					<Button
-						type="button"
-						variant="outline"
-						size="sm"
-						onClick={() => setShowForm(false)}
-					>
-						キャンセル
-					</Button>
-					<Button
-						type="button"
-						size="sm"
-						onClick={handleSubmit}
-						disabled={!previewProblem}
-					>
-						追加
-					</Button>
-				</div>
-			</div>
-		</Card>
+				</Card>
+			)}
+		</>
 	);
 }

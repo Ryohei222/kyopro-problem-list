@@ -17,9 +17,6 @@ export const getProblemList = async (problemListId: string) => {
 			problemListRecords: {
 				select: {
 					problem: {
-						select: {
-							id: true,
-						},
 						include: {
 							AojProblem: {},
 							AtcoderProblem: {},

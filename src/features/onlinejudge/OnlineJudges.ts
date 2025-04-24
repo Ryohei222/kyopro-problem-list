@@ -1,3 +1,5 @@
+"use client";
+
 import type { CommonProblem } from "@/types/CommonProblem";
 import type { Submission } from "@/types/Submission";
 import type { Resource } from "@prisma/client";
@@ -11,7 +13,8 @@ import { CodeforcesProblemUpdater } from "./codeforces/Codeforces";
 import { fetchCodeforcesProblems } from "./codeforces/fetchProblems";
 import { fetchCodeforcesSubmissions } from "./codeforces/fetchSubmissions";
 import { MofeProblemUpdater } from "./mofe/Mofe";
-import { readMofeProblems } from "./mofe/db/readProblems";
+import { MofeProblem } from "./mofe/Problem";
+import { readMofeProblemsAsPlainObjects } from "./mofe/db/readProblemsAsPlainObjects";
 import { YukicoderProblemUpdater } from "./yukicoder/Yukicoder";
 import { fetchYukicoderProblems } from "./yukicoder/fetchProblems";
 import { fetchYukicoderSubmissions } from "./yukicoder/fetchSubmissions";
@@ -21,7 +24,8 @@ export const ClientSideOnlineJudgeProblemFetchers = {
 	Atcoder: fetchAtcoderProblems,
 	Codeforces: fetchCodeforcesProblems,
 	Mofe: async () => {
-		return (await readMofeProblems()).map((problem) => problem.problem);
+		const problems = await readMofeProblemsAsPlainObjects();
+		return problems.map((problem) => new MofeProblem(problem));
 	},
 	Yukicoder: fetchYukicoderProblems,
 };
@@ -49,7 +53,8 @@ export const ClientSideOnlineJudgeApi: Record<
 	},
 	MOFE: {
 		fetchProblems: async () => {
-			return (await readMofeProblems()).map((problem) => problem.problem);
+			const problems = await readMofeProblemsAsPlainObjects();
+			return problems.map((problem) => new MofeProblem(problem));
 		},
 		fetchSubmissions: async () => {
 			return [];
