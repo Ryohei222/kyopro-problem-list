@@ -8,14 +8,21 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import type { CommonProblem } from "@/types/CommonProblem";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
-import type { ProblemListRecordResponse } from "../../../../features/problemlist/types/ProblemLists";
 import ProblemListItem from "./ProblemListItem";
 
-type ProblemListRecordWithSolvedFlag = ProblemListRecordResponse & {
-	isSolved: boolean;
+type ProblemListRecord = {
+	problem: CommonProblem;
+	memo: string;
+	hint: string;
+	order: number;
 };
+
+export type ProblemListRecordWithSolvedFlag = {
+	isSolved: boolean;
+} & ProblemListRecord;
 
 export type ProblemListProps = {
 	problemListRecords: ProblemListRecordWithSolvedFlag[];
@@ -95,7 +102,7 @@ export function ProblemList(props: ProblemListProps) {
 				<TableHeader>
 					<TableRow>
 						<TableHead
-							className="w-[5%] cursor-pointer"
+							className="w-20 cursor-pointer"
 							onClick={() => handleSort("order")}
 						>
 							<div className="flex items-center">
@@ -104,10 +111,10 @@ export function ProblemList(props: ProblemListProps) {
 							</div>
 						</TableHead>
 						<TableHead
-							className="w-[5%] cursor-pointer"
+							className="w-28 cursor-pointer"
 							onClick={() => handleSort("resource")}
 						>
-							<div className="flex items-center">
+							<div className="flex justify-start">
 								サイト
 								<SortIcon field="resource" />
 							</div>
@@ -116,7 +123,7 @@ export function ProblemList(props: ProblemListProps) {
 							<div className="flex items-center">問題名</div>
 						</TableHead>
 						{showDifficulty && (
-							<TableHead className="w-[10%]">
+							<TableHead className="w-28">
 								<div className="flex items-center">Difficulty</div>
 							</TableHead>
 						)}
