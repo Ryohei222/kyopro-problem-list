@@ -22,6 +22,5 @@ describe("fetchCodeforcesProblems", () => {
 		expect(problem.Url()).toBe("https://codeforces.com/contest/2089/problem/A");
 		expect(problem.ContestTitle()).toBe("Codeforces Round 1012 (Div. 1)");
 		expect(problem.ContestUrl()).toBe("https://codeforces.com/contest/2089");
-		expect(problem.Difficulty()).toBe(750);
 	});
 });

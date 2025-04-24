@@ -4,11 +4,7 @@ import { hasContest } from "@/utils/hasContest";
 import { hasDifficulty } from "@/utils/hasDifficulty";
 import Image from "next/image";
 import { useState } from "react";
-import type { ProblemListRecordResponse } from "../../../../features/problemlist/types/ProblemLists";
-
-type ProblemListRecordWithSolvedFlag = ProblemListRecordResponse & {
-	isSolved: boolean;
-};
+import type { ProblemListRecordWithSolvedFlag } from "./ProblemList";
 
 type ProblemListItemProps = {
 	problemListRecord: ProblemListRecordWithSolvedFlag;
@@ -42,7 +38,7 @@ export default function ProblemListItem({
 function ResourceIconCell({
 	resource,
 }: {
-	resource: ProblemListRecordResponse["problem"]["resource"];
+	resource: ProblemListRecordWithSolvedFlag["problem"]["resource"];
 }) {
 	const { logoSrc, logoAlt, bgColorClass } = getSiteLogo(resource);
 	return (
@@ -59,31 +55,25 @@ function ResourceIconCell({
 function ProblemNamesCell({
 	problem,
 }: {
-	problem: ProblemListRecordResponse["problem"];
+	problem: ProblemListRecordWithSolvedFlag["problem"];
 }) {
 	return (
 		<TableCell>
-			<div className="flex items-center space-x-2">
-				<a href={problem.Url()} target="_blank" rel="noopener noreferrer">
-					<div>
+			<div className="items-center space-x-2">
+				<div>
+					<a href={problem.Url()} target="_blank" rel="noopener noreferrer">
 						<div className="font-medium">{problem.Title()}</div>
-					</div>
-				</a>
-				{hasContest(problem) ? (
-					<a
-						href={problem.ContestUrl()}
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						<div className="text-xs text-gray-500">
-							{problem.ContestTitle()}
-						</div>
+						{hasContest(problem) ? (
+							<div className="text-xs text-gray-500">
+								{problem.ContestTitle()}
+							</div>
+						) : (
+							<div className="text-xs text-gray-500">
+								{getResourceName(problem.resource)}
+							</div>
+						)}
 					</a>
-				) : (
-					<div className="text-xs text-gray-500">
-						{getResourceName(problem.resource)}
-					</div>
-				)}
+				</div>
 			</div>
 		</TableCell>
 	);
@@ -92,7 +82,7 @@ function ProblemNamesCell({
 function DifficultyCell({
 	problem,
 }: {
-	problem: ProblemListRecordResponse["problem"];
+	problem: ProblemListRecordWithSolvedFlag["problem"];
 }) {
 	return (
 		<TableCell>

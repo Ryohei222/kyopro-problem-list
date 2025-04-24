@@ -5,18 +5,24 @@ export default function extractProblemFromUrl(url: string): {
 	problemId: string;
 	resource: Resource;
 } | null {
-	const AtCoderProblemURLRegex =
-		/https:\/\/atcoder\.jp\/contests\/(?<contestId>.+)\/tasks\/(?<problemId>.+)/;
-	const CodeforcesProblemURLRegex =
-		/https:\/\/codeforces\.com\/contest\/(?<contestId>.+)\/problem\/(?<problemId>.+)/;
-	const YukicoderProblemURLRegex =
-		/https:\/\/yukicoder\.me\/problems\/no\/(?<problemId>.+)/;
-	const AOJProblemURLRegex =
-		/https:\/\/onlinejudge\.u-aizu\.ac\.jp\/problems\/(?<problemId>.+)/;
-	const MOFEProblemURLRegex =
-		/https:\/\/mofecoder\.com\/contests\/(?<contestId>.+)\/tasks\/(?<problemId>.+)/;
+	const AtCoderProblemURLRegex = [
+		/https:\/\/atcoder\.jp\/contests\/(?<contestId>.+)\/tasks\/(?<problemId>.+)/,
+	];
+	const CodeforcesProblemURLRegex = [
+		/https:\/\/codeforces\.com\/contest\/(?<contestId>.+)\/problem\/(?<problemId>.+)/,
+		/https:\/\/codeforces\.com\/problemset\/problem\/(?<contestId>.+)\/(?<problemId>.+)/,
+	];
+	const YukicoderProblemURLRegex = [
+		/https:\/\/yukicoder\.me\/problems\/no\/(?<problemId>.+)/,
+	];
+	const AOJProblemURLRegex = [
+		/https:\/\/onlinejudge\.u-aizu\.ac\.jp\/problems\/(?<problemId>.+)/,
+	];
+	const MOFEProblemURLRegex = [
+		/https:\/\/mofecoder\.com\/contests\/(?<contestId>.+)\/tasks\/(?<problemId>.+)/,
+	];
 
-	const Regexes: Map<Resource, RegExp> = new Map([
+	const Regexes: Map<Resource, RegExp[]> = new Map([
 		[Resource.AOJ, AOJProblemURLRegex],
 		[Resource.ATCODER, AtCoderProblemURLRegex],
 		[Resource.CODEFORCES, CodeforcesProblemURLRegex],
@@ -33,11 +39,13 @@ export default function extractProblemFromUrl(url: string): {
 		}
 		return null;
 	}
-	for (const [resource, regex] of Regexes) {
-		const match = findMatch(regex, url, resource);
-		if (match) {
-			console.log(`Extracted problem from URL: ${JSON.stringify(match)}`);
-			return match;
+	for (const [resource, regexes] of Regexes) {
+		for (const regex of regexes) {
+			const match = findMatch(regex, url, resource);
+			if (match) {
+				console.log(`Extracted problem from URL: ${JSON.stringify(match)}`);
+				return match;
+			}
 		}
 	}
 	return null;

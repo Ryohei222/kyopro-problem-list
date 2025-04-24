@@ -7,6 +7,7 @@ import type { AtcoderProblem } from "@/features/onlinejudge/atcoder/Problem";
 import type { CodeforcesProblem } from "@/features/onlinejudge/codeforces/Problem";
 import type { MofeProblem } from "@/features/onlinejudge/mofe/Problem";
 import type { YukicoderProblem } from "@/features/onlinejudge/yukicoder/Problem";
+import type { ProblemListItem } from "@/features/problemlist/types/ProblemListItemSchema";
 import useProblems from "@/hooks/useProblems";
 import type { CommonProblem, OnlineJudgeProblem } from "@/types/CommonProblem";
 import { createProblemKey } from "@/types/CommonProblem";
@@ -62,8 +63,8 @@ export default function AddProblemForm({
 	onAddProblem,
 	existingProblems,
 }: {
-	onAddProblem: (problem: ProblemListRecordResponse) => void;
-	existingProblems: ProblemListRecordResponse[];
+	onAddProblem: (problem: ProblemListItem) => void;
+	existingProblems: ProblemListItem[];
 }) {
 	const { problems, isLoading: isProblemsLoading } = useProblems();
 	const [url, setUrl] = useState("");
@@ -132,14 +133,12 @@ export default function AddProblemForm({
 			return;
 		}
 
-		// URLから問題を検索
 		const problem = searchProblemFromUrl(url, problems);
 		if (!problem) {
 			setError("指定されたURLから問題を見つけることができませんでした");
 			return;
 		}
 
-		// 問題が既に追加されているか確認
 		const isDuplicate = existingProblems.some(
 			(p) => p.problem.ProblemKey() === problem.ProblemKey(),
 		);
@@ -150,7 +149,6 @@ export default function AddProblemForm({
 
 		// 新しい問題の順序は既存の問題の最大順序+1
 		const newProblemOrder = existingProblems.length + 1;
-		// 問題を追加
 		onAddProblem({
 			problem,
 			memo,
@@ -158,9 +156,7 @@ export default function AddProblemForm({
 			order: newProblemOrder,
 		});
 
-		// フォームをリセットするが閉じない
 		resetForm();
-		// setShowForm(false); // この行を削除
 	};
 
 	if (!showForm) {
