@@ -7,6 +7,7 @@ import type { ProblemListRecordResponse } from "../../../../features/problemlist
 
 import type { getUser } from "@/features/user/db/getUser";
 import { Resource } from "@/types/Resource";
+import { transformProblem } from "@/utils/transformProblem";
 import { ProblemList } from "./ProblemList";
 
 type ProblemListWithIdsFormProps = {
@@ -149,10 +150,14 @@ export function ProblemListWithIdsForm({
 				</button>
 			</div>
 			<ProblemList
-				problemListRecords={problemListRecords.map((problemListRecord) => ({
-					...problemListRecord,
-					isSolved: acProblems.has(problemListRecord.problem.ProblemKey()),
-				}))}
+				problemListRecords={problemListRecords.map((problemListRecord) => {
+					return {
+						...problemListRecord,
+						isSolved: acProblems.has(
+							transformProblem(problemListRecord.problem).ProblemKey(),
+						),
+					};
+				})}
 			/>
 		</div>
 	);

@@ -2,7 +2,7 @@
 
 import { getProblemIdsByKeys } from "@/features/onlinejudge/db/getProblemIdsByKeys";
 import { prisma } from "@/prisma";
-import type { CommonProblem } from "@/types/CommonProblem";
+import type { CommonProblem, ProblemKey } from "@/types/CommonProblem";
 import type { RequestedUserId } from "@/types/RequestedUserId";
 import { withAuthorization } from "@/utils/withAuthorization";
 import { getProblemList } from "./getProblemList";
@@ -13,7 +13,7 @@ type updateProblemListProps = {
 	description: string;
 	isPublic: boolean;
 	problemListRecords: {
-		problem: CommonProblem;
+		problemKey: ProblemKey;
 		memo: string;
 		hint: string;
 		order: number;
@@ -61,7 +61,7 @@ async function _updateProblemList(
 	}
 
 	const newProblemIds = await getProblemIdsByKeys(
-		problemListRecords.map((record) => record.problem.ProblemKey()),
+		problemListRecords.map((record) => record.problemKey),
 	);
 
 	return await prisma.$transaction(async () => {
@@ -83,8 +83,10 @@ async function _updateProblemList(
 		const problemsToCreate = problemListRecords.flatMap((record) => {
 			return {
 				problemListId,
-				problemId: newProblemIds.get(record.problem.ProblemKey()) ?? -1,
-				...record,
+				problemId: newProblemIds.get(record.problemKey) ?? -1,
+				memo: record.memo,
+				hint: record.hint,
+				order: record.order,
 			};
 		});
 
