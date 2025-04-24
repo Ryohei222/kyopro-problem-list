@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import useProblems from "@/hooks/useProblems";
-import { buildProblemUrl } from "@/utils/buildProblemUrl";
 import { ExternalLink, GripVertical, Save, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
@@ -32,7 +31,7 @@ import {
 	type createProblemKeyProps,
 } from "@/types/CommonProblem";
 import getResourceName from "@/utils/getResourceName";
-import { set } from "zod";
+import { hasContest } from "@/utils/hasContest";
 import { updateProblemList } from "../../../../features/problemlist/db/updateProblemList";
 import type {
 	ProblemListRecordResponse,
@@ -59,7 +58,7 @@ export default function EditProblemListForm({
 	);
 	const [showAddProblemForm, setShowAddProblemForm] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const { problems: allProblems } = useProblems();
+	const { problems: allProblems, isLoading } = useProblems();
 
 	// フォーカス状態を管理する状態
 	const [focusedCell, setFocusedCell] = useState<{
@@ -86,8 +85,11 @@ export default function EditProblemListForm({
 
 	// 問題IDから問題の詳細情報を取得
 	const getProblemDetails = (problem: createProblemKeyProps) => {
+		if (!allProblems) {
+			return null;
+		}
 		const result = allProblems.find(
-			(p) => createProblemKey(p) === createProblemKey(problem),
+			(p) => p.ProblemKey() === createProblemKey(problem),
 		);
 		return result || null;
 	};
@@ -129,8 +131,7 @@ export default function EditProblemListForm({
 			for (const [i, record] of reorderedProblems.entries()) {
 				const result = ProblemListItemSchema.safeParse({
 					resource: record.problem.resource,
-					contestId: record.problem.contestId,
-					problemId: record.problem.problemId,
+					problem: record.problem,
 					memo: record.memo,
 					hint: record.hint,
 					order: record.order,
@@ -158,8 +159,7 @@ export default function EditProblemListForm({
 				isPublic,
 				problemListRecords: reorderedProblems.map((record) => ({
 					resource: record.problem.resource,
-					contestId: record.problem.contestId,
-					problemId: record.problem.problemId,
+					problem: record.problem,
 					memo: record.memo,
 					hint: record.hint,
 					order: record.order,
@@ -260,12 +260,8 @@ export default function EditProblemListForm({
 											{problems
 												.sort((a, b) => a.order - b.order)
 												.map((record, index) => {
-													const problemDetail = getProblemDetails(
-														record.problem,
-													);
-													const problemUrl = problemDetail
-														? buildProblemUrl({ ...problemDetail })
-														: "#";
+													const problem = record.problem;
+													const problemUrl = problem.Url();
 
 													const isMemoFocused =
 														focusedCell?.index === index &&
@@ -280,7 +276,7 @@ export default function EditProblemListForm({
 															key={index}
 															index={index}
 															moveRow={moveRow}
-															id={record.problem.problemId}
+															id={record.problem.ProblemKey()}
 														>
 															<TableCell>
 																<div className="flex items-center gap-2 max-w-[0px]">
@@ -303,14 +299,14 @@ export default function EditProblemListForm({
 																</div>
 															</TableCell>
 															<TableCell>
-																{problemDetail ? (
+																{problem ? (
 																	<a
 																		href={problemUrl}
 																		target="_blank"
 																		rel="noopener noreferrer"
 																		className="text-blue-600 hover:underline flex items-center gap-1"
 																	>
-																		{problemDetail.name}
+																		{problem.Title()}
 																		<ExternalLink className="h-3 w-3" />
 																	</a>
 																) : (
@@ -320,14 +316,16 @@ export default function EditProblemListForm({
 																)}
 															</TableCell>
 															<TableCell>
-																{problemDetail ? (
+																{hasContest(problem) ? (
 																	<span className="text-sm">
-																		{getResourceName(problemDetail.resource)}{" "}
-																		{problemDetail.contestId !== "0" &&
-																			` - ${problemDetail.contestId}`}
+																		{getResourceName(problem.resource)}
+																		{" - "}
+																		{problem.ContestTitle()}
 																	</span>
 																) : (
-																	<span className="text-gray-400">-</span>
+																	<span className="text-gray-400">
+																		{getResourceName(problem.resource)}
+																	</span>
 																)}
 															</TableCell>
 															<TableCell

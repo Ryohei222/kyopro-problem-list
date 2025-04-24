@@ -1,8 +1,4 @@
-import updateProblems from "@/db/updateProblems";
-import { getProblems } from "@/features/externalapi/getProblems";
-import { getMofeProblems } from "@/features/externalapi/mofe/getMofeProblems";
-import type { CreatedProblem } from "@/types/CommonProblem";
-import { Resource } from "@prisma/client";
+import { OnlineJudgeProblemUpdaters } from "@/features/onlinejudge/OnlineJudges";
 import { type NextRequest, NextResponse } from "next/server";
 
 export const maxDuration = 60; // seconds
@@ -18,22 +14,20 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 		});
 	}
 
-	const problems: CreatedProblem[] = [];
+	let updated = 0;
+	let created = 0;
 
-	for (const resource of Object.values(Resource)) {
-		if (resource === Resource.MOFE) {
-			continue;
-		}
-		const fetchedProblems = await getProblems(resource);
-		const insertedProblems = await updateProblems(fetchedProblems);
-		problems.push(...insertedProblems);
+	for (const oj of Object.values(OnlineJudgeProblemUpdaters)) {
+		const result = await oj.fetchAndUpdateProblems();
+		updated += result.updatedProblems;
+		created += result.newProblems;
 	}
-
-	const fetchedMOFEProblems = await getMofeProblems();
-	const result = await updateProblems(fetchedMOFEProblems);
 
 	return NextResponse.json({
 		success: true,
-		createdProblems: [...problems, ...result],
+		results: {
+			newProblems: created,
+			updatedProblems: updated,
+		},
 	});
 }

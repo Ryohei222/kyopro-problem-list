@@ -8,7 +8,7 @@ import { timestampStorageHandler } from "@piotr-cz/swr-idb-cache";
 
 // https://github.com/piotr-cz/swr-idb-cache
 
-const problemsMaxAge = 60 * 60 * 1000;
+const problemsMaxAge = 1000;
 const submissionMaxAge = 3 * 60 * 1000;
 
 const gcStorageHandler = {

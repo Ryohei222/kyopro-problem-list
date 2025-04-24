@@ -6,7 +6,8 @@
 		"dev": "next dev --turbopack",
 		"build": "prisma generate && next build",
 		"start": "next start",
-		"format": "npx biome check --fix .",
+		"format": "biome check --fix .",
+		"test": "vitest test",
 		"prisma:format": "prisma format",
 		"prisma:generate": "prisma generate",
 		"prisma:migrate": "prisma migrate dev",
@@ -50,19 +51,19 @@
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@tailwindcss/postcss": "^4",
-		"@types/jest": "^29.5.14",
+		"@testing-library/dom": "^10.4.0",
+		"@testing-library/react": "^16.3.0",
 		"@types/node": "^20",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
 		"husky": "^9.1.7",
-		"jest": "^29.7.0",
 		"lint-staged": "^15.5.1",
 		"oss-attribution-generator": "^1.7.1",
 		"prisma": "^6.6.0",
 		"tailwindcss": "^4",
-		"ts-jest": "^29.3.1",
 		"ts-node": "^10.9.2",
-		"typescript": "^5"
+		"typescript": "^5",
+		"vitest": "^3.1.1"
 	},
 	"lint-staged": {
 		"**/*": "prettier --write --ignore-unknown"

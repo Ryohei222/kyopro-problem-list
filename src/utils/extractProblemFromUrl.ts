@@ -1,4 +1,4 @@
-import { Resource } from "@prisma/client";
+import { Resource } from "@/types/Resource";
 
 export default function extractProblemFromUrl(url: string): {
 	contestId: string;
@@ -17,11 +17,11 @@ export default function extractProblemFromUrl(url: string): {
 		/https:\/\/mofecoder\.com\/contests\/(?<contestId>.+)\/tasks\/(?<problemId>.+)/;
 
 	const Regexes: Map<Resource, RegExp> = new Map([
+		[Resource.AOJ, AOJProblemURLRegex],
 		[Resource.ATCODER, AtCoderProblemURLRegex],
 		[Resource.CODEFORCES, CodeforcesProblemURLRegex],
-		[Resource.YUKICODER, YukicoderProblemURLRegex],
-		[Resource.AOJ, AOJProblemURLRegex],
 		[Resource.MOFE, MOFEProblemURLRegex],
+		[Resource.YUKICODER, YukicoderProblemURLRegex],
 	]);
 
 	function findMatch(regex: RegExp, url: string, resource: Resource) {
@@ -33,10 +33,10 @@ export default function extractProblemFromUrl(url: string): {
 		}
 		return null;
 	}
-
 	for (const [resource, regex] of Regexes) {
 		const match = findMatch(regex, url, resource);
 		if (match) {
+			console.log(`Extracted problem from URL: ${JSON.stringify(match)}`);
 			return match;
 		}
 	}

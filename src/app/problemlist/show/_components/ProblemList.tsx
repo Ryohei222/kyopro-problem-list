@@ -8,7 +8,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { createProblemKey } from "@/types/CommonProblem";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import type { ProblemListRecordResponse } from "../../../../features/problemlist/types/ProblemLists";
@@ -132,7 +131,7 @@ export function ProblemList(props: ProblemListProps) {
 				<TableBody>
 					{filteredRecords.map((problemListRecord) => (
 						<ProblemListItem
-							key={createProblemKey(problemListRecord.problem)}
+							key={problemListRecord.problem.ProblemKey()}
 							problemListRecord={problemListRecord}
 							showDifficulty={showDifficulty}
 						/>

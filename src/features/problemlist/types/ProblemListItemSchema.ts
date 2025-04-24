@@ -1,10 +1,7 @@
-import { Resource } from "@prisma/client";
 import { z } from "zod";
 
 export const ProblemListItemSchema = z.object({
-	resource: z.nativeEnum(Resource),
-	contestId: z.string(),
-	problemId: z.string(),
+	problemKey: z.string(),
 	memo: z
 		.string()
 		.max(400, { message: "メモは 400 文字以内である必要があります" }),

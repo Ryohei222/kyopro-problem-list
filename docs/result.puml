@@ -1,0 +1,129 @@
+@startuml aaa
+class AojProblem implements CommonProblem {
+    +resource: "AOJ"
+    -name: string
+    -id: string
+    -maxScore: number
+    +ProblemKey(): ProblemKey
+    +Title(): string
+    +Url(): string
+    +Unpack(): { id: string; name: string; maxScore: number; }
+    +Stringify(): string
+    +Equals(other: CommonProblem): boolean
+}
+interface CommonContest {
+    +ContestTitle(): string
+    +ContestUrl(): string
+}
+interface GetDifficulty {
+    +Difficulty(): number | undefined
+}
+class AtcoderProblem implements CommonProblem, CommonContest, GetDifficulty {
+    +resource: $Enums.Resource
+    -id: string
+    -contestId: string
+    -name: string
+    -contestName: string
+    -difficulty?: number | undefined
+    +ProblemKey(): ProblemKey
+    +Title(): string
+    +Url(): string
+    +ContestTitle(): string
+    +ContestUrl(): string
+    +Difficulty(): number | undefined
+    +Unpack(): { id: string; contestId: string; name: string; contestName: string; difficulty: number | undefined; }
+    +Stringify(): string
+    +Equals(other: CommonProblem): boolean
+}
+class CodeforcesProblem implements CommonProblem, CommonContest, GetDifficulty {
+    +index: string
+    +name: string
+    +contestId: number
+    +contestName: string
+    +points: number | undefined
+    +rating: number | undefined
+    +resource: "CODEFORCES"
+    +ProblemKey(): ProblemKey
+    +Title(): string
+    +Url(): string
+    +ContestTitle(): string
+    +ContestUrl(): string
+    +Difficulty(): number | undefined
+    +Unpack(): { contestId: number; name: string; contestName: string; index: string; points: number | undefined; rating: number | undefined; }
+    +Stringify(): string
+    +Equals(other: CommonProblem): boolean
+}
+class MofeProblem implements CommonProblem, CommonContest {
+    +resource: $Enums.Resource
+    -slug: string
+    -name: string
+    -position: string
+    -difficulty: string
+    -points: number
+    -contestSlug: string
+    -contestName: string
+    +ProblemKey(): ProblemKey
+    +Title(): string
+    +Url(): string
+    +ContestTitle(): string
+    +ContestUrl(): string
+    +Stringify(): string
+    +Equals(other: CommonProblem): boolean
+    +Unpack(): { slug: string; name: string; position: string; difficulty: string; points: number; contestSlug: string; contestName: string; }
+}
+class YukicoderProblem implements CommonProblem {
+    +resource: "YUKICODER"
+    -No: number
+    -ProblemId: number
+    -_Title: string
+    -Level: number
+    +ProblemKey(): ProblemKey
+    +Title(): string
+    +Url(): string
+    +Unpack(): { No: number; ProblemId: number; Title: string; Level: number; }
+    +Stringify(): string
+    +Equals(other: CommonProblem): boolean
+}
+interface CommonProblem {
+    +resource: $Enums.Resource
+    +Title(): string
+    +Url(): string
+    +ProblemKey(): ProblemKey
+    +Stringify(): string
+    +Equals(other: CommonProblem): boolean
+}
+interface CreateProblems<T extends CommonProblem> {
+    +createProblems: (problems: ProblemWithCommonId<T>[]) => Promise<void>
+}
+interface FetchProblems<T extends CommonProblem> {
+    +fetchProblems: () => Promise<T[]>
+}
+interface ReadProblems<T extends CommonProblem> {
+    +readProblems: () => Promise<ProblemWithCommonId<T>[]>
+}
+interface UpdateProblems<T extends CommonProblem> {
+    +updateProblems: (problemWithCommonIds: ProblemWithCommonId<T>[]) => Promise<void>
+}
+
+
+class AtcoderDB implements CreateProblems, ReadProblems, UpdateProblems {
+    +createProblems: (problems: ProblemWithCommonId<AtcoderProblem>[]) => Promise<void>
+    +readProblems: () => Promise<ProblemWithCommonId<AtcoderProblem>[]>
+    +updateProblems: (problemWithCommonIds: ProblemWithCommonId<AtcoderProblem>[]) => Promise<void>
+}
+
+abstract class ProblemUpdater<T extends CommonProblem> implements FetchProblems, CreateProblems, ReadProblems, UpdateProblems {
+    +{abstract} fetchProblems(): Promise<T[]>
+    +{abstract} createProblems(problems: ProblemWithCommonId<T>[]): Promise<void>
+    +{abstract} readProblems(): Promise<ProblemWithCommonId<T>[]>
+    +{abstract} updateProblems(problemWithCommonIds: ProblemWithCommonId<T>[]): Promise<void>
+    +fetchAndUpdateProblems: () => Promise<{ updatedProblems: number; newProblems: number; }>
+}
+
+class AtcoderProblemUpdater extends ProblemUpdater {
+    +fetchProblems: () => Promise<AtcoderProblem[]>
+    +createProblems: (newProblems: ProblemWithCommonId<AtcoderProblem>[]) => Promise<void>
+    +readProblems: () => Promise<ProblemWithCommonId<AtcoderProblem>[]>
+    +updateProblems: (existingProblems: ProblemWithCommonId<AtcoderProblem>[]) => Promise<void>
+}
+@enduml
