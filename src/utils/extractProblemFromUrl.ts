@@ -1,4 +1,4 @@
-import type { Resource } from "@prisma/client";
+import { Resource } from "@/types/Resource";
 
 export default function extractProblemFromUrl(url: string): {
 	contestId: string;
@@ -17,11 +17,11 @@ export default function extractProblemFromUrl(url: string): {
 		/https:\/\/mofecoder\.com\/contests\/(?<contestId>.+)\/tasks\/(?<problemId>.+)/;
 
 	const Regexes: Map<Resource, RegExp> = new Map([
-		["AOJ", AOJProblemURLRegex],
-		["ATCODER", AtCoderProblemURLRegex],
-		["CODEFORCES", CodeforcesProblemURLRegex],
-		["MOFE", MOFEProblemURLRegex],
-		["YUKICODER", YukicoderProblemURLRegex],
+		[Resource.AOJ, AOJProblemURLRegex],
+		[Resource.ATCODER, AtCoderProblemURLRegex],
+		[Resource.CODEFORCES, CodeforcesProblemURLRegex],
+		[Resource.MOFE, MOFEProblemURLRegex],
+		[Resource.YUKICODER, YukicoderProblemURLRegex],
 	]);
 
 	function findMatch(regex: RegExp, url: string, resource: Resource) {

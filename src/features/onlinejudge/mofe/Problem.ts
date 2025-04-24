@@ -1,10 +1,10 @@
 import { createProblemKey } from "@/types/CommonProblem";
-import type { Resource } from "@prisma/client";
+import { Resource } from "@/types/Resource";
 import type { CommonContest } from "../../../types/CommonContest";
 import type { CommonProblem } from "../../../types/CommonProblem";
 
 export class MofeProblem implements CommonProblem, CommonContest {
-	public readonly resource: Resource = "MOFE";
+	public readonly resource: Resource = Resource.MOFE;
 	public readonly slug: string;
 	private readonly name: string;
 	private readonly position: string;

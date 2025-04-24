@@ -1,5 +1,5 @@
 import { createProblemKey } from "@/types/CommonProblem";
-import { Resource } from "@prisma/client";
+import { Resource } from "@/types/Resource";
 import type { CommonContest } from "../../../types/CommonContest";
 import type { CommonProblem } from "../../../types/CommonProblem";
 import type { GetDifficulty } from "../../../types/GetDifficulty";
@@ -36,7 +36,7 @@ export class CodeforcesProblem
 		this.rating = rating;
 	}
 
-	public readonly resource = "CODEFORCES";
+	public readonly resource = Resource.CODEFORCES;
 
 	ProblemKey() {
 		return createProblemKey({

@@ -1,7 +1,7 @@
 "use client";
 
 import { ClientSideOnlineJudgeApi } from "@/features/onlinejudge/OnlineJudges";
-import type { Resource } from "@prisma/client";
+import type { Resource } from "@/types/Resource";
 import useSWRMutation from "swr/mutation";
 
 export function useSubmissions(resource: Resource, userId: string) {

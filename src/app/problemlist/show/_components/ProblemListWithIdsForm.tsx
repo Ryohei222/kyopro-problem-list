@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import type { ProblemListRecordResponse } from "../../../../features/problemlist/types/ProblemLists";
 
 import type { getUser } from "@/features/user/db/getUser";
+import { Resource } from "@/types/Resource";
 import { ProblemList } from "./ProblemList";
 
 type ProblemListWithIdsFormProps = {
@@ -27,15 +28,15 @@ export function ProblemListWithIdsForm({
 	const [acProblems, setAcProblems] = useState<Set<ProblemKey>>(new Set());
 
 	const { submissions: aojSubmissions, trigger: aojTrigger } = useSubmissions(
-		"AOJ",
+		Resource.AOJ,
 		userIds.aoj,
 	);
 	const { submissions: atcoderSubmissions, trigger: atcoderTrigger } =
-		useSubmissions("ATCODER", userIds.atcoder);
+		useSubmissions(Resource.ATCODER, userIds.atcoder);
 	const { submissions: codeforcesSubmissions, trigger: codeforcesTrigger } =
-		useSubmissions("CODEFORCES", userIds.codeforces);
+		useSubmissions(Resource.CODEFORCES, userIds.codeforces);
 	const { submissions: yukicoderSubmissions, trigger: yukicoderTrigger } =
-		useSubmissions("YUKICODER", userIds.yukicoder);
+		useSubmissions(Resource.YUKICODER, userIds.yukicoder);
 
 	const handleFetchSubmissions = async () => {
 		aojTrigger(userIds.aoj);

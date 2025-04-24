@@ -1,4 +1,4 @@
-import type { Resource } from "@prisma/client";
+import type { Resource } from "@/types/Resource";
 import type { ProblemKey } from "./CommonProblem";
 
 export type SubmissionVerdict = "AC" | "WA";

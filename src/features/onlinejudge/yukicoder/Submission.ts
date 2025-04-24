@@ -1,6 +1,6 @@
 import { createProblemKey } from "@/types/CommonProblem";
+import { Resource } from "@/types/Resource";
 import type { Submission, SubmissionVerdict } from "@/types/Submission";
-import { Resource } from "@prisma/client";
 
 export class YukicoderSubmission implements Submission {
 	private readonly No: number;

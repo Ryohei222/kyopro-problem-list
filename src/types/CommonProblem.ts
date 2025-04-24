@@ -4,7 +4,7 @@ import type { CodeforcesProblem } from "@/features/onlinejudge/codeforces/Proble
 import type { MofeProblem } from "@/features/onlinejudge/mofe/Problem";
 import type { YukicoderProblem } from "@/features/onlinejudge/yukicoder/Problem";
 import type { prisma } from "@/prisma";
-import type { Resource } from "@prisma/client";
+import type { Resource } from "@/types/Resource";
 import type { Prisma } from "@prisma/client";
 
 const problemKeyBrand = Symbol();

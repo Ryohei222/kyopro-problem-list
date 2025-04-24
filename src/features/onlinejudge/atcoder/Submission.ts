@@ -1,6 +1,6 @@
 import { createProblemKey } from "@/types/CommonProblem";
+import { Resource } from "@/types/Resource";
 import type { Submission, SubmissionVerdict } from "@/types/Submission";
-import { Resource } from "@prisma/client";
 
 export class AtcoderSubmission implements Submission {
 	private readonly contest_id: string;

@@ -1,8 +1,9 @@
 import { createProblemKey } from "@/types/CommonProblem";
+import { Resource } from "@/types/Resource";
 import type { CommonProblem } from "../../../types/CommonProblem";
 
 export class YukicoderProblem implements CommonProblem {
-	public readonly resource = "YUKICODER";
+	public readonly resource = Resource.YUKICODER;
 	public readonly No: number;
 	private readonly ProblemId: number;
 	private readonly _Title: string;

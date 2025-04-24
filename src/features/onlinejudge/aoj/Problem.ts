@@ -1,9 +1,9 @@
 import { createProblemKey } from "@/types/CommonProblem";
-import { Resource } from "@prisma/client";
+import { Resource } from "@/types/Resource";
 import type { CommonProblem } from "../../../types/CommonProblem";
 
 export class AojProblem implements CommonProblem {
-	public readonly resource = "AOJ";
+	public readonly resource = Resource.AOJ;
 	private readonly name: string;
 	public readonly id: string;
 	private readonly maxScore: number;

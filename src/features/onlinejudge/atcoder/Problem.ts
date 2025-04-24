@@ -1,5 +1,5 @@
 import { createProblemKey } from "@/types/CommonProblem";
-import type { Resource } from "@prisma/client";
+import { Resource } from "@/types/Resource";
 import type { CommonContest } from "../../../types/CommonContest";
 import type { CommonProblem } from "../../../types/CommonProblem";
 import type { GetDifficulty } from "../../../types/GetDifficulty";
@@ -7,7 +7,7 @@ import type { GetDifficulty } from "../../../types/GetDifficulty";
 export class AtcoderProblem
 	implements CommonProblem, CommonContest, GetDifficulty
 {
-	resource: Resource = "ATCODER";
+	resource: Resource = Resource.ATCODER;
 	private readonly id: string;
 	private readonly contestId: string;
 	private readonly name: string;

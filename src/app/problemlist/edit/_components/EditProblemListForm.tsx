@@ -58,7 +58,7 @@ export default function EditProblemListForm({
 	);
 	const [showAddProblemForm, setShowAddProblemForm] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const { problems: allProblems } = useProblems();
+	const { problems: allProblems, isLoading } = useProblems();
 
 	// フォーカス状態を管理する状態
 	const [focusedCell, setFocusedCell] = useState<{
@@ -85,6 +85,9 @@ export default function EditProblemListForm({
 
 	// 問題IDから問題の詳細情報を取得
 	const getProblemDetails = (problem: createProblemKeyProps) => {
+		if (!allProblems) {
+			return null;
+		}
 		const result = allProblems.find(
 			(p) => p.ProblemKey() === createProblemKey(problem),
 		);

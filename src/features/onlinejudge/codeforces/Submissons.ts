@@ -1,6 +1,6 @@
 import { type ProblemKey, createProblemKey } from "@/types/CommonProblem";
+import { Resource } from "@/types/Resource";
 import type { Submission, SubmissionVerdict } from "@/types/Submission";
-import { Resource } from "@prisma/client";
 
 export class CodeforcesSubmission implements Submission {
 	private readonly id: number;

@@ -1,4 +1,4 @@
-import { Resource } from "@prisma/client";
+import { Resource } from "@/types/Resource";
 import { z } from "zod";
 
 export const ProblemListItemSchema = z.object({

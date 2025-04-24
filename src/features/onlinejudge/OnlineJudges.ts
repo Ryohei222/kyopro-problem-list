@@ -1,8 +1,8 @@
 "use client";
 
 import type { CommonProblem } from "@/types/CommonProblem";
+import type { Resource } from "@/types/Resource";
 import type { Submission } from "@/types/Submission";
-import type { Resource } from "@prisma/client";
 import { AojProblemUpdater } from "./aoj/Aoj";
 import { fetchAojProblems } from "./aoj/fetchProblems";
 import { fetchAojSubmissions } from "./aoj/fetchSubmissions";
