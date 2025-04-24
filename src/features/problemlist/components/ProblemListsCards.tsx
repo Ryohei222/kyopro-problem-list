@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import type { ProblemListsResponse } from "../types/ProblemLists";
+import { Pagenation } from "./Pagenation";
 import { ProblemListCard } from "./ProblemListCard";
 
 type SortField = "name" | "author" | "stars" | "createdAt";
@@ -16,14 +17,16 @@ export function ProblemListsCards({
 	const [sortField, setSortField] = useState<SortField>("stars");
 	const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
-	const handleSort = (field: SortField) => {
-		if (sortField === field) {
-			setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-		} else {
-			setSortField(field);
-			setSortDirection("desc");
-		}
-	};
+	const displayPerPageOptions = [
+		{ label: "20 件", value: 20 },
+		{ label: "50 件", value: 50 },
+		{ label: "100 件", value: 100 },
+	];
+
+	const [currentPage, setCurrentPage] = useState(1);
+	const [itemsPerPage, setItemsPerPage] = useState(
+		displayPerPageOptions[0].value,
+	);
 
 	const filteredLists = problemLists
 		.filter(
@@ -57,7 +60,6 @@ export function ProblemListsCards({
 				: bValue.localeCompare(aValue);
 		});
 
-	// Sort options for filter dropdown
 	const sortOptions = [
 		{ label: "スター数 (多い順)", field: "stars", direction: "desc" },
 		{ label: "スター数 (少ない順)", field: "stars", direction: "asc" },
@@ -104,6 +106,20 @@ export function ProblemListsCards({
 							</option>
 						))}
 					</select>
+					<span className="text-sm text-gray-500 ml-2">表示件数:</span>
+					<select
+						className="border rounded-md p-2 text-sm"
+						value={itemsPerPage}
+						onChange={(e) => {
+							setItemsPerPage(Number(e.target.value));
+						}}
+					>
+						{displayPerPageOptions.map((option) => (
+							<option key={option.value} value={option.value}>
+								{option.label}
+							</option>
+						))}
+					</select>
 				</div>
 			</div>
 
@@ -113,11 +129,20 @@ export function ProblemListsCards({
 				</div>
 			) : (
 				<div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
-					{filteredLists.map((list) => (
-						<ProblemListCard key={list.id} list={list} />
-					))}
+					{filteredLists
+						.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+						.map((list) => (
+							<ProblemListCard key={list.id} list={list} />
+						))}
 				</div>
 			)}
+			<div className="flex justify-center mt-6">
+				<Pagenation
+					currentPage={currentPage}
+					totalPages={Math.ceil(filteredLists.length / itemsPerPage)}
+					setCurrentPage={setCurrentPage}
+				/>
+			</div>
 		</div>
 	);
 }
