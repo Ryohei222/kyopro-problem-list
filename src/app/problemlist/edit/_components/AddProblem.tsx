@@ -2,17 +2,29 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import type { AojProblem } from "@/features/onlinejudge/aoj/Problem";
+import type { AtcoderProblem } from "@/features/onlinejudge/atcoder/Problem";
+import type { CodeforcesProblem } from "@/features/onlinejudge/codeforces/Problem";
+import type { MofeProblem } from "@/features/onlinejudge/mofe/Problem";
+import type { YukicoderProblem } from "@/features/onlinejudge/yukicoder/Problem";
+import type { ProblemListItem } from "@/features/problemlist/types/ProblemListItemSchema";
 import useProblems from "@/hooks/useProblems";
-import type { CommonProblem } from "@/types/CommonProblem";
+import type { CommonProblem, OnlineJudgeProblem } from "@/types/CommonProblem";
 import { createProblemKey } from "@/types/CommonProblem";
 import extractProblemFromUrl from "@/utils/extractProblemFromUrl";
 import getResourceName from "@/utils/getResourceName";
-import type { Resource } from "@prisma/client";
 import { Label } from "@radix-ui/react-label";
 import { Plus } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import type { ProblemListRecordResponse } from "../../../../features/problemlist/types/ProblemLists";
+
+type Problem =
+	| AojProblem
+	| AtcoderProblem
+	| CodeforcesProblem
+	| MofeProblem
+	| YukicoderProblem;
 
 function searchProblemFromUrl(
 	url: string,
@@ -27,7 +39,7 @@ function searchProblemFromUrl(
 	}
 	const ret =
 		problems.find(
-			(p) => createProblemKey(p) === createProblemKey(extractedProblem),
+			(p) => p.ProblemKey() === createProblemKey(extractedProblem),
 		) || null;
 	return ret;
 }
@@ -51,22 +63,19 @@ export default function AddProblemForm({
 	onAddProblem,
 	existingProblems,
 }: {
-	onAddProblem: (problem: ProblemListRecordResponse) => void;
-	existingProblems: ProblemListRecordResponse[];
+	onAddProblem: (problem: ProblemListItem) => void;
+	existingProblems: ProblemListItem[];
 }) {
-	const { problems } = useProblems();
+	const { problems, isLoading: isProblemsLoading } = useProblems();
 	const [url, setUrl] = useState("");
 	const [memo, setMemo] = useState("");
 	const [hint, setHint] = useState("");
 	const [error, setError] = useState<string | null>(null);
 	const [showForm, setShowForm] = useState(false);
 
-	const [previewProblem, setPreviewProblem] = useState<{
-		name: string;
-		resource: Resource;
-		contestId: string;
-		problemId: string;
-	} | null>(null);
+	const [previewProblem, setPreviewProblem] = useState<CommonProblem | null>(
+		null,
+	);
 
 	const resetForm = () => {
 		setUrl("");
@@ -86,6 +95,12 @@ export default function AddProblemForm({
 			return;
 		}
 
+		if (!problems) {
+			setPreviewProblem(null);
+			setError("問題のリストが読み込まれていません");
+			return;
+		}
+
 		const problem = searchProblemFromUrl(newUrl, problems);
 
 		if (!problem) {
@@ -95,7 +110,7 @@ export default function AddProblemForm({
 		}
 
 		const isDuplicate = existingProblems.some(
-			(p) => createProblemKey(p.problem) === createProblemKey(problem),
+			(p) => p.problem.ProblemKey() === problem.ProblemKey(),
 		);
 		if (isDuplicate) {
 			setPreviewProblem(null);
@@ -112,16 +127,20 @@ export default function AddProblemForm({
 		e.stopPropagation(); // 親フォームへのイベントの伝播を防止
 		setError(null);
 
-		// URLから問題を検索
+		if (!problems) {
+			setPreviewProblem(null);
+			setError("問題のリストが読み込まれていません");
+			return;
+		}
+
 		const problem = searchProblemFromUrl(url, problems);
 		if (!problem) {
 			setError("指定されたURLから問題を見つけることができませんでした");
 			return;
 		}
 
-		// 問題が既に追加されているか確認
 		const isDuplicate = existingProblems.some(
-			(p) => createProblemKey(p.problem) === createProblemKey(problem),
+			(p) => p.problem.ProblemKey() === problem.ProblemKey(),
 		);
 		if (isDuplicate) {
 			setError("この問題は既にリストに追加されています");
@@ -130,20 +149,14 @@ export default function AddProblemForm({
 
 		// 新しい問題の順序は既存の問題の最大順序+1
 		const newProblemOrder = existingProblems.length + 1;
-		// 問題を追加
 		onAddProblem({
-			problem: {
-				...problem,
-				difficulty: 0,
-			},
+			problem,
 			memo,
 			hint,
 			order: newProblemOrder,
 		});
 
-		// フォームをリセットするが閉じない
 		resetForm();
-		// setShowForm(false); // この行を削除
 	};
 
 	if (!showForm) {
@@ -162,92 +175,95 @@ export default function AddProblemForm({
 	}
 
 	return (
-		<Card className="p-4 border rounded-md shadow-sm w-full">
-			<div className="space-y-4">
-				<h4 className="font-medium">新しい問題を追加</h4>
+		<>
+			{isProblemsLoading ? (
+				<span>Loading...</span>
+			) : (
+				<Card className="p-4 border rounded-md shadow-sm w-full">
+					<div className="space-y-4">
+						<h4 className="font-medium">新しい問題を追加</h4>
 
-				{error && (
-					<div className="p-2 bg-red-50 border border-red-200 text-red-700 text-sm rounded-md">
-						<ProblemUrlErrorHelpComponent />
-						<p className="mt-2">{error}</p>
-					</div>
-				)}
-
-				<div className="space-y-2">
-					<Label htmlFor="url">問題URL</Label>
-					<Input
-						id="url"
-						value={url}
-						onChange={handleUrlChange}
-						placeholder="https://atcoder.jp/contests/abc123/tasks/abc123_a"
-						required
-					/>
-					<p className="text-xs text-gray-500">
-						AOJ / AtCoder / Codeforces / MOFE / yukicoder
-						の問題URLを入力してください
-					</p>
-				</div>
-
-				{previewProblem && (
-					<div className="p-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-md space-y-2">
-						<h5 className="font-medium">追加する問題:</h5>
-						<div className="text-sm">
-							<div>
-								<span className="font-semibold">タイトル:</span>{" "}
-								{previewProblem.name}
+						{error && (
+							<div className="p-2 bg-red-50 border border-red-200 text-red-700 text-sm rounded-md">
+								<ProblemUrlErrorHelpComponent />
+								<p className="mt-2">{error}</p>
 							</div>
-							<div>
-								<span className="font-semibold">出典:</span>{" "}
-								{getResourceName(previewProblem.resource)}{" "}
-								{previewProblem.contestId !== "0"
-									? `${previewProblem.contestId} - ${previewProblem.problemId}`
-									: ""}
+						)}
+
+						<div className="space-y-2">
+							<Label htmlFor="url">問題URL</Label>
+							<Input
+								id="url"
+								value={url}
+								onChange={handleUrlChange}
+								placeholder="https://atcoder.jp/contests/abc123/tasks/abc123_a"
+								required
+							/>
+							<p className="text-xs text-gray-500">
+								AOJ / AtCoder / Codeforces / MOFE / yukicoder
+								の問題URLを入力してください
+							</p>
+						</div>
+
+						{previewProblem && (
+							<div className="p-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-md space-y-2">
+								<h5 className="font-medium">追加する問題:</h5>
+								<div className="text-sm">
+									<div>
+										<span className="font-semibold">タイトル:</span>{" "}
+										{previewProblem.Title()}
+									</div>
+									<div>
+										<span className="font-semibold">出典:</span>{" "}
+										{getResourceName(previewProblem.resource)}
+									</div>
+								</div>
 							</div>
+						)}
+
+						<div className="space-y-2">
+							<Label htmlFor="memo">メモ</Label>
+							<Textarea
+								id="memo"
+								value={memo}
+								onChange={(e) => setMemo(e.target.value)}
+								className="min-h-[120px]"
+								placeholder="問題に関するメモ"
+							/>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="hint">ヒント</Label>
+							<Textarea
+								id="hint"
+								value={hint}
+								onChange={(e) => setHint(e.target.value)}
+								className="min-h-[120px]"
+								placeholder="解法のヒント"
+							/>
+						</div>
+
+						<div className="flex justify-end gap-2 pt-2">
+							<Button
+								type="button"
+								variant="outline"
+								size="sm"
+								onClick={() => setShowForm(false)}
+							>
+								キャンセル
+							</Button>
+							<Button
+								type="button"
+								size="sm"
+								onClick={handleSubmit}
+								disabled={!previewProblem}
+							>
+								追加
+							</Button>
 						</div>
 					</div>
-				)}
-
-				<div className="space-y-2">
-					<Label htmlFor="memo">メモ</Label>
-					<Textarea
-						id="memo"
-						value={memo}
-						onChange={(e) => setMemo(e.target.value)}
-						className="min-h-[120px]"
-						placeholder="問題に関するメモ"
-					/>
-				</div>
-
-				<div className="space-y-2">
-					<Label htmlFor="hint">ヒント</Label>
-					<Textarea
-						id="hint"
-						value={hint}
-						onChange={(e) => setHint(e.target.value)}
-						className="min-h-[120px]"
-						placeholder="解法のヒント"
-					/>
-				</div>
-
-				<div className="flex justify-end gap-2 pt-2">
-					<Button
-						type="button"
-						variant="outline"
-						size="sm"
-						onClick={() => setShowForm(false)}
-					>
-						キャンセル
-					</Button>
-					<Button
-						type="button"
-						size="sm"
-						onClick={handleSubmit}
-						disabled={!previewProblem}
-					>
-						追加
-					</Button>
-				</div>
-			</div>
-		</Card>
+				</Card>
+			)}
+		</>
 	);
 }

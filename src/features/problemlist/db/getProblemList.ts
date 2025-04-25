@@ -16,13 +16,12 @@ export const getProblemList = async (problemListId: string) => {
 			problemListRecords: {
 				select: {
 					problem: {
-						select: {
-							resource: true,
-							contestId: true,
-							problemId: true,
-							name: true,
-							difficulty: true,
-							contestName: true,
+						include: {
+							AojProblem: {},
+							AtcoderProblem: {},
+							CodeforcesProblem: {},
+							MofeProblem: {},
+							YukicoderProblem: {},
 						},
 					},
 					memo: true,
@@ -43,5 +42,17 @@ export const getProblemList = async (problemListId: string) => {
 			id: problemListId,
 		},
 	});
-	return problemSet;
+	if (!problemSet) {
+		return undefined;
+	}
+	const problemListRecords = problemSet.problemListRecords.map((record) => {
+		const problem = record.problem;
+		return {
+			problem: problem,
+			memo: record.memo,
+			hint: record.hint,
+			order: record.order,
+		};
+	});
+	return { ...problemSet, problemListRecords };
 };

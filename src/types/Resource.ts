@@ -1,0 +1,7 @@
+export enum Resource {
+	AOJ = "AOJ",
+	ATCODER = "ATCODER",
+	CODEFORCES = "CODEFORCES",
+	MOFE = "MOFE",
+	YUKICODER = "YUKICODER",
+}

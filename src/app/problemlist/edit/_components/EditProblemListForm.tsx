@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import useProblems from "@/hooks/useProblems";
-import { buildProblemUrl } from "@/utils/buildProblemUrl";
 import { ExternalLink, GripVertical, Save, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
@@ -32,34 +31,42 @@ import {
 	type createProblemKeyProps,
 } from "@/types/CommonProblem";
 import getResourceName from "@/utils/getResourceName";
-import { set } from "zod";
+import { hasContest } from "@/utils/hasContest";
+import { transformProblem } from "@/utils/transformProblem";
 import { updateProblemList } from "../../../../features/problemlist/db/updateProblemList";
-import type {
-	ProblemListRecordResponse,
-	ProblemListResponse,
-} from "../../../../features/problemlist/types/ProblemLists";
+import type { ProblemListResponse } from "../../../../features/problemlist/types/ProblemLists";
 import DraggableRow from "../../show/_components/DraggableRow";
 import AddProblemForm from "./AddProblem";
 import ProblemListDescriptionInput from "./ProblemListDescriptionInput";
 import ProblemListIsPublicInput from "./ProblemListIsPublicInput";
 import ProblemListNameInput from "./ProblemListNameInput";
 
+import type { ProblemListItem } from "@/features/problemlist/types/ProblemListItemSchema";
+
 export default function EditProblemListForm({
-	problemList,
+	problemList: beforeTransformProblemList,
 }: {
 	problemList: NonNullable<ProblemListResponse>;
 }) {
+	const problemList = {
+		...beforeTransformProblemList,
+		problemListRecords: beforeTransformProblemList.problemListRecords.map(
+			(record) => ({
+				...record,
+				problem: transformProblem(record.problem),
+			}),
+		),
+	};
+
 	const router = useRouter();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [name, setName] = useState(problemList.name);
 	const [description, setDescription] = useState(problemList.description);
 	const [isPublic, setIsPublic] = useState(problemList.isPublic);
-	const [problems, setProblems] = useState<ProblemListRecordResponse[]>(
-		problemList.problemListRecords,
-	);
+	const [problems, setProblems] = useState(problemList.problemListRecords);
 	const [showAddProblemForm, setShowAddProblemForm] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const { problems: allProblems } = useProblems();
+	const { problems: allProblems, isLoading } = useProblems();
 
 	// フォーカス状態を管理する状態
 	const [focusedCell, setFocusedCell] = useState<{
@@ -68,7 +75,7 @@ export default function EditProblemListForm({
 	} | null>(null);
 
 	// 問題追加
-	const handleAddProblem = (problem: ProblemListRecordResponse) => {
+	const handleAddProblem = (problem: ProblemListItem) => {
 		setProblems((prev) => [...prev, problem]);
 	};
 
@@ -82,14 +89,6 @@ export default function EditProblemListForm({
 		const newProblems = [...problems];
 		newProblems[index].order = newOrder;
 		setProblems(newProblems);
-	};
-
-	// 問題IDから問題の詳細情報を取得
-	const getProblemDetails = (problem: createProblemKeyProps) => {
-		const result = allProblems.find(
-			(p) => createProblemKey(p) === createProblemKey(problem),
-		);
-		return result || null;
 	};
 
 	// フォーム送信
@@ -128,9 +127,7 @@ export default function EditProblemListForm({
 			// 問題リスト項目バリデーション
 			for (const [i, record] of reorderedProblems.entries()) {
 				const result = ProblemListItemSchema.safeParse({
-					resource: record.problem.resource,
-					contestId: record.problem.contestId,
-					problemId: record.problem.problemId,
+					problemKey: record.problem.ProblemKey(),
 					memo: record.memo,
 					hint: record.hint,
 					order: record.order,
@@ -157,9 +154,7 @@ export default function EditProblemListForm({
 				description,
 				isPublic,
 				problemListRecords: reorderedProblems.map((record) => ({
-					resource: record.problem.resource,
-					contestId: record.problem.contestId,
-					problemId: record.problem.problemId,
+					problemKey: record.problem.ProblemKey(),
 					memo: record.memo,
 					hint: record.hint,
 					order: record.order,
@@ -260,12 +255,8 @@ export default function EditProblemListForm({
 											{problems
 												.sort((a, b) => a.order - b.order)
 												.map((record, index) => {
-													const problemDetail = getProblemDetails(
-														record.problem,
-													);
-													const problemUrl = problemDetail
-														? buildProblemUrl({ ...problemDetail })
-														: "#";
+													const problem = record.problem;
+													const problemUrl = problem.Url();
 
 													const isMemoFocused =
 														focusedCell?.index === index &&
@@ -280,7 +271,7 @@ export default function EditProblemListForm({
 															key={index}
 															index={index}
 															moveRow={moveRow}
-															id={record.problem.problemId}
+															id={record.problem.ProblemKey()}
 														>
 															<TableCell>
 																<div className="flex items-center gap-2 max-w-[0px]">
@@ -303,14 +294,14 @@ export default function EditProblemListForm({
 																</div>
 															</TableCell>
 															<TableCell>
-																{problemDetail ? (
+																{problem ? (
 																	<a
 																		href={problemUrl}
 																		target="_blank"
 																		rel="noopener noreferrer"
 																		className="text-blue-600 hover:underline flex items-center gap-1"
 																	>
-																		{problemDetail.name}
+																		{problem.Title()}
 																		<ExternalLink className="h-3 w-3" />
 																	</a>
 																) : (
@@ -320,15 +311,11 @@ export default function EditProblemListForm({
 																)}
 															</TableCell>
 															<TableCell>
-																{problemDetail ? (
-																	<span className="text-sm">
-																		{getResourceName(problemDetail.resource)}{" "}
-																		{problemDetail.contestId !== "0" &&
-																			` - ${problemDetail.contestId}`}
-																	</span>
-																) : (
-																	<span className="text-gray-400">-</span>
-																)}
+																<span className="text-sm">
+																	{getResourceName(problem.resource)}
+																	{hasContest(problem) &&
+																		` - ${problem.ContestTitle()}`}
+																</span>
 															</TableCell>
 															<TableCell
 																className={`transition-all duration-200 ${

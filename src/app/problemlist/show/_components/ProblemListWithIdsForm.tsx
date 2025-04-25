@@ -1,17 +1,13 @@
 "use client";
 
-import {
-	useAojSubmissions,
-	useAtcoderSubmissions,
-	useCodeforcesSubmissions,
-	useYukicoderSubmissions,
-} from "@/hooks/useSubmissions";
+import { useSubmissions } from "@/hooks/useSubmissions";
 import { type ProblemKey, createProblemKey } from "@/types/CommonProblem";
-import { User } from "@prisma/client";
 import { useEffect, useState } from "react";
 import type { ProblemListRecordResponse } from "../../../../features/problemlist/types/ProblemLists";
 
 import type { getUser } from "@/features/user/db/getUser";
+import { Resource } from "@/types/Resource";
+import { transformProblem } from "@/utils/transformProblem";
 import { ProblemList } from "./ProblemList";
 
 type ProblemListWithIdsFormProps = {
@@ -32,15 +28,16 @@ export function ProblemListWithIdsForm({
 
 	const [acProblems, setAcProblems] = useState<Set<ProblemKey>>(new Set());
 
-	const { submissions: aojSubmissions, trigger: aojTrigger } =
-		useAojSubmissions(userIds.aoj);
-
+	const { submissions: aojSubmissions, trigger: aojTrigger } = useSubmissions(
+		Resource.AOJ,
+		userIds.aoj,
+	);
 	const { submissions: atcoderSubmissions, trigger: atcoderTrigger } =
-		useAtcoderSubmissions(userIds.atcoder);
+		useSubmissions(Resource.ATCODER, userIds.atcoder);
 	const { submissions: codeforcesSubmissions, trigger: codeforcesTrigger } =
-		useCodeforcesSubmissions(userIds.codeforces);
+		useSubmissions(Resource.CODEFORCES, userIds.codeforces);
 	const { submissions: yukicoderSubmissions, trigger: yukicoderTrigger } =
-		useYukicoderSubmissions(userIds.yukicoder);
+		useSubmissions(Resource.YUKICODER, userIds.yukicoder);
 
 	const handleFetchSubmissions = async () => {
 		aojTrigger(userIds.aoj);
@@ -57,7 +54,7 @@ export function ProblemListWithIdsForm({
 			yukicoderSubmissions || [],
 		].flat();
 		const acSet = new Set<ProblemKey>(
-			submissions.map((submission) => createProblemKey(submission)),
+			submissions.map((submission) => submission.ProblemKey()),
 		);
 		setAcProblems(acSet);
 	}, [
@@ -153,10 +150,15 @@ export function ProblemListWithIdsForm({
 				</button>
 			</div>
 			<ProblemList
-				problemListRecords={problemListRecords.map((problemListRecord) => ({
-					...problemListRecord,
-					isSolved: acProblems.has(createProblemKey(problemListRecord.problem)),
-				}))}
+				problemListRecords={problemListRecords.map((problemListRecord) => {
+					return {
+						...problemListRecord,
+						problem: transformProblem(problemListRecord.problem),
+						isSolved: acProblems.has(
+							transformProblem(problemListRecord.problem).ProblemKey(),
+						),
+					};
+				})}
 			/>
 		</div>
 	);

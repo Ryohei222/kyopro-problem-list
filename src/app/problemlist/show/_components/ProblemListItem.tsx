@@ -1,14 +1,10 @@
 import { TableCell, TableRow } from "@/components/ui/table";
-import { buildProblemUrl } from "@/utils/buildProblemUrl";
-import { getProblemDifficultyColor } from "@/utils/getProblemDifficultyColor";
 import getResourceName from "@/utils/getResourceName";
+import { hasContest } from "@/utils/hasContest";
+import { hasDifficulty } from "@/utils/hasDifficulty";
 import Image from "next/image";
 import { useState } from "react";
-import type { ProblemListRecordResponse } from "../../../../features/problemlist/types/ProblemLists";
-
-type ProblemListRecordWithSolvedFlag = ProblemListRecordResponse & {
-	isSolved: boolean;
-};
+import type { ProblemListRecordWithSolvedFlag } from "./ProblemList";
 
 type ProblemListItemProps = {
 	problemListRecord: ProblemListRecordWithSolvedFlag;
@@ -42,7 +38,7 @@ export default function ProblemListItem({
 function ResourceIconCell({
 	resource,
 }: {
-	resource: ProblemListRecordResponse["problem"]["resource"];
+	resource: ProblemListRecordWithSolvedFlag["problem"]["resource"];
 }) {
 	const { logoSrc, logoAlt, bgColorClass } = getSiteLogo(resource);
 	return (
@@ -59,25 +55,26 @@ function ResourceIconCell({
 function ProblemNamesCell({
 	problem,
 }: {
-	problem: ProblemListRecordResponse["problem"];
+	problem: ProblemListRecordWithSolvedFlag["problem"];
 }) {
 	return (
 		<TableCell>
-			<a
-				href={buildProblemUrl(problem)}
-				target="_blank"
-				rel="noopener noreferrer"
-				className="flex items-center space-x-2"
-			>
+			<div className="items-center space-x-2">
 				<div>
-					<div className="font-medium">{problem.name}</div>
-					<div className="text-xs text-gray-500">
-						{problem.contestName
-							? problem.contestName
-							: getResourceName(problem.resource)}
-					</div>
+					<a href={problem.Url()} target="_blank" rel="noopener noreferrer">
+						<div className="font-medium">{problem.Title()}</div>
+						{hasContest(problem) ? (
+							<div className="text-xs text-gray-500">
+								{problem.ContestTitle()}
+							</div>
+						) : (
+							<div className="text-xs text-gray-500">
+								{getResourceName(problem.resource)}
+							</div>
+						)}
+					</a>
 				</div>
-			</a>
+			</div>
 		</TableCell>
 	);
 }
@@ -85,15 +82,17 @@ function ProblemNamesCell({
 function DifficultyCell({
 	problem,
 }: {
-	problem: ProblemListRecordResponse["problem"];
+	problem: ProblemListRecordWithSolvedFlag["problem"];
 }) {
 	return (
 		<TableCell>
 			<div
 				className="font-mono text-sm text-center"
-				style={{ color: getProblemDifficultyColor(problem) }}
+				style={{
+					color: hasDifficulty(problem) ? problem.DifficultyColor() : "#808080",
+				}}
 			>
-				{problem.difficulty ? problem.difficulty : "-"}
+				{hasDifficulty(problem) ? problem.Difficulty() : "-"}
 			</div>
 		</TableCell>
 	);

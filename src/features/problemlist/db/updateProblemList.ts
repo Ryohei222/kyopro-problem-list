@@ -1,18 +1,29 @@
 "use server";
 
+import { getProblemIdsByKeys } from "@/features/onlinejudge/db/getProblemIdsByKeys";
 import { prisma } from "@/prisma";
-import { createProblemKey } from "@/types/CommonProblem";
+import type { ProblemKey } from "@/types/CommonProblem";
 import type { RequestedUserId } from "@/types/RequestedUserId";
 import { withAuthorization } from "@/utils/withAuthorization";
-import {
-	ProblemListSchema,
-	type ProblemListSchemaType,
-} from "../types/ProblemListSchema";
+import { ProblemListSchema } from "../types/ProblemListSchema";
 import { getProblemList } from "./getProblemList";
+
+type updateProblemListProps = {
+	id: string;
+	name: string;
+	description: string;
+	isPublic: boolean;
+	problemListRecords: {
+		problemKey: ProblemKey;
+		memo: string;
+		hint: string;
+		order: number;
+	}[];
+};
 
 async function _updateProblemList(
 	requestedUserId: RequestedUserId,
-	props: ProblemListSchemaType,
+	props: updateProblemListProps,
 ) {
 	const result = ProblemListSchema.safeParse(props);
 
@@ -41,61 +52,45 @@ async function _updateProblemList(
 		};
 	}
 
-	const updatedProblemSet = await prisma.problemList.update({
-		where: { id: problemListId },
-		data: {
-			name,
-			description,
-			isPublic,
-		},
-	});
-
-	const newProblemIds = await prisma.problem.findMany({
-		where: {
-			problemId: {
-				in: problemListRecords.map((record) => record.problemId),
-			},
-		},
-	});
-
-	await prisma.problemListRecord.deleteMany({
-		where: {
-			problemListId,
-		},
-	});
-
-	const problemMap = new Map<string, number>(
-		newProblemIds.map((problem) => {
-			return [createProblemKey(problem), problem.id];
-		}),
+	const newProblemIds = await getProblemIdsByKeys(
+		problemListRecords.map((record) => record.problemKey as ProblemKey),
 	);
 
-	const problemsToCreate = problemListRecords.flatMap((problemData) => {
-		const innerId = problemMap.get(
-			createProblemKey({
-				...problemData,
-			}),
-		);
-		if (!innerId) {
-			return [];
-		}
+	return await prisma.$transaction(async () => {
+		const updatedProblemSet = await prisma.problemList.update({
+			where: { id: problemListId },
+			data: {
+				name,
+				description,
+				isPublic,
+			},
+		});
+
+		await prisma.problemListRecord.deleteMany({
+			where: {
+				problemListId,
+			},
+		});
+
+		const problemsToCreate = problemListRecords.flatMap((record) => {
+			return {
+				problemListId,
+				problemId: newProblemIds.get(record.problemKey as ProblemKey) ?? -1,
+				memo: record.memo,
+				hint: record.hint,
+				order: record.order,
+			};
+		});
+
+		await prisma.problemListRecord.createMany({
+			data: problemsToCreate,
+		});
+
 		return {
-			problemListId,
-			problemId: innerId,
-			memo: problemData.memo,
-			hint: problemData.hint,
-			order: problemData.order,
+			success: true,
+			problemListId: updatedProblemSet.id,
 		};
 	});
-
-	await prisma.problemListRecord.createMany({
-		data: problemsToCreate,
-	});
-
-	return {
-		success: true,
-		problemListId: updatedProblemSet.id,
-	};
 }
 
 export const updateProblemList = withAuthorization(_updateProblemList);
