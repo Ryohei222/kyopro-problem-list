@@ -153,6 +153,7 @@ export function ProblemListWithIdsForm({
 				problemListRecords={problemListRecords.map((problemListRecord) => {
 					return {
 						...problemListRecord,
+						problem: transformProblem(problemListRecord.problem),
 						isSolved: acProblems.has(
 							transformProblem(problemListRecord.problem).ProblemKey(),
 						),

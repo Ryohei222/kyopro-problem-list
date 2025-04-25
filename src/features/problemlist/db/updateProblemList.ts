@@ -2,9 +2,10 @@
 
 import { getProblemIdsByKeys } from "@/features/onlinejudge/db/getProblemIdsByKeys";
 import { prisma } from "@/prisma";
-import type { CommonProblem, ProblemKey } from "@/types/CommonProblem";
+import type { ProblemKey } from "@/types/CommonProblem";
 import type { RequestedUserId } from "@/types/RequestedUserId";
 import { withAuthorization } from "@/utils/withAuthorization";
+import { ProblemListSchema } from "../types/ProblemListSchema";
 import { getProblemList } from "./getProblemList";
 
 type updateProblemListProps = {
@@ -24,21 +25,12 @@ async function _updateProblemList(
 	requestedUserId: RequestedUserId,
 	props: updateProblemListProps,
 ) {
-	// Zod validation
-	// const result = ProblemListSchema.safeParse(props);
+	const result = ProblemListSchema.safeParse(props);
 
-	// if (!result.success) {
-	// 	console.error("Validation error:", result.error.format());
-	// 	return { success: false, error: "format error" };
-	// }
-
-	// const {
-	// 	id: problemListId,
-	// 	name,
-	// 	description,
-	// 	isPublic,
-	// 	problemListRecords,
-	// } = result.data;
+	if (!result.success) {
+		console.error("Validation error:", result.error.format());
+		return { success: false, error: "format error" };
+	}
 
 	const {
 		id: problemListId,
@@ -46,7 +38,7 @@ async function _updateProblemList(
 		description,
 		isPublic,
 		problemListRecords,
-	} = props;
+	} = result.data;
 
 	const existingProblemList = await getProblemList(problemListId);
 
@@ -61,7 +53,7 @@ async function _updateProblemList(
 	}
 
 	const newProblemIds = await getProblemIdsByKeys(
-		problemListRecords.map((record) => record.problemKey),
+		problemListRecords.map((record) => record.problemKey as ProblemKey),
 	);
 
 	return await prisma.$transaction(async () => {
@@ -83,7 +75,7 @@ async function _updateProblemList(
 		const problemsToCreate = problemListRecords.flatMap((record) => {
 			return {
 				problemListId,
-				problemId: newProblemIds.get(record.problemKey) ?? -1,
+				problemId: newProblemIds.get(record.problemKey as ProblemKey) ?? -1,
 				memo: record.memo,
 				hint: record.hint,
 				order: record.order,

@@ -32,30 +32,38 @@ import {
 } from "@/types/CommonProblem";
 import getResourceName from "@/utils/getResourceName";
 import { hasContest } from "@/utils/hasContest";
+import { transformProblem } from "@/utils/transformProblem";
 import { updateProblemList } from "../../../../features/problemlist/db/updateProblemList";
-import type {
-	ProblemListRecordResponse,
-	ProblemListResponse,
-} from "../../../../features/problemlist/types/ProblemLists";
+import type { ProblemListResponse } from "../../../../features/problemlist/types/ProblemLists";
 import DraggableRow from "../../show/_components/DraggableRow";
 import AddProblemForm from "./AddProblem";
 import ProblemListDescriptionInput from "./ProblemListDescriptionInput";
 import ProblemListIsPublicInput from "./ProblemListIsPublicInput";
 import ProblemListNameInput from "./ProblemListNameInput";
 
+import type { ProblemListItem } from "@/features/problemlist/types/ProblemListItemSchema";
+
 export default function EditProblemListForm({
-	problemList,
+	problemList: beforeTransformProblemList,
 }: {
 	problemList: NonNullable<ProblemListResponse>;
 }) {
+	const problemList = {
+		...beforeTransformProblemList,
+		problemListRecords: beforeTransformProblemList.problemListRecords.map(
+			(record) => ({
+				...record,
+				problem: transformProblem(record.problem),
+			}),
+		),
+	};
+
 	const router = useRouter();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [name, setName] = useState(problemList.name);
 	const [description, setDescription] = useState(problemList.description);
 	const [isPublic, setIsPublic] = useState(problemList.isPublic);
-	const [problems, setProblems] = useState<ProblemListRecordResponse[]>(
-		problemList.problemListRecords,
-	);
+	const [problems, setProblems] = useState(problemList.problemListRecords);
 	const [showAddProblemForm, setShowAddProblemForm] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const { problems: allProblems, isLoading } = useProblems();
@@ -67,7 +75,7 @@ export default function EditProblemListForm({
 	} | null>(null);
 
 	// 問題追加
-	const handleAddProblem = (problem: ProblemListRecordResponse) => {
+	const handleAddProblem = (problem: ProblemListItem) => {
 		setProblems((prev) => [...prev, problem]);
 	};
 
@@ -81,17 +89,6 @@ export default function EditProblemListForm({
 		const newProblems = [...problems];
 		newProblems[index].order = newOrder;
 		setProblems(newProblems);
-	};
-
-	// 問題IDから問題の詳細情報を取得
-	const getProblemDetails = (problem: createProblemKeyProps) => {
-		if (!allProblems) {
-			return null;
-		}
-		const result = allProblems.find(
-			(p) => p.ProblemKey() === createProblemKey(problem),
-		);
-		return result || null;
 	};
 
 	// フォーム送信
@@ -130,8 +127,7 @@ export default function EditProblemListForm({
 			// 問題リスト項目バリデーション
 			for (const [i, record] of reorderedProblems.entries()) {
 				const result = ProblemListItemSchema.safeParse({
-					resource: record.problem.resource,
-					problem: record.problem,
+					problemKey: record.problem.ProblemKey(),
 					memo: record.memo,
 					hint: record.hint,
 					order: record.order,
@@ -158,8 +154,7 @@ export default function EditProblemListForm({
 				description,
 				isPublic,
 				problemListRecords: reorderedProblems.map((record) => ({
-					resource: record.problem.resource,
-					problem: record.problem,
+					problemKey: record.problem.ProblemKey(),
 					memo: record.memo,
 					hint: record.hint,
 					order: record.order,
@@ -316,17 +311,11 @@ export default function EditProblemListForm({
 																)}
 															</TableCell>
 															<TableCell>
-																{hasContest(problem) ? (
-																	<span className="text-sm">
-																		{getResourceName(problem.resource)}
-																		{" - "}
-																		{problem.ContestTitle()}
-																	</span>
-																) : (
-																	<span className="text-gray-400">
-																		{getResourceName(problem.resource)}
-																	</span>
-																)}
+																<span className="text-sm">
+																	{getResourceName(problem.resource)}
+																	{hasContest(problem) &&
+																		` - ${problem.ContestTitle()}`}
+																</span>
 															</TableCell>
 															<TableCell
 																className={`transition-all duration-200 ${
