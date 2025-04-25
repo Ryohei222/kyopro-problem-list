@@ -11,6 +11,7 @@
 		"prisma:format": "prisma format",
 		"prisma:generate": "prisma generate",
 		"prisma:migrate": "prisma migrate dev",
+		"license:update": "generate-attribution",
 		"prepare": "husky"
 	},
 	"dependencies": {
