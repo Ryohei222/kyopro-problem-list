@@ -1,6 +1,6 @@
 import { type DBSchema, openDB } from "idb";
 import { fetchApi } from "../utils/fetchApi";
-import { CodeforcesSubmission } from "./Submisson";
+import { CodeforcesSubmission } from "./Submission";
 import { CODEFORCES_API_URL } from "./constants";
 
 import { z } from "zod";

@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, test } from "vitest";
 import { fetchCodeforcesSubmissions } from "./fetchSubmissions";
 
-import { CodeforcesSubmission } from "./Submisson";
+import { CodeforcesSubmission } from "./Submission";
 let submissions: CodeforcesSubmission[] = [];
 
 beforeAll(async () => {
