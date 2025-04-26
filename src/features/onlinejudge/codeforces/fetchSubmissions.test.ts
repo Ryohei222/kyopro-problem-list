@@ -2,10 +2,10 @@ import { beforeAll, describe, expect, test } from "vitest";
 import { fetchCodeforcesSubmissions } from "./fetchSubmissions";
 
 import { CodeforcesSubmission } from "./Submisson";
-let submissons: CodeforcesSubmission[] = [];
+let submissions: CodeforcesSubmission[] = [];
 
 beforeAll(async () => {
-	submissons = (await fetchCodeforcesSubmissions("Mikunyan")).map(
+	submissions = (await fetchCodeforcesSubmissions("Mikunyan")).map(
 		(submission) =>
 			new CodeforcesSubmission({
 				...submission,
@@ -16,7 +16,7 @@ beforeAll(async () => {
 
 describe("fetchCodeforcesSubmissions", () => {
 	test("fetch submissions successfully", () => {
-		console.log(submissons);
-		expect(submissons.length).toBeGreaterThan(0);
+		console.log(submissions);
+		expect(submissions.length).toBeGreaterThan(0);
 	});
 });
