@@ -1,5 +1,6 @@
+import { type DBSchema, openDB } from "idb";
 import { fetchApi } from "../utils/fetchApi";
-import { CodeforcesSubmission } from "./Submissons";
+import { CodeforcesSubmission } from "./Submisson";
 import { CODEFORCES_API_URL } from "./constants";
 
 import { z } from "zod";
@@ -33,19 +34,57 @@ const CodeforcesSubmissionsApiSchema = z.object({
 	result: z.array(CodeforcesSubmissionSchema),
 });
 
+type CodeforcesSubmissionType = z.infer<typeof CodeforcesSubmissionSchema>;
+interface CodeforcesSubmissionDB extends DBSchema {
+	submissions: {
+		key: string;
+		value: CodeforcesSubmissionType;
+	};
+}
+
 export async function fetchCodeforcesSubmissions(
 	userId: string,
-): Promise<CodeforcesSubmission[]> {
+	from = 1,
+	count = 100000,
+): Promise<CodeforcesSubmissionType[]> {
 	if (!userId) return [];
 	const data = await fetchApi(
-		`${CODEFORCES_API_URL}/user.status?handle=${userId}&count=100000`,
+		`${CODEFORCES_API_URL}/user.status?handle=${userId}&count=${count}&from=${from}`,
 		CodeforcesSubmissionsApiSchema,
 	);
-	return data.result.map(
-		(submission) =>
-			new CodeforcesSubmission({
-				...submission.problem,
-				...submission,
-			}),
+	if (data.status !== "OK") {
+		throw new Error("Failed to fetch Codeforces submissions");
+	}
+	return data.result;
+}
+
+const ALWAYS_FETCH_MARGIN = 100;
+
+export async function fetchCodeforcesSubmissionsWithCache(userId: string) {
+	if (!userId) return [];
+	const db = await openDB<CodeforcesSubmissionDB>(
+		`codeforces-submissions-${userId}`,
+		1,
+		{
+			upgrade(db) {
+				db.createObjectStore("submissions");
+			},
+		},
 	);
+	const cachedSubmissions = await db.getAll("submissions");
+	const newSubmissions = await fetchCodeforcesSubmissions(
+		userId,
+		cachedSubmissions.length - ALWAYS_FETCH_MARGIN,
+	);
+	for (const submission of newSubmissions) {
+		await db.put("submissions", submission, submission.id.toString());
+	}
+	return db.getAll("submissions").then((submissions) => {
+		return submissions.map((submission) => {
+			return new CodeforcesSubmission({
+				...submission,
+				...submission.problem,
+			});
+		});
+	});
 }
