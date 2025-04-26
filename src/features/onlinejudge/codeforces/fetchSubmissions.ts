@@ -48,6 +48,9 @@ export async function fetchCodeforcesSubmissions(
 	count = 100000,
 ): Promise<CodeforcesSubmissionType[]> {
 	if (!userId) return [];
+	if (from < 1 || count < 1) {
+		throw new Error("Invalid arguments");
+	}
 	const data = await fetchApi(
 		`${CODEFORCES_API_URL}/user.status?handle=${userId}&count=${count}&from=${from}`,
 		CodeforcesSubmissionsApiSchema,
@@ -74,7 +77,7 @@ export async function fetchCodeforcesSubmissionsWithCache(userId: string) {
 	const cachedSubmissions = await db.getAll("submissions");
 	const newSubmissions = await fetchCodeforcesSubmissions(
 		userId,
-		cachedSubmissions.length - ALWAYS_FETCH_MARGIN,
+		Math.max(1, cachedSubmissions.length - ALWAYS_FETCH_MARGIN),
 	);
 	for (const submission of newSubmissions) {
 		await db.put("submissions", submission, submission.id.toString());
