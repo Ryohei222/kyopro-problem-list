@@ -11,24 +11,13 @@ import { fetchAtcoderProblems } from "./atcoder/fetchProblems";
 import { fetchAtcoderSubmissionsWithCache } from "./atcoder/fetchSubmissions";
 import { CodeforcesProblemUpdater } from "./codeforces/Codeforces";
 import { fetchCodeforcesProblems } from "./codeforces/fetchProblems";
-import { fetchCodeforcesSubmissions } from "./codeforces/fetchSubmissions";
+import { fetchCodeforcesSubmissionsWithCache } from "./codeforces/fetchSubmissions";
 import { MofeProblemUpdater } from "./mofe/Mofe";
 import { MofeProblem } from "./mofe/Problem";
 import { readMofeProblemsAsPlainObjects } from "./mofe/db/readProblemsAsPlainObjects";
 import { YukicoderProblemUpdater } from "./yukicoder/Yukicoder";
 import { fetchYukicoderProblems } from "./yukicoder/fetchProblems";
 import { fetchYukicoderSubmissions } from "./yukicoder/fetchSubmissions";
-
-export const ClientSideOnlineJudgeProblemFetchers = {
-	Aoj: fetchAojProblems,
-	Atcoder: fetchAtcoderProblems,
-	Codeforces: fetchCodeforcesProblems,
-	Mofe: async () => {
-		const problems = await readMofeProblemsAsPlainObjects();
-		return problems.map((problem) => new MofeProblem(problem));
-	},
-	Yukicoder: fetchYukicoderProblems,
-};
 
 interface ClientSideOnlineJudgeApi {
 	fetchProblems: () => Promise<CommonProblem[]>;
@@ -49,7 +38,7 @@ export const ClientSideOnlineJudgeApi: Record<
 	},
 	CODEFORCES: {
 		fetchProblems: fetchCodeforcesProblems,
-		fetchSubmissions: fetchCodeforcesSubmissions,
+		fetchSubmissions: fetchCodeforcesSubmissionsWithCache,
 	},
 	MOFE: {
 		fetchProblems: async () => {
