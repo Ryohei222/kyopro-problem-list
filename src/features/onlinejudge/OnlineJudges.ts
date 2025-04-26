@@ -1,5 +1,3 @@
-"use client";
-
 import type { CommonProblem } from "@/types/CommonProblem";
 import type { Resource } from "@/types/Resource";
 import type { Submission } from "@/types/Submission";
