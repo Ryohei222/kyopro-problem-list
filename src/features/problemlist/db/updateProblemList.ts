@@ -40,6 +40,16 @@ async function _updateProblemList(
 		problemListRecords,
 	} = result.data;
 
+	const problemOrderSet = new Set(
+		problemListRecords.map((record) => record.order),
+	);
+
+	for (let i = 1; i <= problemListRecords.length; i++) {
+		if (!problemOrderSet.has(i)) {
+			return { success: false, error: "order is not unique or not in range" };
+		}
+	}
+
 	const existingProblemList = await getProblemList(problemListId);
 
 	if (!existingProblemList) {
