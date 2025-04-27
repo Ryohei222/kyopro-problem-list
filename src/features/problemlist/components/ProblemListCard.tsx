@@ -1,3 +1,5 @@
+"use client";
+
 import { CardUserInfo } from "@/components/CardUserInfo";
 import {
 	Card,
@@ -8,21 +10,21 @@ import {
 } from "@/components/ui/card";
 import { formatDate } from "@/utils/formatDate";
 import { Calendar, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
 import type { ProblemListsResponse } from "../types/ProblemLists";
 
 export function ProblemListCard({
 	list,
 }: { list: ProblemListsResponse[number] }) {
+	const router = useRouter();
 	return (
-		<Card className="flex flex-col hover:shadow-md transition-shadow duration-200">
+		<Card
+			className="flex flex-col hover:shadow-md hover:cursor-pointer transition-shadow duration-200"
+			onClick={() => router.push(`/problemlist/show/${list.id}`)}
+		>
 			<CardHeader>
 				<CardTitle>
-					<a
-						href={`/problemlist/show/${list.id}`}
-						className="text-blue-600 hover:underline"
-					>
-						{list.name}
-					</a>
+					<div className="text-blue-600">{list.name}</div>
 				</CardTitle>
 				<CardDescription className="line-clamp-2 mt-2">
 					{list.description}
