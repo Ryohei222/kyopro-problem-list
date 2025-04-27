@@ -16,7 +16,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 		});
 	}
 
-	for (let i = 0; i < 50; i++) {
+	for (let i = 0; i < 100; i++) {
 		const problemList = await createProblemList({
 			name: `test-problemlist-${i}`,
 			description: `test-problemlist-${i}の説明`,
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 					problemKey: testProblem.ProblemKey(),
 					memo: "",
 					hint: "",
-					order: 0,
+					order: 1,
 				},
 			],
 		});
