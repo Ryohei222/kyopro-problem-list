@@ -1,11 +1,11 @@
 import { createProblemKey } from "@/types/CommonProblem";
 import { Resource } from "@/types/Resource";
 import type { CommonContest } from "../../../types/CommonContest";
+import type { CommonDifficulty } from "../../../types/CommonDifficulty";
 import type { CommonProblem } from "../../../types/CommonProblem";
-import type { GetDifficulty } from "../../../types/GetDifficulty";
 
 export class CodeforcesProblem
-	implements CommonProblem, CommonContest, GetDifficulty
+	implements CommonProblem, CommonContest, CommonDifficulty
 {
 	public readonly index: string;
 	private readonly name: string;
@@ -65,6 +65,11 @@ export class CodeforcesProblem
 	Difficulty(): number | undefined {
 		return this.rating;
 	}
+
+	DifficultyLabel() {
+		return this.rating ? `${this.rating}` : undefined;
+	}
+
 	DifficultyColor(): string {
 		if (!this.rating || this.rating < 1200) return "#808080";
 		if (this.rating < 1400) return "#008000";

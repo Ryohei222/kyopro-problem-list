@@ -1,11 +1,11 @@
 import { createProblemKey } from "@/types/CommonProblem";
 import { Resource } from "@/types/Resource";
 import type { CommonContest } from "../../../types/CommonContest";
+import type { CommonDifficulty } from "../../../types/CommonDifficulty";
 import type { CommonProblem } from "../../../types/CommonProblem";
-import type { GetDifficulty } from "../../../types/GetDifficulty";
 
 export class AtcoderProblem
-	implements CommonProblem, CommonContest, GetDifficulty
+	implements CommonProblem, CommonContest, CommonDifficulty
 {
 	resource: Resource = Resource.ATCODER;
 	private readonly id: string;
@@ -55,6 +55,11 @@ export class AtcoderProblem
 	Difficulty() {
 		return this.difficulty;
 	}
+
+	DifficultyLabel() {
+		return this.difficulty ? `${this.difficulty}` : undefined;
+	}
+
 	DifficultyColor() {
 		if (!this.difficulty || this.difficulty < 400) return "#808080";
 		if (this.difficulty < 800) return "#804000";

@@ -1,9 +1,12 @@
+import type { CommonDifficulty } from "@/types/CommonDifficulty";
 import { createProblemKey } from "@/types/CommonProblem";
 import { Resource } from "@/types/Resource";
 import type { CommonContest } from "../../../types/CommonContest";
 import type { CommonProblem } from "../../../types/CommonProblem";
 
-export class MofeProblem implements CommonProblem, CommonContest {
+export class MofeProblem
+	implements CommonProblem, CommonContest, CommonDifficulty
+{
 	public readonly resource: Resource = Resource.MOFE;
 	public readonly slug: string;
 	private readonly name: string;
@@ -56,6 +59,54 @@ export class MofeProblem implements CommonProblem, CommonContest {
 	}
 	ContestUrl() {
 		return `https://mofecoder.com/contests/${this.contestSlug}`;
+	}
+
+	Difficulty(): number {
+		switch (this.difficulty) {
+			case "Milk":
+				return 200;
+			case "Assam":
+				return 600;
+			case "Benihuki":
+				return 1000;
+			case "Ceylon":
+				return 1400;
+			case "Darjeeling":
+				return 1800;
+			case "EarlGray":
+				return 2200;
+			case "Flavor":
+				return 2600;
+			case "ผักชี":
+				return 3000;
+		}
+		return 0;
+	}
+
+	DifficultyLabel(): string {
+		return this.difficulty;
+	}
+
+	DifficultyColor(): string {
+		switch (this.difficulty) {
+			case "Milk":
+				return "#808080";
+			case "Assam":
+				return "#804000";
+			case "Benihuki":
+				return "#008000";
+			case "Ceylon":
+				return "#00C0C0";
+			case "Darjeeling":
+				return "#0000FF";
+			case "EarlGray":
+				return "#C0C000";
+			case "Flavor":
+				return "#FF8000";
+			case "ผักชี":
+				return "#FF0000";
+		}
+		return "#808080";
 	}
 
 	Stringify(): string {
