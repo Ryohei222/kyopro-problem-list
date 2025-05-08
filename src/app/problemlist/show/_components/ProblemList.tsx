@@ -80,8 +80,6 @@ export function ProblemList(props: ProblemListProps) {
 			: b[sortField] - a[sortField];
 	});
 
-	console.log("Sorted Records:", sortedRecords);
-
 	const filteredRecords = showSolved
 		? sortedRecords
 		: sortedRecords.filter((record) => !record.isSolved);

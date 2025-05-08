@@ -22,7 +22,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 				testProblemListIds.push(problemList.id);
 			}
 		}
-		console.log("testProblemListIds", testProblemListIds);
 		await prisma.star.deleteMany({
 			where: {
 				problemListId: {
