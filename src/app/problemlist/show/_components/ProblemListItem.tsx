@@ -92,7 +92,7 @@ function DifficultyCell({
 					color: hasDifficulty(problem) ? problem.DifficultyColor() : "#808080",
 				}}
 			>
-				{hasDifficulty(problem) ? problem.Difficulty() : "-"}
+				{hasDifficulty(problem) ? problem.DifficultyLabel() : "-"}
 			</div>
 		</TableCell>
 	);

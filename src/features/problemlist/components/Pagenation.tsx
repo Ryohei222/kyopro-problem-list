@@ -4,6 +4,7 @@ import {
 	PaginationItem,
 	PaginationLink,
 } from "@/components/ui/pagination";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export function Pagenation({
 	currentPage,
@@ -23,18 +24,18 @@ export function Pagenation({
 		.sort((a, b) => a - b)
 		.filter((page) => 1 <= page && page <= totalPages);
 	return (
-		<Pagination>
-			<PaginationContent>
+		<Pagination className="flex justify-center mt-4">
+			<PaginationContent className="flex items-center space-x-1">
 				{pages.map((page) => (
-					<PaginationItem key={page} aria-current>
+					<PaginationItem key={page} className="w-12 h-12 hover:cursor-pointer">
 						<PaginationLink
 							onClick={() => setCurrentPage(page)}
 							aria-current={page === currentPage ? "page" : undefined}
-							className={
+							className={`flex items-center justify-center w-full h-full rounded transition-colors ${
 								page === currentPage
-									? "ring-2 ring-blue-500 rounded bg-blue-50"
-									: ""
-							}
+									? "bg-blue-500 text-white"
+									: "bg-white-50 text-gray-700 hover:bg-blue-100"
+							} text-lg`}
 						>
 							{page}
 						</PaginationLink>

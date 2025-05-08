@@ -112,6 +112,7 @@ export function ProblemListsCards({
 						value={itemsPerPage}
 						onChange={(e) => {
 							setItemsPerPage(Number(e.target.value));
+							setCurrentPage(1);
 						}}
 					>
 						{displayPerPageOptions.map((option) => (

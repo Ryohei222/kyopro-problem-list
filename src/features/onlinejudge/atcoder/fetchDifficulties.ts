@@ -3,14 +3,14 @@ import { fetchApi } from "../utils/fetchApi";
 import { ATCODER_API_URL } from "./constants";
 
 const AtcoderDifficultySchema = z.object({
-	slope: z.number().optional(),
-	intercept: z.number().optional(),
-	variance: z.number().optional(),
-	difficulty: z.number().optional(),
-	discrimination: z.number().optional(),
-	irt_loglikelihood: z.number().optional(),
-	irt_users: z.number().optional(),
-	is_experimental: z.boolean().optional(),
+	slope: z.number().optional().nullable(),
+	intercept: z.number().optional().nullable(),
+	variance: z.number().optional().nullable(),
+	difficulty: z.number().optional().nullable(),
+	discrimination: z.number().optional().nullable(),
+	irt_loglikelihood: z.number().optional().nullable(),
+	irt_users: z.number().optional().nullable(),
+	is_experimental: z.boolean().optional().nullable(),
 });
 
 const AtcoderDifficultyApiSchema = z.record(

@@ -1,5 +1,5 @@
-import type { GetDifficulty } from "@/types/GetDifficulty";
+import type { CommonDifficulty } from "@/types/CommonDifficulty";
 
-export function hasDifficulty(problem: unknown): problem is GetDifficulty {
-	return (problem as GetDifficulty).Difficulty !== undefined;
+export function hasDifficulty(problem: unknown): problem is CommonDifficulty {
+	return (problem as CommonDifficulty).Difficulty !== undefined;
 }

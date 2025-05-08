@@ -20,7 +20,6 @@ export default async function UserPage({
 		notFound();
 	}
 	const yukicoderUrl = await fetchYukicoderUserUrl(user.yukicoderId);
-	console.log("yukicoderUrl", yukicoderUrl);
 	const session = await auth();
 	const isAuthor = session?.user?.id === userId;
 

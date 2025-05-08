@@ -9,6 +9,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import type { CommonProblem } from "@/types/CommonProblem";
+import { hasDifficulty } from "@/utils/hasDifficulty";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import ProblemListItem from "./ProblemListItem";
@@ -28,7 +29,7 @@ export type ProblemListProps = {
 	problemListRecords: ProblemListRecordWithSolvedFlag[];
 };
 
-type SortField = "order" | "resource";
+type SortField = "order" | "resource" | "difficulty";
 type SortDirection = "asc" | "desc";
 
 export function ProblemList(props: ProblemListProps) {
@@ -62,6 +63,17 @@ export function ProblemList(props: ProblemListProps) {
 			return sortDirection === "asc"
 				? resourceA.localeCompare(resourceB)
 				: resourceB.localeCompare(resourceA);
+		}
+		if (sortField === "difficulty") {
+			const difficultyA = hasDifficulty(a.problem)
+				? a.problem.Difficulty() || 0
+				: 0;
+			const difficultyB = hasDifficulty(b.problem)
+				? b.problem.Difficulty() || 0
+				: 0;
+			return sortDirection === "asc"
+				? difficultyA - difficultyB
+				: difficultyB - difficultyA;
 		}
 		return sortDirection === "asc"
 			? a[sortField] - b[sortField]
@@ -123,8 +135,14 @@ export function ProblemList(props: ProblemListProps) {
 							<div className="flex items-center">問題名</div>
 						</TableHead>
 						{showDifficulty && (
-							<TableHead className="w-28">
-								<div className="flex items-center">Difficulty</div>
+							<TableHead
+								className="w-28 cursor-pointer"
+								onClick={() => handleSort("difficulty")}
+							>
+								<div className="flex items-center">
+									Difficulty
+									<SortIcon field="difficulty" />
+								</div>
 							</TableHead>
 						)}
 						<TableHead className="w-xl">

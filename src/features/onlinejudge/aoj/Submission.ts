@@ -1,68 +1,74 @@
 import { type ProblemKey, createProblemKey } from "@/types/CommonProblem";
 import { Resource } from "@/types/Resource";
 import type { Submission, SubmissionVerdict } from "@/types/Submission";
+import { AojSubmissionStatus } from "./SubmissionStatus";
 
 export class AojSubmission implements Submission {
-	private readonly judgeId: number;
-	private readonly userId: string;
-	private readonly problemId: string;
-	private readonly language: string;
-	private readonly version: string;
-	private readonly submissionDate: number;
-	private readonly judgeDate: number;
-	private readonly cpuTime: number;
-	private readonly memory: number;
-	private readonly codeSize: number;
-	private readonly server: number;
-	private readonly policy: string;
-	private readonly rating: number;
-	private readonly review: number;
+	public readonly judgeId: number;
+	public readonly judgeType: number;
+	public readonly userId: string;
+	public readonly problemId: string;
+	public readonly submissionDate: number;
+	public readonly language: string;
+	public readonly status: number;
+	public readonly cpuTime: number;
+	public readonly memory: number;
+	public readonly codeSize: number;
+	public readonly accuracy: string;
+	public readonly judgeDate: number;
+	public readonly score: number;
+	public readonly problemTitle: string | null;
+	public readonly token: string | null;
 	constructor({
 		judgeId,
+		judgeType,
 		userId,
 		problemId,
-		language,
-		version,
 		submissionDate,
-		judgeDate,
+		language,
+		status,
 		cpuTime,
 		memory,
 		codeSize,
-		server,
-		policy,
-		rating,
-		review,
+		accuracy,
+		judgeDate,
+		score,
+		problemTitle,
+		token,
 	}: {
 		judgeId: number;
+		judgeType: number;
 		userId: string;
 		problemId: string;
-		language: string;
-		version: string;
 		submissionDate: number;
-		judgeDate: number;
+		language: string;
+		status: number;
 		cpuTime: number;
 		memory: number;
 		codeSize: number;
-		server: number;
-		policy: string;
-		rating: number;
-		review: number;
+		accuracy: string;
+		judgeDate: number;
+		score: number;
+		problemTitle: string | null;
+		token: string | null;
 	}) {
 		this.judgeId = judgeId;
+		this.judgeType = judgeType;
 		this.userId = userId;
 		this.problemId = problemId;
-		this.language = language;
-		this.version = version;
 		this.submissionDate = submissionDate;
-		this.judgeDate = judgeDate;
+		this.language = language;
+		this.status = status;
 		this.cpuTime = cpuTime;
 		this.memory = memory;
 		this.codeSize = codeSize;
-		this.server = server;
-		this.policy = policy;
-		this.rating = rating;
-		this.review = review;
+		this.accuracy = accuracy;
+		this.judgeDate = judgeDate;
+		this.score = score;
+		this.problemTitle = problemTitle;
+		this.token = token;
 	}
+
 	ProblemKey(): ProblemKey {
 		return createProblemKey({
 			resource: Resource.AOJ,
@@ -74,9 +80,9 @@ export class AojSubmission implements Submission {
 		return Resource.AOJ;
 	}
 	Verdict(): SubmissionVerdict {
-		return "AC";
+		return this.status === AojSubmissionStatus.STATE_ACCEPTED ? "AC" : "WA";
 	}
 	Url(): string {
-		return `https://onlinejudge.u-aizu.ac.jp/status/users/${this.userId}/submissions/${this.server}/${this.problemId}/judge/${this.judgeId}/${this.language}`;
+		return `https://onlinejudge.u-aizu.ac.jp/status/users/${this.userId}/submissions/1/${this.problemId}/judge/${this.judgeId}/${this.language}`;
 	}
 }

@@ -3,7 +3,7 @@ import { Resource } from "@/types/Resource";
 export default function getResourceName(resource: Resource): string {
 	switch (resource) {
 		case Resource.AOJ:
-			return "AtCoder";
+			return "Aizu Online Judge";
 		case Resource.CODEFORCES:
 			return "Codeforces";
 		case Resource.YUKICODER:

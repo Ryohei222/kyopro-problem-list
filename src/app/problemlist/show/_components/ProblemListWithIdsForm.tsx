@@ -7,6 +7,7 @@ import type { ProblemListRecordResponse } from "../../../../features/problemlist
 
 import type { getUser } from "@/features/user/db/getUser";
 import { Resource } from "@/types/Resource";
+import { hasDifficulty } from "@/utils/hasDifficulty";
 import { transformProblem } from "@/utils/transformProblem";
 import { ProblemList } from "./ProblemList";
 

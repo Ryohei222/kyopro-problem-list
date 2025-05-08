@@ -1,3 +1,5 @@
+"use client";
+
 import UserIcon from "./UserIcon";
 import { UserName } from "./UserName";
 type CardUserInfoProps = {

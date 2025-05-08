@@ -52,20 +52,42 @@ export default function AboutPage() {
 			url: "https://yukicoder.me/",
 		},
 	];
+	const apiReferences = [
+		{
+			name: "AtCoder Problems",
+			url: "https://github.com/kenkoooo/AtCoderProblems/blob/master/doc/api.md",
+		},
+		{
+			name: "Aizu Online Judge API",
+			url: "http://developers.u-aizu.ac.jp/index",
+		},
+		{
+			name: "Codeforces API",
+			url: "https://codeforces.com/apiHelp",
+		},
+		{
+			name: "MOFE",
+			url: "https://mofecoder.com/",
+		},
+		{
+			name: "yukicoder API",
+			url: "https://petstore.swagger.io/?url=https://yukicoder.me/api/swagger.yaml",
+		},
+	];
 	return (
 		<div className="container max-w-4xl mx-auto px-4 py-8">
 			<Card>
 				<CardHeader>
 					<CardTitle>
 						<h1 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-							About (WIP)
+							About
 						</h1>
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<Header2 text="このサイトについて" />
 					<p>
-						Kyopro Problem List
+						Kyopro Problem Lists
 						は、競技プログラミングのオンラインジャッジに存在する問題から問題リストを作成・共有できるサービスです。
 						<br />
 						現在は以下のオンラインジャッジに対応しています。
@@ -97,7 +119,7 @@ export default function AboutPage() {
 					</div>
 					<div>
 						<Header2 text="連絡先" />
-						<p>
+						<p className="mb-6">
 							質問やバグ報告・要望などはお気軽に作者の X (
 							<Link url="https://x.com/6Lgug" text="@6Lgug" />) や{" "}
 							<Link
@@ -105,6 +127,22 @@ export default function AboutPage() {
 								text="GitHub Issues"
 							/>{" "}
 							までご連絡ください。
+						</p>
+					</div>
+					<div>
+						<Header2 text="Special Thanks" />
+						<p className="mb-6">
+							このWebアプリは、次のサービスに支えられています。ありがとうございます。
+						</p>
+						<ul className="mb-6 list-disc ml-6 space-y-2">
+							{apiReferences.map((ref) => (
+								<li key={ref.name}>
+									<Link url={ref.url} text={ref.name} />
+								</li>
+							))}
+						</ul>
+						<p>
+							また、開発にあたってアドバイスをくださった皆さまにも感謝しています。
 						</p>
 					</div>
 					<Header2 text="プライバシー・アクセス解析について" />

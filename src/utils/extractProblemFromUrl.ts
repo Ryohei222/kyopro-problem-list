@@ -43,7 +43,6 @@ export default function extractProblemFromUrl(url: string): {
 		for (const regex of regexes) {
 			const match = findMatch(regex, url, resource);
 			if (match) {
-				console.log(`Extracted problem from URL: ${JSON.stringify(match)}`);
 				return match;
 			}
 		}

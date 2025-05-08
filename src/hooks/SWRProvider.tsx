@@ -8,20 +8,14 @@ import { timestampStorageHandler } from "@piotr-cz/swr-idb-cache";
 
 // https://github.com/piotr-cz/swr-idb-cache
 
-const problemsMaxAge = 1000;
-const submissionMaxAge = 3 * 60 * 1000;
+const apiRequestMaxAgems = 3 * 60 * 1000;
 
 const gcStorageHandler = {
 	...timestampStorageHandler,
 	// biome-ignore lint: library code
 	revive: (key: string, storeObject: any) => {
 		const timeFromPreviousRequest = Date.now() - storeObject.ts;
-		if (key.startsWith("/submissions")) {
-			return timeFromPreviousRequest < submissionMaxAge
-				? timestampStorageHandler.revive(key, storeObject)
-				: undefined;
-		}
-		return timeFromPreviousRequest < problemsMaxAge
+		return timeFromPreviousRequest < apiRequestMaxAgems
 			? timestampStorageHandler.revive(key, storeObject)
 			: undefined;
 	},
