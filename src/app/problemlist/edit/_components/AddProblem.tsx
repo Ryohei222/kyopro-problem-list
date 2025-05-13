@@ -1,30 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import type { AojProblem } from "@/features/onlinejudge/aoj/Problem";
-import type { AtcoderProblem } from "@/features/onlinejudge/atcoder/Problem";
-import type { CodeforcesProblem } from "@/features/onlinejudge/codeforces/Problem";
-import type { MofeProblem } from "@/features/onlinejudge/mofe/Problem";
-import type { YukicoderProblem } from "@/features/onlinejudge/yukicoder/Problem";
 import type { ProblemListItem } from "@/features/problemlist/types/ProblemListItemSchema";
 import useProblems from "@/hooks/useProblems";
-import type { CommonProblem, OnlineJudgeProblem } from "@/types/CommonProblem";
+import type { CommonProblem } from "@/types/CommonProblem";
 import { createProblemKey } from "@/types/CommonProblem";
 import extractProblemFromUrl from "@/utils/extractProblemFromUrl";
 import getResourceName from "@/utils/getResourceName";
 import { Label } from "@radix-ui/react-label";
+import getUrls from "get-urls";
 import { Plus } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
-import type { ProblemListRecordResponse } from "../../../../features/problemlist/types/ProblemLists";
-
-type Problem =
-	| AojProblem
-	| AtcoderProblem
-	| CodeforcesProblem
-	| MofeProblem
-	| YukicoderProblem;
 
 function searchProblemFromUrl(
 	url: string,
@@ -68,59 +55,58 @@ export default function AddProblemForm({
 	existingProblems: ProblemListItem[];
 }) {
 	const { problems, isLoading: isProblemsLoading } = useProblems();
-	const [url, setUrl] = useState("");
-	const [memo, setMemo] = useState("");
-	const [hint, setHint] = useState("");
+	const [urlsText, setUrlsText] = useState("");
 	const [error, setError] = useState<string | null>(null);
 	const [showForm, setShowForm] = useState(false);
 
-	const [previewProblem, setPreviewProblem] = useState<CommonProblem | null>(
-		null,
-	);
+	const [previewProblems, setPreviewProblems] = useState<CommonProblem[]>([]);
 
 	const resetForm = () => {
-		setUrl("");
-		setMemo("");
-		setHint("");
+		setUrlsText("");
 		setError(null);
-		setPreviewProblem(null);
+		setPreviewProblems([]);
 	};
 
 	function handleUrlChange(e: React.ChangeEvent<HTMLInputElement>) {
-		setUrl(e.target.value);
-		const newUrl = e.target.value;
+		setUrlsText(e.target.value);
+		const newUrlsText = e.target.value;
 
-		if (newUrl.trim() === "") {
-			setPreviewProblem(null);
+		if (newUrlsText.trim() === "") {
+			setPreviewProblems([]);
 			setError(null);
 			return;
 		}
 
 		if (!problems) {
-			setPreviewProblem(null);
+			setPreviewProblems([]);
 			setError("問題のリストが読み込まれていません");
 			return;
 		}
 
-		const problem = searchProblemFromUrl(newUrl, problems);
+		const urls = Array.from(getUrls(newUrlsText));
 
-		if (!problem) {
-			setPreviewProblem(null);
+		const extractedProblems = urls
+			.map((url) => {
+				return searchProblemFromUrl(url, problems);
+			})
+			.filter((problem): problem is CommonProblem => problem !== null);
+
+		if (extractedProblems.length === 0) {
+			setPreviewProblems([]);
 			setError("指定されたURLから問題を見つけることができませんでした\n");
 			return;
 		}
 
-		const isDuplicate = existingProblems.some(
-			(p) => p.problem.ProblemKey() === problem.ProblemKey(),
+		const existingProblemKeys = new Set(
+			existingProblems.map((problem) => problem.problem.ProblemKey()),
 		);
-		if (isDuplicate) {
-			setPreviewProblem(null);
-			setError("この問題は既にリストに追加されています");
-			return;
-		}
+
+		const newProblems = extractedProblems.filter(
+			(problem) => !existingProblemKeys.has(problem.ProblemKey()),
+		);
 
 		setError(null);
-		setPreviewProblem(problem);
+		setPreviewProblems(newProblems);
 	}
 
 	const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -129,33 +115,26 @@ export default function AddProblemForm({
 		setError(null);
 
 		if (!problems) {
-			setPreviewProblem(null);
+			setPreviewProblems([]);
 			setError("問題のリストが読み込まれていません");
 			return;
 		}
 
-		const problem = searchProblemFromUrl(url, problems);
-		if (!problem) {
-			setError("指定されたURLから問題を見つけることができませんでした");
+		if (previewProblems.length === 0) {
+			setError("新しい問題が見つかりませんでした");
 			return;
 		}
 
-		const isDuplicate = existingProblems.some(
-			(p) => p.problem.ProblemKey() === problem.ProblemKey(),
-		);
-		if (isDuplicate) {
-			setError("この問題は既にリストに追加されています");
-			return;
-		}
+		let indexToInsert = existingProblems.length + 1;
 
-		// 新しい問題の順序は既存の問題の最大順序+1
-		const newProblemOrder = existingProblems.length + 1;
-		onAddProblem({
-			problem,
-			memo,
-			hint,
-			order: newProblemOrder,
-		});
+		for (const problem of previewProblems) {
+			onAddProblem({
+				problem,
+				memo: "",
+				hint: "",
+				order: indexToInsert++,
+			});
+		}
 
 		resetForm();
 	};
@@ -195,54 +174,30 @@ export default function AddProblemForm({
 							<Label htmlFor="url">問題URL</Label>
 							<Input
 								id="url"
-								value={url}
+								value={urlsText}
 								onChange={handleUrlChange}
 								placeholder="https://atcoder.jp/contests/abc123/tasks/abc123_a"
 								required
 							/>
 							<p className="text-xs text-gray-500">
-								AOJ / AtCoder / Codeforces / MOFE / yukicoder
-								の問題URLを入力してください
+								AOJ / AtCoder / Codeforces / MOFE / yukicoder の問題 URL
+								が含まれる文字列を入力してください。スペースや改行、日本語などで区切られている場合、複数の問題
+								URL を一度に入力することができます。
 							</p>
 						</div>
 
-						{previewProblem && (
+						{previewProblems.length > 0 && (
 							<div className="p-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-md space-y-2">
-								<h5 className="font-medium">追加する問題:</h5>
-								<div className="text-sm">
-									<div>
-										<span className="font-semibold">タイトル:</span>{" "}
-										{previewProblem.Title()}
-									</div>
-									<div>
-										<span className="font-semibold">出典:</span>{" "}
-										{getResourceName(previewProblem.resource)}
-									</div>
-								</div>
+								<h5 className="font-medium">検出された新しい問題:</h5>
+								<ul className="list-disc list-inside text-sm">
+									{previewProblems.map((problem) => (
+										<li key={problem.ProblemKey()}>
+											{problem.Title()} - {getResourceName(problem.resource)}
+										</li>
+									))}
+								</ul>
 							</div>
 						)}
-
-						<div className="space-y-2">
-							<Label htmlFor="memo">メモ</Label>
-							<Textarea
-								id="memo"
-								value={memo}
-								onChange={(e) => setMemo(e.target.value)}
-								className="min-h-[120px]"
-								placeholder="問題に関するメモ"
-							/>
-						</div>
-
-						<div className="space-y-2">
-							<Label htmlFor="hint">ヒント</Label>
-							<Textarea
-								id="hint"
-								value={hint}
-								onChange={(e) => setHint(e.target.value)}
-								className="min-h-[120px]"
-								placeholder="解法のヒント"
-							/>
-						</div>
 
 						<div className="flex justify-end gap-2 pt-2">
 							<Button
@@ -257,7 +212,7 @@ export default function AddProblemForm({
 								type="button"
 								size="sm"
 								onClick={handleSubmit}
-								disabled={!previewProblem}
+								disabled={!previewProblems}
 							>
 								追加
 							</Button>
