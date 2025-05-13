@@ -49,7 +49,8 @@ function ProblemUrlErrorHelpComponent() {
 		<>
 			<pre className="text-sm text-gray-700 whitespace-pre-wrap">
 				次の形式で URL を入力してください:
-				{"\n"}AOJ: https://onlinejudge.u-aizu.ac.jp/problems/0123
+				{"\n"}AOJ: https://onlinejudge.u-aizu.ac.jp/problems/0123 (URL
+				の末尾に問題 ID が存在すれば可)
 				{"\n"}AtCoder: https://atcoder.jp/contests/abc123/tasks/abc123_a
 				{"\n"}Codeforces: https://codeforces.com/contest/123/problem/A
 				{"\n"}MOFE: https://mofecoder.com/contests/tea001/tasks/tea001_a
