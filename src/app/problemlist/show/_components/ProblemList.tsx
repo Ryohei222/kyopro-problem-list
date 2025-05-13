@@ -107,7 +107,7 @@ export function ProblemList(props: ProblemListProps) {
 						onCheckedChange={() => setShowSolved((v) => !v)}
 						id="show-solved-switch"
 					/>
-					<span>解いた問題も表示</span>
+					<span>解いた問題を表示</span>
 				</label>
 			</div>
 			<Table>

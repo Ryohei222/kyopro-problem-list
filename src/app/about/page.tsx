@@ -132,7 +132,7 @@ export default function AboutPage() {
 					<div>
 						<Header2 text="Special Thanks" />
 						<p className="mb-6">
-							このWebアプリは、次のサービスに支えられています。ありがとうございます。
+							このWebアプリは、次のサービスを使用しています。ありがとうございます。
 						</p>
 						<ul className="mb-6 list-disc ml-6 space-y-2">
 							{apiReferences.map((ref) => (
@@ -142,7 +142,7 @@ export default function AboutPage() {
 							))}
 						</ul>
 						<p>
-							また、開発にあたってアドバイスをくださった皆さまにも感謝しています。
+							また、開発にあたってアドバイスをくださった皆さまに感謝いたします。
 						</p>
 					</div>
 					<Header2 text="プライバシー・アクセス解析について" />
