@@ -127,7 +127,7 @@ export function ProblemList(props: ProblemListProps) {
 							onClick={() => handleSort("resource")}
 						>
 							<div className="flex justify-start">
-								サイト
+								出典
 								<SortIcon field="resource" />
 							</div>
 						</TableHead>
