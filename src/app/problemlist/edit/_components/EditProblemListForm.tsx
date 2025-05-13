@@ -300,6 +300,7 @@ export default function EditProblemListForm({
 																		target="_blank"
 																		rel="noopener noreferrer"
 																		className="text-blue-600 hover:underline flex items-center gap-1"
+																		tabIndex={-1}
 																	>
 																		{problem.Title()}
 																		<ExternalLink className="h-3 w-3" />
@@ -373,6 +374,7 @@ export default function EditProblemListForm({
 																	variant="outline"
 																	size="sm"
 																	onClick={() => handleRemoveProblem(index)}
+																	tabIndex={-1}
 																>
 																	<Trash2 className="h-4 w-4" />
 																</Button>
