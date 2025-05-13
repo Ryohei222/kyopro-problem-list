@@ -16,7 +16,8 @@ export default function extractProblemFromUrl(url: string): {
 		/https:\/\/yukicoder\.me\/problems\/no\/(?<problemId>.+)/,
 	];
 	const AOJProblemURLRegex = [
-		/https:\/\/onlinejudge\.u-aizu\.ac\.jp\/problems\/(?<problemId>.+)/,
+		/https:\/\/onlinejudge\.u-aizu\.ac\.jp\/.+\/(?<problemId>.+)/,
+		/https:\/\/judge\.u-aizu\.ac\.jp\/onlinejudge\/description.jsp\?id=(?<problemId>.+)/,
 	];
 	const MOFEProblemURLRegex = [
 		/https:\/\/mofecoder\.com\/contests\/(?<contestId>.+)\/tasks\/(?<problemId>.+)/,
